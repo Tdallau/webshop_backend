@@ -10,7 +10,6 @@ using webshop_backend;
 
 namespace webshop_backend.Controllers
 {
-    [Route("[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -34,12 +33,27 @@ namespace webshop_backend.Controllers
  
         //     return userData;
         // }
+        [Route("[controller]/login")]
         [HttpPost]
-        public IActionResult Create(string username, string password)
+        public Object Login(string username, string password)
         {
-            if (this.userServices.IsValidUserAndPasswordCombination(username, password))
-                return new ObjectResult(this.userServices.GenerateToken(username));
+            var userIdArray = this.userServices.IsValidUserAndPasswordCombination(username, password);
+            
+            if (userIdArray.Length == 1) {
+                var userId = userIdArray[0].Id;
+                return this.userServices.getUser(userId, this.userServices.GenerateToken(username));
+            }
             return BadRequest();
+        }
+
+        [Route("[controller]/register")]
+        [HttpPost]
+        public Object Register(string username, string email, string gender, string password)
+        {
+
+            this.userServices.InsertUser(username,email,gender,password);
+            return this.Login(email, password);
+
         }
 
     }

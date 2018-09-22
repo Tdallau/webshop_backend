@@ -8,22 +8,42 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Models;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 
 namespace Services
 {
     public class UserServices
     {
         private MainContext __context;
-        public UserServices() {
+        public UserServices()
+        {
             this.__context = new MainContext();
         }
-        public bool IsValidUserAndPasswordCombination(string username, string password)
+        public User[] IsValidUserAndPasswordCombination(string username, string password)
         {
+
             var query = from user in this.__context.User
-                        where user.Email == username && user.Password == password
+                        where user.Email == username && user.Password == GetHash(password + user.Salt)
                         select user;
 
-            return query.ToArray().Length == 1;
+            return query.ToArray();
+        }
+
+        public void InsertUser(string username, string email, string gender, string password) {
+
+            var salt = GetSalt();
+            var newUser = new User(){Name = username, Email = email, Gender = gender, Password= GetHash(password + salt), Salt = salt};
+            this.__context.Add(newUser);
+            this.__context.SaveChanges();
+        }
+
+        public Object getUser(int userId, string token) {
+
+            var query = from user in this.__context.User
+                        where user.Id == userId
+                        select new {user.Email, user.Gender, user.Name, user.Addresses, token};
+
+            return query;
         }
 
         public string GenerateToken(string username)
@@ -43,6 +63,31 @@ namespace Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        private string GetHash(string password)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                // Send a sample text to hash.  
+                var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                // Get the hashed string.  
+                return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+            }
+        }
+        private string GetSalt()
+        {
+            byte[] bytes = new byte[128 / 8];
+            using (var keyGenerator = RandomNumberGenerator.Create())
+            {
+                keyGenerator.GetBytes(bytes);
+                return BitConverter.ToString(bytes).Replace("-", "").ToLower();
+            }
+        }
+
+        public string test(string password) {
+            return this.GetHash(password + this.GetSalt());
+        }
     }
+    
 
 }
