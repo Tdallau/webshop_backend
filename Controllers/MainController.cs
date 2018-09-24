@@ -11,7 +11,6 @@ using webshop_backend;
 namespace webshop_backend.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize]
     [ApiController]
     public class MainController : ControllerBase
     {
@@ -24,12 +23,6 @@ namespace webshop_backend.Controllers
         [HttpGet]
         public ActionResult<string> Get()
         {
-
-            //     User test = new User(){Name = "hallo", Email = "hallo@hallo.com", Gender = "Male", Password = "test123"};
-
-            //     this.__context.Add(test);
-            //     this.__context.SaveChanges();
-
             return "end";
         }
 
@@ -38,12 +31,6 @@ namespace webshop_backend.Controllers
         public ActionResult<string> Get(int id)
         {
             return "value";
-        }
-
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
         }
 
     }

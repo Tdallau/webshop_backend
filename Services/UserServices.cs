@@ -29,30 +29,31 @@ namespace Services
             return query.ToArray();
         }
 
-        public void InsertUser(string username, string email, string gender, string password) {
+        public void InsertUser(string username, string email, string gender, string password, string role) {
 
             var salt = GetSalt();
-            var newUser = new User(){Name = username, Email = email, Gender = gender, Password= GetHash(password + salt), Salt = salt};
+            var newUser = new User(){Name = username, Email = email, Gender = gender, Role = role, Password= GetHash(password + salt), Salt = salt};
             this.__context.Add(newUser);
             this.__context.SaveChanges();
         }
 
-        public Object getUser(int userId, string token) {
+        public User getUser(int userId) {
 
             var query = from user in this.__context.User
                         where user.Id == userId
-                        select new {user.Email, user.Gender, user.Name, user.Addresses, token};
+                        select user;
 
-            return query;
+            return query.ToArray()[0];
         }
 
-        public string GenerateToken(string username)
+        public string GenerateToken(string username, string Role)
         {
             var claims = new Claim[]
             {
                 new Claim(ClaimTypes.Name, username),
                 new Claim(JwtRegisteredClaimNames.Nbf, new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds().ToString()),
                 new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(DateTime.Now.AddDays(1)).ToUnixTimeSeconds().ToString()),
+                new Claim(ClaimTypes.Role, Role)
             };
 
             var token = new JwtSecurityToken(

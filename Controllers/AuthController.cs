@@ -20,39 +20,28 @@ namespace webshop_backend.Controllers
             this.userServices = new UserServices();
         }
 
-        // GET api/values
-        // [HttpGet]
-        // public ActionResult<Object> Get()
-        // {
-            
-        //     var query = from user in this.__context.User
-        //                 where user.Id == 1
-        //                 select new {user.Name, user.Gender, user.Email, user.Addresses, user.Id};
-
-        //     var userData = query.GroupBy(x => x.Id).Select(y => y.First()).ToList();
- 
-        //     return userData;
-        // }
         [Route("[controller]/login")]
         [HttpPost]
-        public Object Login(string username, string password)
+        public Object Login(string username, string password, string role)
         {
             var userIdArray = this.userServices.IsValidUserAndPasswordCombination(username, password);
             
             if (userIdArray.Length == 1) {
                 var userId = userIdArray[0].Id;
-                return this.userServices.getUser(userId, this.userServices.GenerateToken(username));
+                var user = this.userServices.getUser(userId);
+                var token = this.userServices.GenerateToken(user.Email,user.Role);
+                return new {user.Email, user.Gender, user.Name, user.Addresses, user.Role, token};
             }
             return BadRequest();
         }
 
         [Route("[controller]/register")]
         [HttpPost]
-        public Object Register(string username, string email, string gender, string password)
+        public Object Register(string username, string email, string gender, string password, string role)
         {
-
-            this.userServices.InsertUser(username,email,gender,password);
-            return this.Login(email, password);
+            if (role == null) role = "User"; 
+            this.userServices.InsertUser(username,email,gender,password, role);
+            return this.Login(email, password, role);
 
         }
 
