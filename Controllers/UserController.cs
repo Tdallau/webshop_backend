@@ -11,7 +11,7 @@ using webshop_backend;
 namespace webshop_backend.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize]
+    [Authorize(Roles="User")]
     [ApiController]
     public class UserController : ControllerBase
     {
