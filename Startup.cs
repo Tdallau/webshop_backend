@@ -73,10 +73,7 @@ namespace webshop_backend
 
             app.UseHttpsRedirection();
             app.UseCors("MyPolicy");
-<<<<<<< HEAD
             app.UseAuthentication();
-=======
->>>>>>> d1a5f2485cd095df9455d26dd4dcc3fc8a6519ed
             app.UseMvc();
         }
     }
