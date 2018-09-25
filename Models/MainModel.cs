@@ -9,7 +9,11 @@ namespace Models
   {
     //this is actual entity object linked to the test in our DB
     public DbSet<User> User { get; set; }
-    public DbSet<Addresses> Addresses { get; set; }
+    public DbSet<Address> Address { get; set; }
+    public DbSet<Order> Order { get; set; }
+    public DbSet<OrderProduct> OrderProduct { get; set; }
+    public DbSet<Product> Product { get; set; }
+    public DbSet<ProductDetail> ProductDetail { get; set; }
 
     //this method is run automatically by EF the first time we run the application
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder){
