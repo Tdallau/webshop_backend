@@ -1,3 +1,4 @@
 *.csv
 .appsettings.json
-./obj
+[Bb]in/
+[Oo]bj/
