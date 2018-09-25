@@ -1,4 +1,5 @@
-bin/*
+/obj/*
+/bin/*
 
 *.csv
 .appsettings.json
