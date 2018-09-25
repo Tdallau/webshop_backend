@@ -29,10 +29,10 @@ namespace Services
             return query.ToArray();
         }
 
-        public void InsertUser(string username, string email, string gender, string password, string role) {
+        public void InsertUser(string username, string email, string approach, string password, string role) {
 
             var salt = GetSalt();
-            var newUser = new User(){Name = username, Email = email, Gender = gender, Role = role, Password= GetHash(password + salt), Salt = salt};
+            var newUser = new User(){Name = username, Email = email, Approach = approach, Role = role, Password= GetHash(password + salt), Salt = salt};
             this.__context.Add(newUser);
             this.__context.SaveChanges();
         }
