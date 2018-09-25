@@ -1,0 +1,5 @@
+/bin/*
+/obj/*
+
+*.csv
+appsettings.json
