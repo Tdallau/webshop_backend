@@ -2,4 +2,5 @@
 /bin/*
 
 *.csv
-.appsettings.json
+MNRetailDatasetCSV_MNRetailDatasetCSV.csv
+appsettings.json
