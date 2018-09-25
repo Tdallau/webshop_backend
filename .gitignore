@@ -1,4 +1,4 @@
+bin/*
+
 *.csv
 .appsettings.json
-[Bb]in/
-[Oo]bj/
