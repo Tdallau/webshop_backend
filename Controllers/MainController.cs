@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Models;
+using webshop_backend;
 
 namespace webshop_backend.Controllers
 {
@@ -18,13 +21,9 @@ namespace webshop_backend.Controllers
 
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public ActionResult<string> Get()
         {
-            Test test = new Test(){text = "hallo"};
-
-            this.__context.Add(test);
-            this.__context.SaveChanges();
-            return new string[] { "value1", "value2" };
+            return "end";
         }
 
         // GET api/values/5
@@ -32,12 +31,6 @@ namespace webshop_backend.Controllers
         public ActionResult<string> Get(int id)
         {
             return "value";
-        }
-
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
         }
 
     }
