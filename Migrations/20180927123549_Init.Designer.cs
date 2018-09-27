@@ -8,8 +8,8 @@ using Models;
 namespace webshop_backend.Migrations
 {
     [DbContext(typeof(MainContext))]
-    [Migration("20180925192836_SingleForm")]
-    partial class SingleForm
+    [Migration("20180927123549_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -83,7 +83,7 @@ namespace webshop_backend.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Minunit");
+                    b.Property<string>("MinUnit");
 
                     b.Property<string>("Name");
 
