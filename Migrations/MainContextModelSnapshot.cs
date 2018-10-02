@@ -80,13 +80,11 @@ namespace webshop_backend.Migrations
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("colorid");
+                    b.Property<int>("color");
 
                     b.Property<string>("productId");
 
                     b.HasKey("id");
-
-                    b.HasIndex("colorid");
 
                     b.HasIndex("productId");
 
@@ -309,10 +307,6 @@ namespace webshop_backend.Migrations
 
             modelBuilder.Entity("Models.Colors", b =>
                 {
-                    b.HasOne("Models.Colors", "color")
-                        .WithMany()
-                        .HasForeignKey("colorid");
-
                     b.HasOne("Models.Product")
                         .WithMany("colors")
                         .HasForeignKey("productId");

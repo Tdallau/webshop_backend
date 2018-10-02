@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace webshop_backend.Migrations
 {
-    public partial class CompleteCardDatabase : Migration
+    public partial class compledDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -59,17 +59,11 @@ namespace webshop_backend.Migrations
                     id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     productId = table.Column<string>(nullable: true),
-                    colorid = table.Column<int>(nullable: true)
+                    color = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Colors", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_Colors_Colors_colorid",
-                        column: x => x.colorid,
-                        principalTable: "Colors",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Colors_Product_productId",
                         column: x => x.productId,
@@ -296,11 +290,6 @@ namespace webshop_backend.Migrations
                 name: "IX_ColorIdentity_productId",
                 table: "ColorIdentity",
                 column: "productId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Colors_colorid",
-                table: "Colors",
-                column: "colorid");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Colors_productId",

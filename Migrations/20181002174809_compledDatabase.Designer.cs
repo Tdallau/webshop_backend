@@ -9,8 +9,8 @@ using Models;
 namespace webshop_backend.Migrations
 {
     [DbContext(typeof(MainContext))]
-    [Migration("20181002125941_CompleteCardDatabase")]
-    partial class CompleteCardDatabase
+    [Migration("20181002174809_compledDatabase")]
+    partial class compledDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -82,13 +82,11 @@ namespace webshop_backend.Migrations
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("colorid");
+                    b.Property<int>("color");
 
                     b.Property<string>("productId");
 
                     b.HasKey("id");
-
-                    b.HasIndex("colorid");
 
                     b.HasIndex("productId");
 
@@ -311,10 +309,6 @@ namespace webshop_backend.Migrations
 
             modelBuilder.Entity("Models.Colors", b =>
                 {
-                    b.HasOne("Models.Colors", "color")
-                        .WithMany()
-                        .HasForeignKey("colorid");
-
                     b.HasOne("Models.Product")
                         .WithMany("colors")
                         .HasForeignKey("productId");

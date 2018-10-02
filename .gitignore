@@ -4,3 +4,4 @@
 *.csv
 MNRetailDatasetCSV_MNRetailDatasetCSV.csv
 appsettings.json
+appsettings.Development.json
