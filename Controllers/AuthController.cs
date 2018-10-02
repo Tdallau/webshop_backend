@@ -27,10 +27,10 @@ namespace webshop_backend.Controllers
             var userIdArray = this.userServices.IsValidUserAndPasswordCombination(username, password);
             
             if (userIdArray.Length == 1) {
-                var userId = userIdArray[0].Id;
+                var userId = userIdArray[0].id;
                 var user = this.userServices.getUser(userId);
-                var token = this.userServices.GenerateToken(user.Email,user.Role);
-                return new {user.Email, user.Approach, user.Name, user.Addresses, user.Role, token};
+                var token = this.userServices.GenerateToken(user.email,user.role);
+                return new {user.email, user.approach, user.name, user.addresses, user.role, token};
             }
             return BadRequest();
         }

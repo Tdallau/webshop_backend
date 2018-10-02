@@ -23,7 +23,7 @@ namespace Services
         {
 
             var query = from user in this.__context.User
-                        where user.Email == username && user.Password == GetHash(password + user.Salt)
+                        where user.email == username && user.password == GetHash(password + user.salt)
                         select user;
 
             return query.ToArray();
@@ -32,7 +32,7 @@ namespace Services
         public void InsertUser(string username, string email, string approach, string password, string role) {
 
             var salt = GetSalt();
-            var newUser = new User(){Name = username, Email = email, Approach = approach, Role = role, Password= GetHash(password + salt), Salt = salt};
+            var newUser = new User(){name = username, email = email, approach = approach, role = role, password= GetHash(password + salt), salt = salt};
             this.__context.Add(newUser);
             this.__context.SaveChanges();
         }
@@ -40,7 +40,7 @@ namespace Services
         public User getUser(int userId) {
 
             var query = from user in this.__context.User
-                        where user.Id == userId
+                        where user.id == userId
                         select user;
 
             return query.ToArray()[0];
