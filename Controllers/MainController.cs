@@ -20,10 +20,20 @@ namespace webshop_backend.Controllers
         }
 
         // GET api/values
-        [HttpGet]
-        public ActionResult<string> Get()
+        [HttpPost]
+        public ActionResult<int> Post(string token)
         {
-            return "end";
+            if(token != null && token != "") {
+                var query = from user in this.__context.User
+                            where user.token == token
+                            select user.id;
+                var userId = query.ToArray();
+                if(userId.Length == 1) {
+                    return userId[0];
+                }
+                return -1;
+            }
+            return -1;
         }
 
         // GET api/values/5

@@ -30,6 +30,9 @@ namespace webshop_backend.Controllers
                 var userId = userIdArray[0].id;
                 var user = this.userServices.getUser(userId);
                 var token = this.userServices.GenerateToken(user.email,user.role);
+
+                this.userServices.UpdateUserToken(userId,token);
+
                 return new {user.email, user.approach, user.name, user.addresses, user.role, token};
             }
             return BadRequest();

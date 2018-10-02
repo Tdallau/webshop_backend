@@ -85,8 +85,13 @@ namespace Services
             }
         }
 
-        public string test(string password) {
-            return this.GetHash(password + this.GetSalt());
+        public void UpdateUserToken(int id, string token) {
+            var entity = this.__context.User.FirstOrDefault(u => u.id == id);
+            if(entity != null) {
+                entity.token = token;
+                this.__context.Update(entity);
+                this.__context.SaveChanges();
+            }
         }
     }
     
