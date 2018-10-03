@@ -1,9 +1,9 @@
-namespace Models
+namespace Tabels
 {
-    public class ColocolorIndicator {
+    public class Colors {
         public int id {get; set;}
         public string productId {get; set;}
-        public Colors color {get; set;}
+        public int colorId {get; set;}
         
     }
 }

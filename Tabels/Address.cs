@@ -1,5 +1,5 @@
 
-namespace Models
+namespace Tabels
 {
     public class Address {
         public int Id {get; set;}

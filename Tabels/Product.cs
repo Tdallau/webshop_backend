@@ -1,7 +1,7 @@
 
 using System.Collections.Generic;
 
-namespace Models
+namespace Tabels
 {
     public class Product {
         public string id {get; set;}
@@ -26,7 +26,7 @@ namespace Models
         public List<Parts> all_parts {get; set; } 
         public List<Colors> colors {get; set;}
         public List<ColorIdentity> color_identity {get; set;}
-        public List<ColocolorIndicator> color_indicator {get; set;}
+        public List<ColorIndicator> color_indicator {get; set;}
         
     }
 }

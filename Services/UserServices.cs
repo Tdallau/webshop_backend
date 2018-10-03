@@ -6,7 +6,8 @@ using System.Text;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using Models;
+using Tabels;
+using Contexts;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 
@@ -29,15 +30,22 @@ namespace Services
             return query.ToArray();
         }
 
-        public void InsertUser(string username, string email, string approach, string password, string role) {
+        public bool InsertUser(string username, string email, string approach, string password, string role)
+        {
 
-            var salt = GetSalt();
-            var newUser = new User(){name = username, email = email, approach = approach, role = role, password= GetHash(password + salt), salt = salt};
-            this.__context.Add(newUser);
-            this.__context.SaveChanges();
+            if (this.CheckEmail(email))
+            {
+                var salt = GetSalt();
+                var newUser = new User() { name = username, email = email, approach = approach, role = role, password = GetHash(password + salt), salt = salt };
+                this.__context.Add(newUser);
+                this.__context.SaveChanges();
+                return true;
+            }
+            return false;
         }
 
-        public User getUser(int userId) {
+        public User getUser(int userId)
+        {
 
             var query = from user in this.__context.User
                         where user.id == userId
@@ -85,15 +93,28 @@ namespace Services
             }
         }
 
-        public void UpdateUserToken(int id, string token) {
+        private bool CheckEmail(string email)
+        {
+            var query = from user in this.__context.User
+                        where user.email == email
+                        select user.id;
+            if(query.ToArray().Length != 0) {
+                return false;
+            }
+            return true;
+        }
+
+        public void UpdateUserToken(int id, string token)
+        {
             var entity = this.__context.User.FirstOrDefault(u => u.id == id);
-            if(entity != null) {
+            if (entity != null)
+            {
                 entity.token = token;
                 this.__context.Update(entity);
                 this.__context.SaveChanges();
             }
         }
     }
-    
+
 
 }

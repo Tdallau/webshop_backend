@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Models;
+using Contexts;
 using Services;
 using webshop_backend;
 
@@ -22,9 +23,9 @@ namespace webshop_backend.Controllers
 
         [Route("[controller]/login")]
         [HttpPost]
-        public Object Login(string username, string password, string role)
+        public Object Login([FromBody] LoginData loginData)
         {
-            var userIdArray = this.userServices.IsValidUserAndPasswordCombination(username, password);
+            var userIdArray = this.userServices.IsValidUserAndPasswordCombination(loginData.email, loginData.password);
             
             if (userIdArray.Length == 1) {
                 var userId = userIdArray[0].id;
@@ -35,16 +36,21 @@ namespace webshop_backend.Controllers
 
                 return new {user.email, user.approach, user.name, user.addresses, user.role, token};
             }
-            return BadRequest();
+            return userIdArray;
         }
 
         [Route("[controller]/register")]
         [HttpPost]
-        public Object Register(string username, string email, string gender, string password, string role)
+        public Object Register([FromBody] LoginData loginData)
         {
-            if (role == null) role = "User"; 
-            this.userServices.InsertUser(username,email,gender,password, role);
-            return this.Login(email, password, role);
+            // return loginData;
+            if (loginData.role == null) loginData.role = "User"; 
+            var success = this.userServices.InsertUser(loginData.username,loginData.email,loginData.approach,loginData.password, loginData.role);
+            if(success) {
+                return this.Login(loginData);
+            }
+            return Unauthorized();
+            
 
         }
 

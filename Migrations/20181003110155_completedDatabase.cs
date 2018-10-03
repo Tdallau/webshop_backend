@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace webshop_backend.Migrations
 {
-    public partial class compledDatabase : Migration
+    public partial class completedDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -45,11 +45,52 @@ namespace webshop_backend.Migrations
                     approach = table.Column<string>(nullable: true),
                     role = table.Column<string>(nullable: true),
                     password = table.Column<string>(nullable: true),
-                    salt = table.Column<string>(nullable: true)
+                    salt = table.Column<string>(nullable: true),
+                    token = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_User", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ColocolorIndicator",
+                columns: table => new
+                {
+                    id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    productId = table.Column<string>(nullable: true),
+                    colorId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ColocolorIndicator", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_ColocolorIndicator_Product_productId",
+                        column: x => x.productId,
+                        principalTable: "Product",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ColorIdentity",
+                columns: table => new
+                {
+                    id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    productId = table.Column<string>(nullable: true),
+                    colorId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ColorIdentity", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_ColorIdentity_Product_productId",
+                        column: x => x.productId,
+                        principalTable: "Product",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -59,7 +100,7 @@ namespace webshop_backend.Migrations
                     id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     productId = table.Column<string>(nullable: true),
-                    color = table.Column<int>(nullable: false)
+                    colorId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -193,58 +234,6 @@ namespace webshop_backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ColocolorIndicator",
-                columns: table => new
-                {
-                    id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    productId = table.Column<string>(nullable: true),
-                    colorid = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ColocolorIndicator", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_ColocolorIndicator_Colors_colorid",
-                        column: x => x.colorid,
-                        principalTable: "Colors",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_ColocolorIndicator_Product_productId",
-                        column: x => x.productId,
-                        principalTable: "Product",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ColorIdentity",
-                columns: table => new
-                {
-                    id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    productId = table.Column<string>(nullable: true),
-                    colorid = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ColorIdentity", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_ColorIdentity_Colors_colorid",
-                        column: x => x.colorid,
-                        principalTable: "Colors",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_ColorIdentity_Product_productId",
-                        column: x => x.productId,
-                        principalTable: "Product",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "OrderProduct",
                 columns: table => new
                 {
@@ -272,19 +261,9 @@ namespace webshop_backend.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ColocolorIndicator_colorid",
-                table: "ColocolorIndicator",
-                column: "colorid");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ColocolorIndicator_productId",
                 table: "ColocolorIndicator",
                 column: "productId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ColorIdentity_colorid",
-                table: "ColorIdentity",
-                column: "colorid");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ColorIdentity_productId",
@@ -336,6 +315,9 @@ namespace webshop_backend.Migrations
                 name: "ColorIdentity");
 
             migrationBuilder.DropTable(
+                name: "Colors");
+
+            migrationBuilder.DropTable(
                 name: "ImagesUrl");
 
             migrationBuilder.DropTable(
@@ -346,9 +328,6 @@ namespace webshop_backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "Parts");
-
-            migrationBuilder.DropTable(
-                name: "Colors");
 
             migrationBuilder.DropTable(
                 name: "Order");

@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using Models;
+using Tabels;
 using webshop_backend;
 
-namespace Models
+namespace Contexts
 {
     public class MainContext : DbContext
     {
@@ -15,9 +15,8 @@ namespace Models
         public DbSet<Product> Product { get; set; }
         public DbSet<Parts> Parts { get; set; }
         public DbSet<Legalitie> Legalitie { get; set; }
-        public DbSet<ColocolorIndicator> ColocolorIndicator { get; set; }
+        public DbSet<ColorIndicator> ColocolorIndicator { get; set; }
         public DbSet<ColorIdentity> ColorIdentity { get; set; }
-        public DbSet<Colors> Colors { get; set; }
         public DbSet<ImagesUrl> ImagesUrl { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

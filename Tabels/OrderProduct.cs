@@ -1,5 +1,5 @@
 
-namespace Models
+namespace Tabels
 {
     public class OrderProduct {
         public int id {get; set;}

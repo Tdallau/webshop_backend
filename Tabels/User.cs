@@ -1,7 +1,7 @@
 
 using System.Collections.Generic;
 
-namespace Models
+namespace Tabels
 {
     public class User {
         public int id {get; set;}

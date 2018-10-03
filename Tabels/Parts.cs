@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Models
+namespace Tabels
 {
     public class Parts {
         public int id {get; set;}

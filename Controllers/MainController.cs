@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Models;
+using Contexts;
 using webshop_backend;
 
 namespace webshop_backend.Controllers
@@ -21,7 +22,7 @@ namespace webshop_backend.Controllers
 
         // GET api/values
         [HttpPost]
-        public ActionResult<int> Post(string token)
+        public ActionResult<int> Post([FromBody] string token)
         {
             if(token != null && token != "") {
                 var query = from user in this.__context.User
