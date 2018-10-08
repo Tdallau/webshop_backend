@@ -1,7 +1,7 @@
 
 using System.Collections.Generic;
 
-namespace Tabels
+namespace Models.DB
 {
     public class Legalitie {
         public int id {get; set;}

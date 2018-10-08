@@ -1,7 +1,7 @@
 
 using System.Collections.Generic;
 
-namespace Tabels
+namespace Models.DB
 {
     public class Product {
         public string id {get; set;}

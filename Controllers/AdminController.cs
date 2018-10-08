@@ -16,9 +16,9 @@ namespace webshop_backend.Controllers
     [ApiController]
     public class AdminController : ControllerBase
     {
-        private MainContext __context;
-        public AdminController (){
-            this.__context = new MainContext();
+        private readonly MainContext __context;
+        public AdminController (MainContext context){
+            this.__context = context;
         }
 
         // GET api/values

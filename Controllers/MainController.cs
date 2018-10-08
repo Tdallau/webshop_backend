@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Models;
+using Models.DB;
 using Contexts;
 using webshop_backend;
+using Models;
 
 namespace webshop_backend.Controllers
 {
@@ -15,9 +17,9 @@ namespace webshop_backend.Controllers
     [ApiController]
     public class MainController : ControllerBase
     {
-        private MainContext __context;
-        public MainController (){
-            this.__context = new MainContext();
+        private readonly MainContext __context;
+        public MainController (MainContext context){
+            this.__context = context;
         }
 
         // GET api/values
@@ -38,10 +40,20 @@ namespace webshop_backend.Controllers
         }
 
         // GET api/values/5
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        [HttpPost("getProducts")]
+        public IActionResult Get(int page_size, int page_index)
         {
-            return "value";
+
+            var query = from product in this.__context.Product
+                        /*from colorIdentity in this.__context.ColorIdentity
+                        from colorIndicator in this.__context.ColocolorIndicator
+                        from parts in this.__context.Parts*/
+                        /*where legalitie.productId == product.id && parts.partOneId == product.id
+                              && colorIdentity.productId == product.id */
+                        select product;
+                                    /*parts, colorIdentity, colorIndicator*/
+            
+            return Ok(query.Skip(page_size * (page_index -1)).Take(page_size));
         }
 
     }

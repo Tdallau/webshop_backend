@@ -1,12 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using Tabels;
+using Models.DB;
 using webshop_backend;
 
 namespace Contexts
 {
     public class MainContext : DbContext
     {
+        public MainContext(DbContextOptions<MainContext> options): base(options)
+        {
+        }
         //this is actual entity object linked to the test in our DB
         public DbSet<User> User { get; set; }
         public DbSet<Address> Address { get; set; }
@@ -25,14 +28,6 @@ namespace Contexts
                 .HasOne(p => p.partOne)
                 .WithMany(b => b.all_parts)
                 .HasForeignKey(p => p.partOneId);
-        }
-
-        //this method is run automatically by EF the first time we run the application
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-
-            //here we define the name of our database
-            optionsBuilder.UseMySql(ConfigurationManager.AppSetting["DBConectionString"]);
         }
     }
 }

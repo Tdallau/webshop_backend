@@ -16,9 +16,9 @@ namespace webshop_backend.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private MainContext __context;
-        public UserController (){
-            this.__context = new MainContext();
+        private readonly MainContext __context;
+        public UserController (MainContext context){
+            this.__context = context;
         }
 
         // GET api/values

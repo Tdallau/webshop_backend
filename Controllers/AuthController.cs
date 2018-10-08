@@ -14,11 +14,11 @@ namespace webshop_backend.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private MainContext __context;
+        private readonly MainContext __context;
         private UserServices userServices;
-        public AuthController (){
-            this.__context = new MainContext();
-            this.userServices = new UserServices();
+        public AuthController (MainContext context){
+            this.__context = context;
+            this.userServices = new UserServices(this.__context);
         }
 
         [Route("[controller]/login")]

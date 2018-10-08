@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace webshop_backend.Migrations
 {
     [DbContext(typeof(MainContext))]
-    [Migration("20181003110155_completedDatabase")]
-    partial class completedDatabase
+    [Migration("20181004221233_test")]
+    partial class test
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -18,7 +18,7 @@ namespace webshop_backend.Migrations
                 .HasAnnotation("ProductVersion", "2.1.3-rtm-32065")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("Models.Address", b =>
+            modelBuilder.Entity("Models.DB.Address", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -40,7 +40,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("Address");
                 });
 
-            modelBuilder.Entity("Models.ColorIdentity", b =>
+            modelBuilder.Entity("Models.DB.ColorIdentity", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
@@ -56,7 +56,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("ColorIdentity");
                 });
 
-            modelBuilder.Entity("Models.ColorIndicator", b =>
+            modelBuilder.Entity("Models.DB.ColorIndicator", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
@@ -72,7 +72,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("ColocolorIndicator");
                 });
 
-            modelBuilder.Entity("Models.Colors", b =>
+            modelBuilder.Entity("Models.DB.Colors", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
@@ -88,7 +88,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("Colors");
                 });
 
-            modelBuilder.Entity("Models.ImagesUrl", b =>
+            modelBuilder.Entity("Models.DB.ImagesUrl", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
@@ -115,7 +115,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("ImagesUrl");
                 });
 
-            modelBuilder.Entity("Models.Legalitie", b =>
+            modelBuilder.Entity("Models.DB.Legalitie", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
@@ -154,7 +154,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("Legalitie");
                 });
 
-            modelBuilder.Entity("Models.Order", b =>
+            modelBuilder.Entity("Models.DB.Order", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
@@ -172,7 +172,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("Order");
                 });
 
-            modelBuilder.Entity("Models.OrderProduct", b =>
+            modelBuilder.Entity("Models.DB.OrderProduct", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
@@ -192,7 +192,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("OrderProduct");
                 });
 
-            modelBuilder.Entity("Models.Parts", b =>
+            modelBuilder.Entity("Models.DB.Parts", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
@@ -208,7 +208,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("Parts");
                 });
 
-            modelBuilder.Entity("Models.Product", b =>
+            modelBuilder.Entity("Models.DB.Product", b =>
                 {
                     b.Property<string>("id")
                         .ValueGeneratedOnAdd();
@@ -250,7 +250,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("Product");
                 });
 
-            modelBuilder.Entity("Models.User", b =>
+            modelBuilder.Entity("Models.DB.User", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
@@ -274,68 +274,68 @@ namespace webshop_backend.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("Models.Address", b =>
+            modelBuilder.Entity("Models.DB.Address", b =>
                 {
-                    b.HasOne("Models.User")
+                    b.HasOne("Models.DB.User")
                         .WithMany("addresses")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Models.ColorIdentity", b =>
+            modelBuilder.Entity("Models.DB.ColorIdentity", b =>
                 {
-                    b.HasOne("Models.Product")
+                    b.HasOne("Models.DB.Product")
                         .WithMany("color_identity")
                         .HasForeignKey("productId");
                 });
 
-            modelBuilder.Entity("Models.ColorIndicator", b =>
+            modelBuilder.Entity("Models.DB.ColorIndicator", b =>
                 {
-                    b.HasOne("Models.Product")
+                    b.HasOne("Models.DB.Product")
                         .WithMany("color_indicator")
                         .HasForeignKey("productId");
                 });
 
-            modelBuilder.Entity("Models.Colors", b =>
+            modelBuilder.Entity("Models.DB.Colors", b =>
                 {
-                    b.HasOne("Models.Product")
+                    b.HasOne("Models.DB.Product")
                         .WithMany("colors")
                         .HasForeignKey("productId");
                 });
 
-            modelBuilder.Entity("Models.ImagesUrl", b =>
+            modelBuilder.Entity("Models.DB.ImagesUrl", b =>
                 {
-                    b.HasOne("Models.Product")
+                    b.HasOne("Models.DB.Product")
                         .WithOne("image_uris")
-                        .HasForeignKey("Models.ImagesUrl", "productId");
+                        .HasForeignKey("Models.DB.ImagesUrl", "productId");
                 });
 
-            modelBuilder.Entity("Models.Legalitie", b =>
+            modelBuilder.Entity("Models.DB.Legalitie", b =>
                 {
-                    b.HasOne("Models.Product")
+                    b.HasOne("Models.DB.Product")
                         .WithOne("legalities")
-                        .HasForeignKey("Models.Legalitie", "productId");
+                        .HasForeignKey("Models.DB.Legalitie", "productId");
                 });
 
-            modelBuilder.Entity("Models.Order", b =>
+            modelBuilder.Entity("Models.DB.Order", b =>
                 {
-                    b.HasOne("Models.User")
+                    b.HasOne("Models.DB.User")
                         .WithMany("orders")
                         .HasForeignKey("userId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Models.OrderProduct", b =>
+            modelBuilder.Entity("Models.DB.OrderProduct", b =>
                 {
-                    b.HasOne("Models.Order")
+                    b.HasOne("Models.DB.Order")
                         .WithMany("orderProducts")
                         .HasForeignKey("orderId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Models.Parts", b =>
+            modelBuilder.Entity("Models.DB.Parts", b =>
                 {
-                    b.HasOne("Models.Product", "partOne")
+                    b.HasOne("Models.DB.Product", "partOne")
                         .WithMany("all_parts")
                         .HasForeignKey("partOneId");
                 });

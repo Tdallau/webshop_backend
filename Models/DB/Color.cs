@@ -1,4 +1,4 @@
-namespace Tabels
+namespace Models.DB
 {
     public class Color {
         public int id {get; set;}
