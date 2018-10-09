@@ -33,7 +33,8 @@ namespace webshop_backend
             {
                 builder.AllowAnyOrigin()
                     .AllowAnyMethod()
-                    .AllowAnyHeader();
+                    .AllowAnyHeader()
+                    .AllowCredentials();
             }));
 
             services.AddDbContext<MainContext> (

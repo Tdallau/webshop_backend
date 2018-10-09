@@ -21,14 +21,28 @@ namespace Services
         {
             this.__context = context;
         }
-        public User[] IsValidUserAndPasswordCombination(string username, string password)
+        public User IsValidUserAndPasswordCombination(string email, string password)
         {
 
             var query = from user in this.__context.User
-                        where user.email == username && user.password == GetHash(password + user.salt)
+                        where user.email == email 
                         select user;
-
-            return query.ToArray();
+            try
+            {
+                Console.WriteLine(email);
+                var curUser = query.First();
+                if(curUser != null){
+                    if(curUser.password == GetHash(password + curUser.salt)){
+                        return curUser;
+                    }
+                } 
+            }
+            catch (System.InvalidOperationException)
+            {
+                return null;
+            }
+            
+            return null;
         }
 
         public bool InsertUser(string username, string email, string approach, string password, string role)

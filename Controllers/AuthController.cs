@@ -14,12 +14,10 @@ namespace webshop_backend.Controllers
 {
     [EnableCors("MyPolicy")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthController : BasicController
     {
-        private readonly MainContext __context;
         private UserServices userServices;
-        public AuthController (MainContext context){
-            this.__context = context;
+        public AuthController (MainContext context) : base(context){
             this.userServices = new UserServices(this.__context);
         }
 
@@ -27,18 +25,16 @@ namespace webshop_backend.Controllers
         [HttpPost]
         public Object Login([FromBody] LoginData loginData)
         {
-            var userIdArray = this.userServices.IsValidUserAndPasswordCombination(loginData.email, loginData.password);
+            var user = this.userServices.IsValidUserAndPasswordCombination(loginData.email, loginData.password);
             
-            if (userIdArray.Length == 1) {
-                var userId = userIdArray[0].id;
-                var user = this.userServices.getUser(userId);
+            if (user != null) {
+                var userId = user.id;
                 var token = this.userServices.GenerateToken(user.email,user.role);
 
                 this.userServices.UpdateUserToken(userId,token);
-
-                return new {user.email, user.approach, user.name, user.addresses, user.role, token};
+                return this.CreateResponseUsingUserId<SucccessFullyLoggedIn>(new SucccessFullyLoggedIn(token,userId),userId);
             }
-            return userIdArray;
+            return this.createResponse<SucccessFullyLoggedIn>(null,null);
         }
 
         [Route("[controller]/register")]
@@ -55,6 +51,16 @@ namespace webshop_backend.Controllers
             
 
         }
-
+    }
+    public class SucccessFullyLoggedIn
+    {
+        public string Token {get;}
+        public int Id {get;}
+        public SucccessFullyLoggedIn(){}
+        public SucccessFullyLoggedIn(string token, int id)
+        {
+            this.Token = token;
+            this.Id = id;
+        }
     }
 }

@@ -17,28 +17,14 @@ namespace webshop_backend.Controllers
     [EnableCors("MyPolicy")]
     [Route("api/[controller]")]
     [ApiController]
-    public class MainController : ControllerBase
+    public class MainController : BasicController
     {
-        private readonly MainContext __context;
-        public MainController (MainContext context){
-            this.__context = context;
-        }
-
+        public MainController (MainContext context) : base(context){}
         // GET api/values
         [HttpPost]
-        public ActionResult<int> Post([FromBody] string token)
+        public IActionResult Post([FromBody] string token)
         {
-            if(token != null && token != "") {
-                var query = from user in this.__context.User
-                            where user.token == token
-                            select user.id;
-                var userId = query.ToArray();
-                if(userId.Length == 1) {
-                    return userId[0];
-                }
-                return -1;
-            }
-            return -1;
+            return this.createResponse<Test>(new Test("test"), token);; 
         }
 
         // GET api/values/5
@@ -57,6 +43,14 @@ namespace webshop_backend.Controllers
             
             return Ok(query.Skip(page_size * (page_index -1)).Take(page_size));
         }
-
+    }
+    public class Test
+    {
+        public string Data {get;}
+        public Test(){}
+        public Test(string data)
+        {
+            this.Data =data;
+        }
     }
 }

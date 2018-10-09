@@ -16,12 +16,9 @@ namespace webshop_backend.Controllers
     [Route("api/[controller]")]
     [Authorize(Roles="Admin")]
     [ApiController]
-    public class AdminController : ControllerBase
+    public class AdminController : BasicController
     {
-        private readonly MainContext __context;
-        public AdminController (MainContext context){
-            this.__context = context;
-        }
+        public AdminController (MainContext context) : base(context){}
 
         // GET api/values
         [HttpGet]
