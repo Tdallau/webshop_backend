@@ -8,9 +8,11 @@ using Models;
 using Contexts;
 using Services;
 using webshop_backend;
+using Microsoft.AspNetCore.Cors;
 
 namespace webshop_backend.Controllers
 {
+    [EnableCors("MyPolicy")]
     [ApiController]
     public class AuthController : ControllerBase
     {

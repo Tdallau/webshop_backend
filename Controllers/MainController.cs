@@ -10,9 +10,11 @@ using Models.DB;
 using Contexts;
 using webshop_backend;
 using Models;
+using Microsoft.AspNetCore.Cors;
 
 namespace webshop_backend.Controllers
 {
+    [EnableCors("MyPolicy")]
     [Route("api/[controller]")]
     [ApiController]
     public class MainController : ControllerBase

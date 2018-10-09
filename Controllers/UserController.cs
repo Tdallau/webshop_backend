@@ -8,9 +8,11 @@ using Microsoft.Extensions.Configuration;
 using Models;
 using Contexts;
 using webshop_backend;
+using Microsoft.AspNetCore.Cors;
 
 namespace webshop_backend.Controllers
 {
+    [EnableCors("MyPolicy")]
     [Route("api/[controller]")]
     [Authorize(Roles="User")]
     [ApiController]
