@@ -25,7 +25,7 @@ namespace webshop_backend.Controllers
         public Object Login(string username, string password, string role)
         {
             var userIdArray = this.userServices.IsValidUserAndPasswordCombination(username, password);
-            
+
             if (userIdArray.Length == 1) {
                 var userId = userIdArray[0].id;
                 var user = this.userServices.getUser(userId);

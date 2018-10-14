@@ -1,9 +1,11 @@
 
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Models
 {
     public class Product {
+        [MaxLength(36)]
         public string id {get; set;}
         public string lang {get; set;}
         public string oracle_id {get; set;}
@@ -25,8 +27,8 @@ namespace Models
         public string setName {get; set;}
         public List<Parts> all_parts {get; set; } 
         public List<Colors> colors {get; set;}
-        public List<ColorIdentity> color_identity {get; set;}
-        public List<ColocolorIndicator> color_indicator {get; set;}
+        public Colors color_identity {get; set;}
+        public Colors color_indicator {get; set;}
         
     }
 }
