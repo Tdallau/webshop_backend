@@ -7,6 +7,10 @@ namespace Contexts
 {
     public class MainContext : DbContext
     {
+        public MainContext()
+        {
+        }
+
         public MainContext(DbContextOptions<MainContext> options): base(options)
         {
         }
