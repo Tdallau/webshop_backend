@@ -22,7 +22,7 @@ namespace webshop_backend.Controllers
         public MainController (MainContext context) : base(context){}
         // GET api/values
         [HttpPost]
-        public IActionResult Post([FromBody] string token)
+        public IActionResult Post()
         {
             return this.createResponse<Test>(new Test("test"));; 
         }
