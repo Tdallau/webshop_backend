@@ -3,10 +3,38 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace webshop_backend.Migrations
 {
-    public partial class splitCards : Migration
+    public partial class dinges : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "ColocolorIndicator",
+                columns: table => new
+                {
+                    id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    productId = table.Column<string>(nullable: true),
+                    colorId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ColocolorIndicator", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ColorIdentity",
+                columns: table => new
+                {
+                    id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    productId = table.Column<string>(nullable: true),
+                    colorId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ColorIdentity", x => x.id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "PrintFace",
                 columns: table => new
@@ -32,7 +60,8 @@ namespace webshop_backend.Migrations
                     approach = table.Column<string>(nullable: true),
                     role = table.Column<string>(nullable: true),
                     password = table.Column<string>(nullable: true),
-                    salt = table.Column<string>(nullable: true)
+                    salt = table.Column<string>(nullable: true),
+                    token = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -592,7 +621,13 @@ namespace webshop_backend.Migrations
                 name: "Address");
 
             migrationBuilder.DropTable(
+                name: "ColocolorIndicator");
+
+            migrationBuilder.DropTable(
                 name: "Color");
+
+            migrationBuilder.DropTable(
+                name: "ColorIdentity");
 
             migrationBuilder.DropTable(
                 name: "OrderProduct");

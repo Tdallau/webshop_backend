@@ -34,7 +34,7 @@ namespace webshop_backend.Controllers
                 this.userServices.UpdateUserToken(userId,token);
                 return this.CreateResponseUsingUserId<SucccessFullyLoggedIn>(new SucccessFullyLoggedIn(token,userId),userId);
             }
-            return this.createResponse<SucccessFullyLoggedIn>(null,null);
+            return this.createResponse<SucccessFullyLoggedIn>(null);
         }
 
         [Route("[controller]/register")]

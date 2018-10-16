@@ -5,22 +5,21 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Models;
 
 namespace webshop_backend.Migrations
 {
     [DbContext(typeof(MainContext))]
-    [Migration("20181014155021_splitCards")]
-    partial class splitCards
+    [Migration("20181016122913_dinges")]
+    partial class dinges
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
+                .HasAnnotation("ProductVersion", "2.1.3-rtm-32065")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("Models.Address", b =>
+            modelBuilder.Entity("Models.DB.Address", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -42,7 +41,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("Address");
                 });
 
-            modelBuilder.Entity("Models.Card", b =>
+            modelBuilder.Entity("Models.DB.Card", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -67,7 +66,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("Card");
                 });
 
-            modelBuilder.Entity("Models.CardFace", b =>
+            modelBuilder.Entity("Models.DB.CardFace", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
@@ -97,7 +96,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("CardFaces");
                 });
 
-            modelBuilder.Entity("Models.Color", b =>
+            modelBuilder.Entity("Models.DB.Color", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -117,7 +116,35 @@ namespace webshop_backend.Migrations
                     b.ToTable("Color");
                 });
 
-            modelBuilder.Entity("Models.Colors", b =>
+            modelBuilder.Entity("Models.DB.ColorIdentity", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("colorId");
+
+                    b.Property<string>("productId");
+
+                    b.HasKey("id");
+
+                    b.ToTable("ColorIdentity");
+                });
+
+            modelBuilder.Entity("Models.DB.ColorIndicator", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("colorId");
+
+                    b.Property<string>("productId");
+
+                    b.HasKey("id");
+
+                    b.ToTable("ColocolorIndicator");
+                });
+
+            modelBuilder.Entity("Models.DB.Colors", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
@@ -131,7 +158,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("Colors");
                 });
 
-            modelBuilder.Entity("Models.ImagesUrl", b =>
+            modelBuilder.Entity("Models.DB.ImagesUrl", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
@@ -157,7 +184,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("ImagesUrl");
                 });
 
-            modelBuilder.Entity("Models.Legalitie", b =>
+            modelBuilder.Entity("Models.DB.Legalitie", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
@@ -196,7 +223,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("Legalitie");
                 });
 
-            modelBuilder.Entity("Models.Order", b =>
+            modelBuilder.Entity("Models.DB.Order", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
@@ -214,7 +241,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("Order");
                 });
 
-            modelBuilder.Entity("Models.OrderProduct", b =>
+            modelBuilder.Entity("Models.DB.OrderProduct", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
@@ -234,7 +261,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("OrderProduct");
                 });
 
-            modelBuilder.Entity("Models.Parts", b =>
+            modelBuilder.Entity("Models.DB.Parts", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
@@ -256,7 +283,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("Parts");
                 });
 
-            modelBuilder.Entity("Models.Print", b =>
+            modelBuilder.Entity("Models.DB.Print", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -289,7 +316,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("Print");
                 });
 
-            modelBuilder.Entity("Models.PrintFace", b =>
+            modelBuilder.Entity("Models.DB.PrintFace", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
@@ -303,7 +330,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("PrintFace");
                 });
 
-            modelBuilder.Entity("Models.Product", b =>
+            modelBuilder.Entity("Models.DB.Product", b =>
                 {
                     b.Property<string>("id")
                         .ValueGeneratedOnAdd()
@@ -358,7 +385,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("Product");
                 });
 
-            modelBuilder.Entity("Models.Set", b =>
+            modelBuilder.Entity("Models.DB.Set", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -389,7 +416,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("Set");
                 });
 
-            modelBuilder.Entity("Models.Type", b =>
+            modelBuilder.Entity("Models.DB.Type", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
@@ -405,7 +432,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("Types");
                 });
 
-            modelBuilder.Entity("Models.User", b =>
+            modelBuilder.Entity("Models.DB.User", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
@@ -422,140 +449,142 @@ namespace webshop_backend.Migrations
 
                     b.Property<string>("salt");
 
+                    b.Property<string>("token");
+
                     b.HasKey("id");
 
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("Models.Address", b =>
+            modelBuilder.Entity("Models.DB.Address", b =>
                 {
-                    b.HasOne("Models.User")
+                    b.HasOne("Models.DB.User")
                         .WithMany("addresses")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Models.Card", b =>
+            modelBuilder.Entity("Models.DB.Card", b =>
                 {
-                    b.HasOne("Models.Colors", "colorIdentity")
+                    b.HasOne("Models.DB.Colors", "colorIdentity")
                         .WithMany()
                         .HasForeignKey("colorIdentityid");
 
-                    b.HasOne("Models.Colors", "colors")
+                    b.HasOne("Models.DB.Colors", "colors")
                         .WithMany()
                         .HasForeignKey("colorsid");
 
-                    b.HasOne("Models.Legalitie", "legalities")
+                    b.HasOne("Models.DB.Legalitie", "legalities")
                         .WithMany()
                         .HasForeignKey("legalitiesid");
                 });
 
-            modelBuilder.Entity("Models.CardFace", b =>
+            modelBuilder.Entity("Models.DB.CardFace", b =>
                 {
-                    b.HasOne("Models.Card", "card")
+                    b.HasOne("Models.DB.Card", "card")
                         .WithMany()
                         .HasForeignKey("cardId");
 
-                    b.HasOne("Models.Colors", "colorIndicator")
+                    b.HasOne("Models.DB.Colors", "colorIndicator")
                         .WithMany()
                         .HasForeignKey("colorIndicatorid");
                 });
 
-            modelBuilder.Entity("Models.Color", b =>
+            modelBuilder.Entity("Models.DB.Color", b =>
                 {
-                    b.HasOne("Models.Colors")
+                    b.HasOne("Models.DB.Colors")
                         .WithMany("color")
                         .HasForeignKey("Colorsid");
                 });
 
-            modelBuilder.Entity("Models.Colors", b =>
+            modelBuilder.Entity("Models.DB.Colors", b =>
                 {
-                    b.HasOne("Models.Product")
+                    b.HasOne("Models.DB.Product")
                         .WithMany("colors")
                         .HasForeignKey("Productid");
                 });
 
-            modelBuilder.Entity("Models.ImagesUrl", b =>
+            modelBuilder.Entity("Models.DB.ImagesUrl", b =>
                 {
-                    b.HasOne("Models.Print", "print")
+                    b.HasOne("Models.DB.Print", "print")
                         .WithMany()
                         .HasForeignKey("printId");
                 });
 
-            modelBuilder.Entity("Models.Legalitie", b =>
+            modelBuilder.Entity("Models.DB.Legalitie", b =>
                 {
-                    b.HasOne("Models.Product")
+                    b.HasOne("Models.DB.Product")
                         .WithOne("legalities")
-                        .HasForeignKey("Models.Legalitie", "productId");
+                        .HasForeignKey("Models.DB.Legalitie", "productId");
                 });
 
-            modelBuilder.Entity("Models.Order", b =>
+            modelBuilder.Entity("Models.DB.Order", b =>
                 {
-                    b.HasOne("Models.User")
+                    b.HasOne("Models.DB.User")
                         .WithMany("orders")
                         .HasForeignKey("userId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Models.OrderProduct", b =>
+            modelBuilder.Entity("Models.DB.OrderProduct", b =>
                 {
-                    b.HasOne("Models.Order")
+                    b.HasOne("Models.DB.Order")
                         .WithMany("orderProducts")
                         .HasForeignKey("orderId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Models.Parts", b =>
+            modelBuilder.Entity("Models.DB.Parts", b =>
                 {
-                    b.HasOne("Models.Product")
+                    b.HasOne("Models.DB.Product")
                         .WithMany("all_parts")
                         .HasForeignKey("Productid");
 
-                    b.HasOne("Models.Card", "partOne")
+                    b.HasOne("Models.DB.Card", "partOne")
                         .WithMany("allParts")
                         .HasForeignKey("partOneId");
 
-                    b.HasOne("Models.Card", "partTwo")
+                    b.HasOne("Models.DB.Card", "partTwo")
                         .WithMany()
                         .HasForeignKey("partTwoId");
                 });
 
-            modelBuilder.Entity("Models.Print", b =>
+            modelBuilder.Entity("Models.DB.Print", b =>
                 {
-                    b.HasOne("Models.Card", "Card")
+                    b.HasOne("Models.DB.Card", "Card")
                         .WithMany()
                         .HasForeignKey("CardId");
 
-                    b.HasOne("Models.Set", "set")
+                    b.HasOne("Models.DB.Set", "set")
                         .WithMany()
                         .HasForeignKey("setId");
                 });
 
-            modelBuilder.Entity("Models.Product", b =>
+            modelBuilder.Entity("Models.DB.Product", b =>
                 {
-                    b.HasOne("Models.Colors", "color_identity")
+                    b.HasOne("Models.DB.Colors", "color_identity")
                         .WithMany()
                         .HasForeignKey("color_identityid");
 
-                    b.HasOne("Models.Colors", "color_indicator")
+                    b.HasOne("Models.DB.Colors", "color_indicator")
                         .WithMany()
                         .HasForeignKey("color_indicatorid");
 
-                    b.HasOne("Models.ImagesUrl", "image_uris")
+                    b.HasOne("Models.DB.ImagesUrl", "image_uris")
                         .WithMany()
                         .HasForeignKey("image_urisid");
                 });
 
-            modelBuilder.Entity("Models.Set", b =>
+            modelBuilder.Entity("Models.DB.Set", b =>
                 {
-                    b.HasOne("Models.Card")
+                    b.HasOne("Models.DB.Card")
                         .WithMany("availableSets")
                         .HasForeignKey("CardId");
                 });
 
-            modelBuilder.Entity("Models.Type", b =>
+            modelBuilder.Entity("Models.DB.Type", b =>
                 {
-                    b.HasOne("Models.CardFace")
+                    b.HasOne("Models.DB.CardFace")
                         .WithMany("typeLine")
                         .HasForeignKey("CardFaceid");
                 });
