@@ -36,9 +36,27 @@ namespace Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // modelBuilder.Entity<Parts>()
-            //     .HasOne(p => p.partOne)
-            //     .WithMany(b => b.all_parts);
+            modelBuilder.Entity<Parts>()
+                .HasOne(p => p.partOne)
+                .WithMany(b => b.allParts);
+
+            modelBuilder.Entity<CardInSet>()
+                .HasOne(m => m.card)
+                .WithMany(r => r.availableSets)
+                .HasForeignKey(m => m.card);
+            modelBuilder.Entity<CardInSet>()
+                .HasOne(a => a.set)
+                .WithMany(r => r.Cards)
+                .HasForeignKey(a => a.set);
+
+        }
+
+        //this method is run automatically by EF the first time we run the application
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+
+            //here we define the name of our database
+            optionsBuilder.UseMySql(ConfigurationManager.AppSetting["DBConectionString"]);
         }
     }
 }

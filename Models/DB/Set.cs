@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Models.DB
@@ -13,6 +14,7 @@ namespace Models.DB
 		public int cardCount {get; set;}
 		public bool foilOnly {get; set;}
 		public string iconSVG {get; set;}
+		public virtual List<CardInSet> Cards { get; set; }
 
 	}
 
