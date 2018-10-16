@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Models
+namespace Models.DB
 {
 	public class Set {
 		[MaxLength(4)]

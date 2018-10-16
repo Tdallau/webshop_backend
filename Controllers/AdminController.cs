@@ -2,23 +2,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Contexts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Models;
 using webshop_backend;
+using Microsoft.AspNetCore.Cors;
 
 namespace webshop_backend.Controllers
 {
+    [EnableCors("MyPolicy")]
     [Route("api/[controller]")]
     [Authorize(Roles="Admin")]
     [ApiController]
-    public class AdminController : ControllerBase
+    public class AdminController : BasicController
     {
-        private MainContext __context;
-        public AdminController (){
-            this.__context = new MainContext();
-        }
+        public AdminController (MainContext context) : base(context){}
 
         // GET api/values
         [HttpGet]
