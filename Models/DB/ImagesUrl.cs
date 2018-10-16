@@ -5,7 +5,7 @@ namespace Models.DB
 {
     public class ImagesUrl {
         public int id {get; set;}
-        public string productId {get; set;}
+        public Print print {get; set;}
         public string small {get; set;} 
         public string normal {get; set;} 
         public string large {get; set;} 
