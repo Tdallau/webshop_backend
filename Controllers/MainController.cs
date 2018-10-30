@@ -21,14 +21,14 @@ namespace webshop_backend.Controllers
     {
         public MainController (MainContext context) : base(context){}
         // GET api/values
-        [HttpPost]
-        public IActionResult Post()
-        {
-            return this.createResponse<Test>(new Test("test"));; 
-        }
+        // [HttpPost]
+        // public IActionResult Post()
+        // {
+        //     return this.createResponse<Test>(new Test("test"));
+        // }
 
         // GET api/values/5
-        [HttpPost("getProducts")]
+        [HttpGet("{page_size}/{page_index}")]
         public IActionResult Get(int page_size, int page_index)
         {
 
@@ -38,7 +38,8 @@ namespace webshop_backend.Controllers
                         from parts in this.__context.Parts*/
                         /*where legalitie.productId == product.id && parts.partOneId == product.id
                               && colorIdentity.productId == product.id */
-                        select product;
+                        group product by product.oracle_id into p
+                        select p;
                                     /*parts, colorIdentity, colorIndicator*/
             
             return Ok(query.Skip(page_size * (page_index -1)).Take(page_size));
