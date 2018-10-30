@@ -32,7 +32,7 @@ namespace webshop_backend.Controllers
         public IActionResult Get(int page_size, int page_index)
         {
 
-            var query = from product in this.__context.Product
+            var query = from product in this.__context.Card
                         /*from colorIdentity in this.__context.ColorIdentity
                         from colorIndicator in this.__context.ColocolorIndicator
                         from parts in this.__context.Parts*/

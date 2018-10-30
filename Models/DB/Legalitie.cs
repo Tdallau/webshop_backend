@@ -5,19 +5,18 @@ namespace Models.DB
 {
     public class Legalitie {
         public int id {get; set;}
-        public string productId {get; set;}
-        public string standard {get; set;}
-        public string future {get; set;}
-        public string frontier {get; set;}
-        public string modern {get; set;}
-        public string legacy {get; set;}
-        public string pauper {get; set;}
-        public string vintage {get; set;}
-        public string penny {get; set;}
-        public string commander {get; set;}
-        public string one_v_one {get; set;}
-        public string duel {get; set;}
-        public string brawl {get; set;}
+        public Legalities standard {get; set;}
+        public Legalities future {get; set;}
+        public Legalities frontier {get; set;}
+        public Legalities modern {get; set;}
+        public Legalities legacy {get; set;}
+        public Legalities pauper {get; set;}
+        public Legalities vintage {get; set;}
+        public Legalities penny {get; set;}
+        public Legalities commander {get; set;}
+        public Legalities one_v_one {get; set;}
+        public Legalities duel {get; set;}
+        public Legalities brawl {get; set;}
 
     }
 }

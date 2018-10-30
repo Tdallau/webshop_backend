@@ -3,14 +3,16 @@ using System;
 using Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace webshop_backend.Migrations
 {
     [DbContext(typeof(MainContext))]
-    partial class MainContextModelSnapshot : ModelSnapshot
+    [Migration("20181016134102_add cardInSet")]
+    partial class addcardInSet
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,36 +41,21 @@ namespace webshop_backend.Migrations
                     b.ToTable("Address");
                 });
 
-            modelBuilder.Entity("Models.DB.Block", b =>
-                {
-                    b.Property<string>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(10);
-
-                    b.Property<string>("name");
-
-                    b.HasKey("id");
-
-                    b.ToTable("Block");
-                });
-
             modelBuilder.Entity("Models.DB.Card", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(36);
 
-                    b.Property<int?>("EdhrecRank");
+                    b.Property<int>("EdhrecRank");
 
                     b.Property<int?>("colorIdentityid");
 
-                    b.Property<int?>("legalitiesid");
+                    b.Property<int>("price");
 
                     b.HasKey("Id");
 
                     b.HasIndex("colorIdentityid");
-
-                    b.HasIndex("legalitiesid");
 
                     b.ToTable("Card");
                 });
@@ -82,11 +69,9 @@ namespace webshop_backend.Migrations
 
                     b.Property<int?>("colorIndicatorid");
 
-                    b.Property<int?>("colorid");
-
                     b.Property<string>("loyalty");
 
-                    b.Property<int?>("manaCostid");
+                    b.Property<string>("manaCost");
 
                     b.Property<string>("name");
 
@@ -101,10 +86,6 @@ namespace webshop_backend.Migrations
                     b.HasIndex("cardId");
 
                     b.HasIndex("colorIndicatorid");
-
-                    b.HasIndex("colorid");
-
-                    b.HasIndex("manaCostid");
 
                     b.ToTable("CardFaces");
                 });
@@ -132,6 +113,8 @@ namespace webshop_backend.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int?>("Colorsid");
+
                     b.Property<string>("landType");
 
                     b.Property<string>("name");
@@ -140,59 +123,47 @@ namespace webshop_backend.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Colorsid");
+
                     b.ToTable("Color");
                 });
 
-            modelBuilder.Entity("Models.DB.ColorCombinations", b =>
+            modelBuilder.Entity("Models.DB.ColorIdentity", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
 
                     b.HasKey("id");
 
-                    b.ToTable("ColorCombinations");
+                    b.ToTable("ColorIdentity");
                 });
 
-            modelBuilder.Entity("Models.DB.ColorsInCombinations", b =>
+            modelBuilder.Entity("Models.DB.ColorIndicator", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("colorId");
-
-                    b.Property<int?>("combinationid");
-
                     b.HasKey("id");
 
-                    b.HasIndex("colorId");
-
-                    b.HasIndex("combinationid");
-
-                    b.ToTable("ColorsInCombinations");
+                    b.ToTable("ColocolorIndicator");
                 });
 
-            modelBuilder.Entity("Models.DB.Costs", b =>
+            modelBuilder.Entity("Models.DB.Colors", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
 
-                    b.HasKey("id");
+                    b.Property<int?>("ColorIdentityid");
 
-                    b.ToTable("Costs");
-                });
-
-            modelBuilder.Entity("Models.DB.CostSymbols", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("picturePath");
-
-                    b.Property<string>("strSymbol");
+                    b.Property<int?>("ColorIndicatorid");
 
                     b.HasKey("id");
 
-                    b.ToTable("CostSymbols");
+                    b.HasIndex("ColorIdentityid");
+
+                    b.HasIndex("ColorIndicatorid");
+
+                    b.ToTable("Colors");
                 });
 
             modelBuilder.Entity("Models.DB.ImagesUrl", b =>
@@ -210,29 +181,11 @@ namespace webshop_backend.Migrations
 
                     b.Property<string>("png");
 
-                    b.Property<string>("printId");
-
                     b.Property<string>("small");
 
                     b.HasKey("id");
 
-                    b.HasIndex("printId");
-
                     b.ToTable("ImagesUrl");
-                });
-
-            modelBuilder.Entity("Models.DB.Language", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("code");
-
-                    b.Property<string>("name");
-
-                    b.HasKey("id");
-
-                    b.ToTable("Languages");
                 });
 
             modelBuilder.Entity("Models.DB.Legalitie", b =>
@@ -240,72 +193,33 @@ namespace webshop_backend.Migrations
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("brawlid");
+                    b.Property<string>("brawl");
 
-                    b.Property<int?>("commanderid");
+                    b.Property<string>("commander");
 
-                    b.Property<int?>("duelid");
+                    b.Property<string>("duel");
 
-                    b.Property<int?>("frontierid");
+                    b.Property<string>("frontier");
 
-                    b.Property<int?>("futureid");
+                    b.Property<string>("future");
 
-                    b.Property<int?>("legacyid");
+                    b.Property<string>("legacy");
 
-                    b.Property<int?>("modernid");
+                    b.Property<string>("modern");
 
-                    b.Property<int?>("one_v_oneid");
+                    b.Property<string>("one_v_one");
 
-                    b.Property<int?>("pauperid");
+                    b.Property<string>("pauper");
 
-                    b.Property<int?>("pennyid");
+                    b.Property<string>("penny");
 
-                    b.Property<int?>("standardid");
+                    b.Property<string>("standard");
 
-                    b.Property<int?>("vintageid");
+                    b.Property<string>("vintage");
 
                     b.HasKey("id");
-
-                    b.HasIndex("brawlid");
-
-                    b.HasIndex("commanderid");
-
-                    b.HasIndex("duelid");
-
-                    b.HasIndex("frontierid");
-
-                    b.HasIndex("futureid");
-
-                    b.HasIndex("legacyid");
-
-                    b.HasIndex("modernid");
-
-                    b.HasIndex("one_v_oneid");
-
-                    b.HasIndex("pauperid");
-
-                    b.HasIndex("pennyid");
-
-                    b.HasIndex("standardid");
-
-                    b.HasIndex("vintageid");
 
                     b.ToTable("Legalitie");
-                });
-
-            modelBuilder.Entity("Models.DB.Legalities", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("backgroundColor");
-
-                    b.Property<string>("name")
-                        .HasMaxLength(10);
-
-                    b.HasKey("id");
-
-                    b.ToTable("Legalities");
                 });
 
             modelBuilder.Entity("Models.DB.Order", b =>
@@ -355,13 +269,9 @@ namespace webshop_backend.Migrations
 
                     b.Property<string>("partOneId");
 
-                    b.Property<string>("partTwoId");
-
                     b.HasKey("id");
 
                     b.HasIndex("partOneId");
-
-                    b.HasIndex("partTwoId");
 
                     b.ToTable("Parts");
                 });
@@ -382,23 +292,15 @@ namespace webshop_backend.Migrations
 
                     b.Property<bool>("fullArt");
 
-                    b.Property<int?>("languageid");
-
                     b.Property<bool>("nonfoil");
 
                     b.Property<bool>("oversized");
 
-                    b.Property<int?>("price");
-
-                    b.Property<string>("setId");
+                    b.Property<int>("price");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CardId");
-
-                    b.HasIndex("languageid");
-
-                    b.HasIndex("setId");
 
                     b.ToTable("Print");
                 });
@@ -421,9 +323,9 @@ namespace webshop_backend.Migrations
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(6);
+                        .HasMaxLength(4);
 
-                    b.Property<string>("blockid");
+                    b.Property<string>("blockCode");
 
                     b.Property<int>("cardCount");
 
@@ -441,27 +343,7 @@ namespace webshop_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("blockid");
-
                     b.ToTable("Set");
-                });
-
-            modelBuilder.Entity("Models.DB.SymbolsInCosts", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int?>("costid");
-
-                    b.Property<int?>("symbolid");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("costid");
-
-                    b.HasIndex("symbolid");
-
-                    b.ToTable("SymbolsInCosts");
                 });
 
             modelBuilder.Entity("Models.DB.Type", b =>
@@ -469,13 +351,9 @@ namespace webshop_backend.Migrations
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("CardFaceid");
-
                     b.Property<string>("typeName");
 
                     b.HasKey("id");
-
-                    b.HasIndex("CardFaceid");
 
                     b.ToTable("Types");
                 });
@@ -514,13 +392,9 @@ namespace webshop_backend.Migrations
 
             modelBuilder.Entity("Models.DB.Card", b =>
                 {
-                    b.HasOne("Models.DB.ColorCombinations", "colorIdentity")
+                    b.HasOne("Models.DB.Colors", "colorIdentity")
                         .WithMany()
                         .HasForeignKey("colorIdentityid");
-
-                    b.HasOne("Models.DB.Legalitie", "legalities")
-                        .WithMany()
-                        .HasForeignKey("legalitiesid");
                 });
 
             modelBuilder.Entity("Models.DB.CardFace", b =>
@@ -529,17 +403,9 @@ namespace webshop_backend.Migrations
                         .WithMany()
                         .HasForeignKey("cardId");
 
-                    b.HasOne("Models.DB.ColorCombinations", "colorIndicator")
+                    b.HasOne("Models.DB.Colors", "colorIndicator")
                         .WithMany()
                         .HasForeignKey("colorIndicatorid");
-
-                    b.HasOne("Models.DB.ColorCombinations", "color")
-                        .WithMany()
-                        .HasForeignKey("colorid");
-
-                    b.HasOne("Models.DB.Costs", "manaCost")
-                        .WithMany()
-                        .HasForeignKey("manaCostid");
                 });
 
             modelBuilder.Entity("Models.DB.CardInSet", b =>
@@ -553,73 +419,22 @@ namespace webshop_backend.Migrations
                         .HasForeignKey("setId");
                 });
 
-            modelBuilder.Entity("Models.DB.ColorsInCombinations", b =>
+            modelBuilder.Entity("Models.DB.Color", b =>
                 {
-                    b.HasOne("Models.DB.Color", "color")
-                        .WithMany()
-                        .HasForeignKey("colorId");
-
-                    b.HasOne("Models.DB.ColorCombinations", "combination")
-                        .WithMany()
-                        .HasForeignKey("combinationid");
+                    b.HasOne("Models.DB.Colors")
+                        .WithMany("color")
+                        .HasForeignKey("Colorsid");
                 });
 
-            modelBuilder.Entity("Models.DB.ImagesUrl", b =>
+            modelBuilder.Entity("Models.DB.Colors", b =>
                 {
-                    b.HasOne("Models.DB.Print", "print")
-                        .WithMany()
-                        .HasForeignKey("printId");
-                });
+                    b.HasOne("Models.DB.ColorIdentity")
+                        .WithMany("Color")
+                        .HasForeignKey("ColorIdentityid");
 
-            modelBuilder.Entity("Models.DB.Legalitie", b =>
-                {
-                    b.HasOne("Models.DB.Legalities", "brawl")
-                        .WithMany()
-                        .HasForeignKey("brawlid");
-
-                    b.HasOne("Models.DB.Legalities", "commander")
-                        .WithMany()
-                        .HasForeignKey("commanderid");
-
-                    b.HasOne("Models.DB.Legalities", "duel")
-                        .WithMany()
-                        .HasForeignKey("duelid");
-
-                    b.HasOne("Models.DB.Legalities", "frontier")
-                        .WithMany()
-                        .HasForeignKey("frontierid");
-
-                    b.HasOne("Models.DB.Legalities", "future")
-                        .WithMany()
-                        .HasForeignKey("futureid");
-
-                    b.HasOne("Models.DB.Legalities", "legacy")
-                        .WithMany()
-                        .HasForeignKey("legacyid");
-
-                    b.HasOne("Models.DB.Legalities", "modern")
-                        .WithMany()
-                        .HasForeignKey("modernid");
-
-                    b.HasOne("Models.DB.Legalities", "one_v_one")
-                        .WithMany()
-                        .HasForeignKey("one_v_oneid");
-
-                    b.HasOne("Models.DB.Legalities", "pauper")
-                        .WithMany()
-                        .HasForeignKey("pauperid");
-
-                    b.HasOne("Models.DB.Legalities", "penny")
-                        .WithMany()
-                        .HasForeignKey("pennyid");
-
-                    b.HasOne("Models.DB.Legalities", "standard")
-                        .WithMany()
-                        .HasForeignKey("standardid");
-
-                    b.HasOne("Models.DB.Legalities", "vintage")
-                        .WithMany()
-                        .HasForeignKey("vintageid");
+                    b.HasOne("Models.DB.ColorIndicator")
+                        .WithMany("Colors")
+                        .HasForeignKey("ColorIndicatorid");
                 });
 
             modelBuilder.Entity("Models.DB.Order", b =>
@@ -645,12 +460,8 @@ namespace webshop_backend.Migrations
             modelBuilder.Entity("Models.DB.Parts", b =>
                 {
                     b.HasOne("Models.DB.Card", "partOne")
-                        .WithMany("allParts")
-                        .HasForeignKey("partOneId");
-
-                    b.HasOne("Models.DB.Card", "partTwo")
                         .WithMany()
-                        .HasForeignKey("partTwoId");
+                        .HasForeignKey("partOneId");
                 });
 
             modelBuilder.Entity("Models.DB.Print", b =>
@@ -658,39 +469,6 @@ namespace webshop_backend.Migrations
                     b.HasOne("Models.DB.Card", "Card")
                         .WithMany()
                         .HasForeignKey("CardId");
-
-                    b.HasOne("Models.DB.Language", "language")
-                        .WithMany()
-                        .HasForeignKey("languageid");
-
-                    b.HasOne("Models.DB.Set", "set")
-                        .WithMany()
-                        .HasForeignKey("setId");
-                });
-
-            modelBuilder.Entity("Models.DB.Set", b =>
-                {
-                    b.HasOne("Models.DB.Block", "block")
-                        .WithMany()
-                        .HasForeignKey("blockid");
-                });
-
-            modelBuilder.Entity("Models.DB.SymbolsInCosts", b =>
-                {
-                    b.HasOne("Models.DB.Costs", "cost")
-                        .WithMany("Symbols")
-                        .HasForeignKey("costid");
-
-                    b.HasOne("Models.DB.CostSymbols", "symbol")
-                        .WithMany()
-                        .HasForeignKey("symbolid");
-                });
-
-            modelBuilder.Entity("Models.DB.Type", b =>
-                {
-                    b.HasOne("Models.DB.CardFace")
-                        .WithMany("typeLine")
-                        .HasForeignKey("CardFaceid");
                 });
 #pragma warning restore 612, 618
         }

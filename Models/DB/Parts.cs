@@ -6,6 +6,6 @@ namespace Models.DB
         public int id {get; set;}
         public Card partOne {get; set;}
         public Card partTwo {get; set;}
-        
+
     }
 }
