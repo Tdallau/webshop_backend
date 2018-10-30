@@ -32,15 +32,13 @@ namespace webshop_backend.Controllers
         public IActionResult Get(int page_size, int page_index)
         {
 
-            var query = from product in this.__context.Product
-                        /*from colorIdentity in this.__context.ColorIdentity
-                        from colorIndicator in this.__context.ColocolorIndicator
-                        from parts in this.__context.Parts*/
-                        /*where legalitie.productId == product.id && parts.partOneId == product.id
-                              && colorIdentity.productId == product.id */
-                        group product by product.oracle_id into p
-                        select p;
-                                    /*parts, colorIdentity, colorIndicator*/
+            // var query = (from product in this.__context.Product
+            //             select product).Distinct();
+            // var query = this.__context.Product.GroupBy(x => x.oracle_id).Select(x => x.FirstOrDefault());
+            var query = (from Product in this.__context.Product
+                        group Product by Product.oracle_id into p
+                        select p.FirstOrDefault());
+
             
             return Ok(query.Skip(page_size * (page_index -1)).Take(page_size));
         }
