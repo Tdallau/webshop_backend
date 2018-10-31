@@ -1,9 +1,9 @@
-namespace Models
+namespace Models.DB
 {
-    public class Colors {
+    public class ColorIdentity {
         public int id {get; set;}
         public string productId {get; set;}
-        public Color color {get; set;}
+        public int colorId {get; set;}
         
     }
 }

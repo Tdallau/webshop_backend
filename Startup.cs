@@ -12,6 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Contexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace webshop_backend
 {
@@ -31,8 +33,14 @@ namespace webshop_backend
             {
                 builder.AllowAnyOrigin()
                     .AllowAnyMethod()
-                    .AllowAnyHeader();
+                    .AllowAnyHeader()
+                    .AllowCredentials();
             }));
+
+            services.AddDbContext<MainContext> (
+                 opt => opt.UseMySql(ConfigurationManager.AppSetting["DBConectionString"])
+            );
+                 //.u(@"Host=localhost;Database=MovieDB;Username=postgres;Password=postgres"));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddAuthentication(options =>
@@ -49,7 +57,7 @@ namespace webshop_backend
                     //ValidIssuer = "the isser you want to validate",
                     
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("the secret that needs to be at least 16 characeters long for HmacSha256")), 
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(ConfigurationManager.AppSetting["SuperSecretKey"])), 
                     
                     ValidateLifetime = true, //validate the expiration and not before values in the token
 
@@ -69,6 +77,8 @@ namespace webshop_backend
             {
                 app.UseHsts();
             }
+
+            
 
 
             app.UseHttpsRedirection();
