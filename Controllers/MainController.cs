@@ -35,9 +35,10 @@ namespace webshop_backend.Controllers
             // var query = (from product in this.__context.Product
             //             select product).Distinct();
             // var query = this.__context.Product.GroupBy(x => x.oracle_id).Select(x => x.FirstOrDefault());
-            var query = (from Product in this.__context.Product
-                        where Product.price != null
-                        group Product by Product.oracle_id into p
+            var query = (from product in this.__context.Product
+                        where product.price != null
+                        orderby product.id
+                        group product by product.oracle_id into p
                         select p.FirstOrDefault());
 
             
