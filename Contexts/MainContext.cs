@@ -23,6 +23,8 @@ namespace Contexts
         public DbSet<PrintFace> PrintFace {get; set;}
         public DbSet<Set> Set {get; set;}
         public DbSet<Type> Types {get; set;}
+        public DbSet<TypesInLine> TypesInLine {get; set;}
+        public DbSet<TypeLine> TypeLine {get; set;}
         public DbSet<CardInSet> CardsInSets {get; set;}
         public DbSet<Legalities> Legalities {get;set;}
         public DbSet<CostSymbols> CostSymbols {get;set;}

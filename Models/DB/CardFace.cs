@@ -10,7 +10,7 @@ namespace Models.DB
 		public Costs manaCost{ get; set; }
 		public ColorCombinations color {get;set;}
 		public string name{ get; set; }
-		public List<Type> typeLine{ get; set; }
+		public TypeLine typeLine{ get; set; }
 		public string oracleText{ get; set; }
 		
 		public string power{ get; set; }

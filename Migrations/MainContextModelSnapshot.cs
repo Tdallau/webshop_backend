@@ -96,6 +96,8 @@ namespace webshop_backend.Migrations
 
                     b.Property<string>("toughness");
 
+                    b.Property<int?>("typeLineid");
+
                     b.HasKey("id");
 
                     b.HasIndex("cardId");
@@ -105,6 +107,8 @@ namespace webshop_backend.Migrations
                     b.HasIndex("colorid");
 
                     b.HasIndex("manaCostid");
+
+                    b.HasIndex("typeLineid");
 
                     b.ToTable("CardFaces");
                 });
@@ -382,6 +386,8 @@ namespace webshop_backend.Migrations
 
                     b.Property<bool>("fullArt");
 
+                    b.Property<bool>("isLatest");
+
                     b.Property<int?>("languageid");
 
                     b.Property<bool>("nonfoil");
@@ -469,15 +475,39 @@ namespace webshop_backend.Migrations
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("CardFaceid");
-
                     b.Property<string>("typeName");
 
                     b.HasKey("id");
 
-                    b.HasIndex("CardFaceid");
-
                     b.ToTable("Types");
+                });
+
+            modelBuilder.Entity("Models.DB.TypeLine", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd();
+
+                    b.HasKey("id");
+
+                    b.ToTable("TypeLine");
+                });
+
+            modelBuilder.Entity("Models.DB.TypesInLine", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("lineid");
+
+                    b.Property<int?>("typeid");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("lineid");
+
+                    b.HasIndex("typeid");
+
+                    b.ToTable("TypesInLine");
                 });
 
             modelBuilder.Entity("Models.DB.User", b =>
@@ -540,6 +570,10 @@ namespace webshop_backend.Migrations
                     b.HasOne("Models.DB.Costs", "manaCost")
                         .WithMany()
                         .HasForeignKey("manaCostid");
+
+                    b.HasOne("Models.DB.TypeLine", "typeLine")
+                        .WithMany()
+                        .HasForeignKey("typeLineid");
                 });
 
             modelBuilder.Entity("Models.DB.CardInSet", b =>
@@ -686,11 +720,15 @@ namespace webshop_backend.Migrations
                         .HasForeignKey("symbolid");
                 });
 
-            modelBuilder.Entity("Models.DB.Type", b =>
+            modelBuilder.Entity("Models.DB.TypesInLine", b =>
                 {
-                    b.HasOne("Models.DB.CardFace")
-                        .WithMany("typeLine")
-                        .HasForeignKey("CardFaceid");
+                    b.HasOne("Models.DB.TypeLine", "line")
+                        .WithMany()
+                        .HasForeignKey("lineid");
+
+                    b.HasOne("Models.DB.Type", "type")
+                        .WithMany()
+                        .HasForeignKey("typeid");
                 });
 #pragma warning restore 612, 618
         }

@@ -17,6 +17,7 @@ namespace Models.DB
 		public string collectorsNumber {get; set;}
 		public bool fullArt {get; set;}
 		public Language language {get;set;}
+		public bool isLatest {get;set;}
 
 	}
 }
