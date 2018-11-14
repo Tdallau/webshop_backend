@@ -28,7 +28,7 @@ namespace webshop_backend.Controllers
         }
 
         // GET api/values/5
-        [HttpGet("getProducts/{page_size}/{page_index}")]
+        [HttpGet("{page_size}/{page_index}")]
         public IActionResult Get(int page_size, int page_index)
         {
 
@@ -37,10 +37,62 @@ namespace webshop_backend.Controllers
                         join PrintFace in this.__context.PrintFace on Print.Id equals PrintFace.PrintId
                         join ImagesUrl in this.__context.ImagesUrl on PrintFace.id equals ImagesUrl.printFace.id
                         where Print.price != null && Print.isLatest
-                        select new {Print.Id, CardFaces.name, Print.price, ImagesUrl.normal};
+                        select new { Print.Id, CardFaces.name, Print.price, Image = ImagesUrl.normal };
 
 
             return Ok(query.Skip(page_size * (page_index - 1)).Take(page_size));
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetAction(string id)
+        {
+
+
+            var card = (from Print in this.__context.Print
+                        join CardFaces in this.__context.CardFaces on Print.Card.Id equals CardFaces.card.Id
+                        join PrintFace in this.__context.PrintFace on Print.Id equals PrintFace.PrintId
+                        join ImagesUrl in this.__context.ImagesUrl on PrintFace.id equals ImagesUrl.printFace.id
+                        where Print.Id == id
+                        select new
+                        {
+                            Printid = Print.Id,
+                            CardFaces.name,
+                            CardFaces.loyalty,
+                            CardFaces.toughness,
+                            CardFaces.power,
+                            Print.price,
+                            CardFaces.oracleText,
+                            PrintFace.flavorText,
+                            Image = ImagesUrl.large,
+                            CardFaceId =  CardFaces.id
+                        }).FirstOrDefault();
+
+            
+            if (card != null)
+            {
+                var printfaceid = (int)card?.CardFaceId;
+                var typeLine = (from TypesInLine in this.__context.TypesInLine
+                                join Types in this.__context.Types on TypesInLine.type.id equals Types.id
+                                join TypeLine in this.__context.TypeLine on TypesInLine.line.id equals TypeLine.id
+                                join CardFaces in this.__context.CardFaces on TypeLine.id equals CardFaces.typeLine.id
+                                where CardFaces.id == printfaceid
+                                select new { TypeName = Types.typeName }).ToList();
+
+                var tl = "";
+                for (int i = 0; i < typeLine.Count; i++)
+                {
+                    if( i != typeLine.Count - 1) {
+                        tl += typeLine[i].TypeName + " ";
+                    } else {
+                        tl += typeLine[i].TypeName;
+                    }
+                }
+                
+                return Ok(new {card.Printid, card.name, card.Image, card.flavorText, card.oracleText, card.loyalty, card.power, card.toughness, card.price, TypeLine = tl});
+            }
+
+            return UnprocessableEntity();
+
         }
     }
     public class Test
