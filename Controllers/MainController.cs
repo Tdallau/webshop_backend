@@ -25,7 +25,7 @@ namespace webshop_backend.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] string token)
         {
-            return this.createResponse<Test>(new Test("test"), token); ;
+            return this.createResponse<Test>(new Test("test")); ;
         }
 
         // GET api/values/5
