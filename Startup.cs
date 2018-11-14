@@ -78,10 +78,6 @@ namespace webshop_backend
                 app.UseHsts();
             }
 
-            
-
-
-            app.UseHttpsRedirection();
             app.UseCors("MyPolicy");
             app.UseAuthentication();
             app.UseMvc();
