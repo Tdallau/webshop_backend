@@ -6,10 +6,11 @@ namespace Models.DB
 	{
 		public int id{ get; set; }
 		public Card card{ get; set; }
-		public Colors colorIndicator{ get; set; }
-		public string manaCost{ get; set; }
+		public ColorCombinations colorIndicator{ get; set; }
+		public Costs manaCost{ get; set; }
+		public ColorCombinations color {get;set;}
 		public string name{ get; set; }
-		public List<Type> typeLine{ get; set; }
+		public TypeLine typeLine{ get; set; }
 		public string oracleText{ get; set; }
 		
 		public string power{ get; set; }

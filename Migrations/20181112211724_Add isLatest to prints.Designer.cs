@@ -3,18 +3,20 @@ using System;
 using Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace webshop_backend.Migrations
 {
     [DbContext(typeof(MainContext))]
-    partial class MainContextModelSnapshot : ModelSnapshot
+    [Migration("20181112211724_Add isLatest to prints")]
+    partial class AddisLatesttoprints
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.3-rtm-32065")
+                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Models.DB.Address", b =>
@@ -39,7 +41,6 @@ namespace webshop_backend.Migrations
                     b.ToTable("Address");
                 });
 
-
             modelBuilder.Entity("Models.DB.Block", b =>
                 {
                     b.Property<string>("id")
@@ -52,7 +53,6 @@ namespace webshop_backend.Migrations
 
                     b.ToTable("Block");
                 });
-
 
             modelBuilder.Entity("Models.DB.Card", b =>
                 {
@@ -115,9 +115,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("CardFaces");
                 });
 
-
             modelBuilder.Entity("Models.DB.CardInSet", b =>
-
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
@@ -151,9 +149,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("Color");
                 });
 
-
             modelBuilder.Entity("Models.DB.ColorCombinations", b =>
-
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
@@ -429,9 +425,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("PrintFace");
                 });
 
-
             modelBuilder.Entity("Models.DB.Set", b =>
-
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -478,9 +472,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("SymbolsInCosts");
                 });
 
-
             modelBuilder.Entity("Models.DB.Type", b =>
-
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
@@ -502,9 +494,7 @@ namespace webshop_backend.Migrations
                     b.ToTable("TypeLine");
                 });
 
-
             modelBuilder.Entity("Models.DB.TypesInLine", b =>
-
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
@@ -556,11 +546,9 @@ namespace webshop_backend.Migrations
 
             modelBuilder.Entity("Models.DB.Card", b =>
                 {
-
                     b.HasOne("Models.DB.ColorCombinations", "colorIdentity")
                         .WithMany()
                         .HasForeignKey("colorIdentityid");
-
 
                     b.HasOne("Models.DB.Legalitie", "legalities")
                         .WithMany()
@@ -573,9 +561,7 @@ namespace webshop_backend.Migrations
                         .WithMany()
                         .HasForeignKey("cardId");
 
-
                     b.HasOne("Models.DB.ColorCombinations", "colorIndicator")
-
                         .WithMany()
                         .HasForeignKey("colorIndicatorid");
 
@@ -592,7 +578,6 @@ namespace webshop_backend.Migrations
                         .HasForeignKey("typeLineid");
                 });
 
-
             modelBuilder.Entity("Models.DB.CardInSet", b =>
                 {
                     b.HasOne("Models.DB.Card", "card")
@@ -602,7 +587,6 @@ namespace webshop_backend.Migrations
                     b.HasOne("Models.DB.Set", "set")
                         .WithMany("Cards")
                         .HasForeignKey("setId");
-
                 });
 
             modelBuilder.Entity("Models.DB.ColorsInCombinations", b =>
@@ -618,9 +602,7 @@ namespace webshop_backend.Migrations
 
             modelBuilder.Entity("Models.DB.ImagesUrl", b =>
                 {
-
                     b.HasOne("Models.DB.PrintFace", "printFace")
-
                         .WithMany()
                         .HasForeignKey("printFaceid");
                 });
@@ -698,8 +680,6 @@ namespace webshop_backend.Migrations
 
             modelBuilder.Entity("Models.DB.Parts", b =>
                 {
-
-
                     b.HasOne("Models.DB.Card", "partOne")
                         .WithMany("allParts")
                         .HasForeignKey("partOneId");
@@ -715,22 +695,18 @@ namespace webshop_backend.Migrations
                         .WithMany()
                         .HasForeignKey("CardId");
 
-
                     b.HasOne("Models.DB.Language", "language")
                         .WithMany()
                         .HasForeignKey("languageid");
-
 
                     b.HasOne("Models.DB.Set", "set")
                         .WithMany()
                         .HasForeignKey("setId");
                 });
 
-
             modelBuilder.Entity("Models.DB.Set", b =>
                 {
                     b.HasOne("Models.DB.Block", "block")
-
                         .WithMany()
                         .HasForeignKey("blockid");
                 });
@@ -742,11 +718,9 @@ namespace webshop_backend.Migrations
                         .HasForeignKey("costid");
 
                     b.HasOne("Models.DB.CostSymbols", "symbol")
-
                         .WithMany()
                         .HasForeignKey("symbolid");
                 });
-
 
             modelBuilder.Entity("Models.DB.TypesInLine", b =>
                 {
@@ -757,7 +731,6 @@ namespace webshop_backend.Migrations
                     b.HasOne("Models.DB.Type", "type")
                         .WithMany()
                         .HasForeignKey("typeid");
-
                 });
 #pragma warning restore 612, 618
         }

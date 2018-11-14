@@ -7,11 +7,9 @@ namespace Models.DB
         [MaxLength(36)]
         public string Id {get; set;}
         public Legalitie legalities {get; set;}
-        public List<Set> availableSets {get; set;}
-		public int EdhrecRank {get; set;}
+        public virtual List<CardInSet> availableSets {get; set;}
+		public int? EdhrecRank {get; set;}
         public List<Parts> allParts {get; set; }
-        public Colors colors {get; set;}
-        public Colors colorIdentity {get; set;}
-        
+        public ColorCombinations colorIdentity {get; set;}
     }
 }
