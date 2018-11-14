@@ -8,8 +8,9 @@ namespace Contexts
     public class MainContext : DbContext
     {
 
-        //this is actual entity object linked to the test in our DB
-        //*
+        public MainContext(DbContextOptions<MainContext> options): base(options)
+        {
+        }
         public DbSet<User> User { get; set; }
         public DbSet<Address> Address { get; set; }
         public DbSet<Order> Order { get; set; }
