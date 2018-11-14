@@ -58,11 +58,11 @@ namespace Contexts
         }
 
         //this method is run automatically by EF the first time we run the application
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
+        // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        // {
 
-            //here we define the name of our database
-            optionsBuilder.UseMySql(ConfigurationManager.AppSetting["DBConectionString"]);
-        }
+        //     //here we define the name of our database
+        //     optionsBuilder.UseMySql(ConfigurationManager.AppSetting["DBConectionString"]);
+        // }
     }
 }

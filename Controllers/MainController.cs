@@ -19,38 +19,37 @@ namespace webshop_backend.Controllers
     [ApiController]
     public class MainController : BasicController
     {
-        public MainController (MainContext context) : base(context){}
+        public MainController(MainContext context) : base(context) { }
         // GET api/values
         [HttpPost]
         public IActionResult Post([FromBody] string token)
         {
-            return this.createResponse<Test>(new Test("test"), token);; 
+            return this.createResponse<Test>(new Test("test"), token); ;
         }
 
         // GET api/values/5
-        [HttpPost("getProducts")]
+        [HttpGet("getProducts/{page_size}/{page_index}")]
         public IActionResult Get(int page_size, int page_index)
         {
 
-            var query = from product in this.__context.Card
-                        /*from colorIdentity in this.__context.ColorIdentity
-                        from colorIndicator in this.__context.ColocolorIndicator
-                        from parts in this.__context.Parts*/
-                        /*where legalitie.productId == product.id && parts.partOneId == product.id
-                              && colorIdentity.productId == product.id */
-                        select product;
-                                    /*parts, colorIdentity, colorIndicator*/
-            
-            return Ok(query.Skip(page_size * (page_index -1)).Take(page_size));
+            var query = from Print in this.__context.Print
+                        join CardFaces in this.__context.CardFaces on Print.Card.Id equals CardFaces.card.Id
+                        join PrintFace in this.__context.PrintFace on Print.Id equals PrintFace.PrintId
+                        join ImagesUrl in this.__context.ImagesUrl on PrintFace.id equals ImagesUrl.printFace.id
+                        where Print.price != null && Print.isLatest
+                        select new {Print.Id, CardFaces.name, Print.price, ImagesUrl.normal};
+
+
+            return Ok(query.Skip(page_size * (page_index - 1)).Take(page_size));
         }
     }
     public class Test
     {
-        public string Data {get;}
-        public Test(){}
+        public string Data { get; }
+        public Test() { }
         public Test(string data)
         {
-            this.Data =data;
+            this.Data = data;
         }
     }
 }
