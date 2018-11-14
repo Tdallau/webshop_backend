@@ -37,7 +37,7 @@ namespace webshop_backend.Controllers
                         join PrintFace in this.__context.PrintFace on Print.Id equals PrintFace.PrintId
                         join ImagesUrl in this.__context.ImagesUrl on PrintFace.id equals ImagesUrl.printFace.id
                         where Print.price != null && Print.isLatest
-                        select new { Print.Id, CardFaces.name, Print.price, Image = ImagesUrl.normal };
+                        select new { Id = Print.Id, CardFaces.name, Print.price, Image = ImagesUrl.normal };
 
 
             return Ok(query.Skip(page_size * (page_index - 1)).Take(page_size));
