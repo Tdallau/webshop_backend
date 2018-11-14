@@ -21,6 +21,7 @@ namespace webshop_backend.Controllers
     {
         public MainController(MainContext context) : base(context) { }
         // GET api/values
+
         [HttpPost]
         public IActionResult Post([FromBody] string token)
         {
@@ -31,6 +32,7 @@ namespace webshop_backend.Controllers
         [HttpGet("{page_size}/{page_index}")]
         public IActionResult Get(int page_size, int page_index)
         {
+
 
             var query = from Print in this.__context.Print
                         join CardFaces in this.__context.CardFaces on Print.Card.Id equals CardFaces.card.Id
@@ -66,6 +68,7 @@ namespace webshop_backend.Controllers
                             Image = ImagesUrl.large,
                             CardFaceId =  CardFaces.id
                         }).FirstOrDefault();
+
 
             
             if (card != null)

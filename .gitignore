@@ -1,5 +1,7 @@
 /obj/*
 /bin/*
+/.vs/*
+/.vscode/*
 
 *.csv
 MNRetailDatasetCSV_MNRetailDatasetCSV.csv

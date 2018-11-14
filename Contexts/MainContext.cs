@@ -38,7 +38,6 @@ namespace Contexts
         //*/
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
             modelBuilder.Entity<Parts>()
                 .HasOne(p => p.partOne)
                 .WithMany(b => b.allParts);
