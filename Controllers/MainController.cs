@@ -11,6 +11,7 @@ using Models.DB;
 using webshop_backend;
 using Models;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.EntityFrameworkCore;
 
 namespace webshop_backend.Controllers
 {
@@ -34,15 +35,18 @@ namespace webshop_backend.Controllers
         {
 
 
-            var query = from Print in this.__context.Print
-                        join CardFaces in this.__context.CardFaces on Print.Card.Id equals CardFaces.card.Id
-                        join PrintFace in this.__context.PrintFace on Print.Id equals PrintFace.PrintId
-                        join ImagesUrl in this.__context.ImagesUrl on PrintFace.id equals ImagesUrl.printFace.id
-                        where Print.price != null && Print.isLatest
-                        select new { Print.Id, CardFaces.name, Print.price, Image = ImagesUrl.normal };
+            // var query = from Print in this.__context.Print
+            //             join CardFaces in this.__context.CardFaces on Print.Card.Id equals CardFaces.card.Id
+            //             join PrintFace in this.__context.PrintFace on Print.Id equals PrintFace.PrintId
+            //             join ImagesUrl in this.__context.ImagesUrl on PrintFace.id equals ImagesUrl.printFace.id
+            //             where Print.price != null && Print.isLatest
+            //             select new { Print.Id, CardFaces.name, Print.price, Image = ImagesUrl.normal };
 
+            
 
-            return Ok(query.Skip(page_size * (page_index - 1)).Take(page_size));
+            // return Ok(this.__context.ProductList.ToList());
+            return Ok(this.__context.ProductList.Skip(page_size * (page_index - 1)).Take(page_size));
+            // return Ok(query.Skip(page_size * (page_index - 1)).Take(page_size));
         }
 
         [HttpGet("{id}")]
