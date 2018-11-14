@@ -23,20 +23,20 @@ namespace webshop_backend.Controllers
 
         [Route("[controller]/login")]
         [HttpPost]
-        // public Object Login([FromBody] LoginData loginData)
-        // {
-        //     // var user = this.userServices.IsValidUserAndPasswordCombination(loginData.email, loginData.password);
+        public Object Login([FromBody] LoginData loginData)
+        {
+            var user = this.userServices.IsValidUserAndPasswordCombination(loginData.email, loginData.password);
             
-        //     // if (user != null) {
-        //     //     var userId = user.id;
-        //     //     var token = this.userServices.GenerateToken(user.email,user.role);
+            if (user != null) {
+                var userId = user.id;
+                var token = this.userServices.GenerateToken(user.email,user.role);
 
-        //     //     this.userServices.UpdateUserToken(userId,token);
-        //     //     return this.CreateResponseUsingUserId<SucccessFullyLoggedIn>(new SucccessFullyLoggedIn(token,userId),userId);
-        //     // }
-        //     // // return this.createResponse<SucccessFullyLoggedIn>(null,"");
-        //     // return this.createResponse<SucccessFullyLoggedIn>(null);
-        // }
+                this.userServices.UpdateUserToken(userId,token);
+                return this.CreateResponseUsingUserId<SucccessFullyLoggedIn>(new SucccessFullyLoggedIn(token,userId),userId);
+            }
+            // return this.createResponse<SucccessFullyLoggedIn>(null,"");
+            return this.createResponse<SucccessFullyLoggedIn>(null);
+        }
 
         [Route("[controller]/register")]
         [HttpPost]
