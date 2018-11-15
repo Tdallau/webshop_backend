@@ -13,10 +13,10 @@ namespace webshop_backend.Controllers
         public ShoppingCardController(MainContext context) : base(context) { }
 
         [HttpGet("{sessionId}")]
-        public ActionResult<ShoppingCard> Get (string sessionId) {
+        public ActionResult<ShoppingCard> Get (string userId) {
 
             var query = from ShoppingCard in this.__context.ShoppingCard
-                        where ShoppingCard.SessionId == sessionId
+                        where ShoppingCard.UserId == userId
                         select ShoppingCard; 
             return Ok(new ShoppingCard());
         }

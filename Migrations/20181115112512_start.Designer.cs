@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace webshop_backend.Migrations
 {
     [DbContext(typeof(MainContext))]
-    [Migration("20181114201106_added shoppingCard")]
-    partial class addedshoppingCard
+    [Migration("20181115112512_start")]
+    partial class start
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,26 +24,29 @@ namespace webshop_backend.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("PrintId");
-
-                    b.Property<int>("Quantity");
-
-                    b.Property<string>("SessionId");
+                    b.Property<int>("UserId");
 
                     b.HasKey("Id");
 
                     b.ToTable("ShoppingCard");
                 });
 
-            modelBuilder.Entity("Models.DB.Token", b =>
+            modelBuilder.Entity("Models.DB.ShoppingCardItem", b =>
                 {
-                    b.Property<string>("SessionId");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
 
-                    b.Property<int>("UserId");
+                    b.Property<int>("PrintId");
 
-                    b.HasKey("SessionId", "UserId");
+                    b.Property<int>("Quantity");
 
-                    b.ToTable("Token");
+                    b.Property<int>("ShoppingCardId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ShoppingCardId");
+
+                    b.ToTable("ShoppingCardItem");
                 });
 #pragma warning restore 612, 618
         }

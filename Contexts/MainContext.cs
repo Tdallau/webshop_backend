@@ -16,8 +16,8 @@ namespace Contexts
         public DbSet<Address> Address { get; set; }
         public DbSet<Order> Order { get; set; }
         public DbSet<OrderProduct> OrderProduct { get; set; }
-        public DbSet<Token> Token { get; set; }
         public DbSet<ShoppingCard> ShoppingCard { get; set; }
+        public DbSet<ShoppingCardItem> ShoppingCardItem { get; set; }
         public DbSet<Parts> Parts { get; set; }
         public DbSet<Legalitie> Legalitie { get; set; }
         public DbSet<ImagesUrl> ImagesUrl { get; set; }
@@ -46,8 +46,6 @@ namespace Contexts
             modelBuilder.Entity<Parts>()
                 .HasOne(p => p.partOne)
                 .WithMany(b => b.allParts);
-            modelBuilder.Entity<Token>()
-                .HasKey(k => new { k.SessionId, k.UserId });
 
             modelBuilder
                 .Query<ProductList>().ToView("View_ProductList");
