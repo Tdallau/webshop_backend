@@ -29,7 +29,7 @@ namespace webshop_backend.Controllers
             
             if (user != null) {
                 var userId = user.id;
-                var token = this.userServices.GenerateToken(user.email,user.role);
+                var token = this.userServices.GenerateToken(user);
 
                 this.userServices.UpdateUserToken(userId,token);
                 return this.CreateResponseUsingUserId<SucccessFullyLoggedIn>(new SucccessFullyLoggedIn(token,userId),userId);
@@ -46,8 +46,8 @@ namespace webshop_backend.Controllers
             if (loginData.role == null) loginData.role = "User"; 
             var success = this.userServices.InsertUser(loginData.username,loginData.email,loginData.approach,loginData.password, loginData.role);
             if(success) {
-                // return this.Login(loginData);
-                return new object{};
+                return this.Login(loginData);
+                // return new object{};
             }
             return Unauthorized();
             

@@ -51,7 +51,12 @@ namespace Services
             {
                 var salt = GetSalt();
                 var newUser = new User() { name = username, email = email, approach = approach, role = role, password = GetHash(password + salt), salt = salt };
+
                 this.__context.Add(newUser);
+                this.__context.SaveChanges();
+
+                var shoppingCart = new ShoppingCard(){ UserId = newUser.id, Status = "Waiting"};
+                this.__context.Add(shoppingCart);
                 this.__context.SaveChanges();
                 return true;
             }
@@ -68,14 +73,16 @@ namespace Services
             return query.ToArray()[0];
         }
 
-        public string GenerateToken(string username, string Role)
+        public string GenerateToken(User user)
         {
             var claims = new Claim[]
             {
-                new Claim(ClaimTypes.Name, username),
+                new Claim(ClaimTypes.Email, user.email),
+                new Claim(ClaimTypes.Name, user.name),
+                new Claim(ClaimTypes.NameIdentifier, user.id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Nbf, new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds().ToString()),
                 new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(DateTime.Now.AddDays(1)).ToUnixTimeSeconds().ToString()),
-                new Claim(ClaimTypes.Role, Role)
+                new Claim(ClaimTypes.Role, user.role)
             };
 
             var token = new JwtSecurityToken(

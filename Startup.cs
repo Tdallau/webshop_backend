@@ -77,6 +77,7 @@ namespace webshop_backend
             {
                 app.UseHsts();
             }
+            
 
             app.UseCors("MyPolicy");
             app.UseAuthentication();

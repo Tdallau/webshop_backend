@@ -48,7 +48,7 @@ namespace Contexts
                 .WithMany(b => b.allParts);
 
             modelBuilder
-                .Query<ProductList>().ToView("View_ProductList");
+                .Query<ProductList>().ToView("View_productList");
             /*
            modelBuilder.Entity<CardInSet>()
                .HasKey(ma => new { ma.card, ma.set });
