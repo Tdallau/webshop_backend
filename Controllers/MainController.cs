@@ -21,39 +21,27 @@ namespace webshop_backend.Controllers
     public class MainController : BasicController
     {
         public MainController(MainContext context) : base(context) { }
-        // GET api/values
-
-        // [HttpPost]
-        // public IActionResult Post([FromBody] string token)
-        // {
-        //     return this.createResponse<Response<string>>(new Response<string>(){ Data = "test", Success = false}); ;
-        // }
 
         // GET api/values/5
         [HttpGet("{page_size}/{page_index}")]
         public IActionResult Get(int page_size, int page_index)
         {
-
-
             // var query = from Print in this.__context.Print
             //             join CardFaces in this.__context.CardFaces on Print.Card.Id equals CardFaces.card.Id
             //             join PrintFace in this.__context.PrintFace on Print.Id equals PrintFace.PrintId
             //             join ImagesUrl in this.__context.ImagesUrl on PrintFace.id equals ImagesUrl.printFace.id
             //             where Print.price != null && Print.isLatest
             //             select new { Print.Id, CardFaces.name, Print.price, Image = ImagesUrl.normal };
-
-            
-
-            // return Ok(this.__context.ProductList.ToList());
-            return Ok(this.__context.ProductList.Skip(page_size * (page_index - 1)).Take(page_size));
-            // return Ok(query.Skip(page_size * (page_index - 1)).Take(page_size));
+            if(this.__context.ProductList.Count() != 0) {
+                return Ok(this.__context.ProductList.Skip(page_size * (page_index - 1)).Take(page_size));
+                // return Ok(query.Skip(page_size * (page_index - 1)).Take(page_size));
+            }
+            return UnprocessableEntity();
         }
 
         [HttpGet("{id}")]
         public IActionResult GetAction(string id)
         {
-
-
             var card = (from Print in this.__context.Print
                         join CardFaces in this.__context.CardFaces on Print.Card.Id equals CardFaces.card.Id
                         join PrintFace in this.__context.PrintFace on Print.Id equals PrintFace.PrintId
@@ -73,8 +61,6 @@ namespace webshop_backend.Controllers
                             CardFaceId =  CardFaces.id
                         }).FirstOrDefault();
 
-
-            
             if (card != null)
             {
                 var printfaceid = (int)card?.CardFaceId;

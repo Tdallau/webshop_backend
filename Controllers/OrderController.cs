@@ -7,18 +7,20 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace webshop_backend.Controllers
 {
     [EnableCors("MyPolicy")]
     [Route("api/[controller]")]
+    [Authorize(Roles="User")]
     [ApiController]
     public class OrderController : BasicController
     {
         public OrderController(MainContext context) : base(context) { }
 
         [HttpPost]
-        public ActionResult<string> Post([FromBody] StatusData status)
+        public ActionResult<Response<string>> Post([FromBody] StatusData status)
         {
 
             var shoppingCart = (from ShoppingCard in this.__context.ShoppingCard
@@ -54,11 +56,9 @@ namespace webshop_backend.Controllers
             }
             this.__context.SaveChanges();
 
-            // this.__context.Remove(shoppingCartItem);
 
 
-
-            return Ok(new { Succes = true});
+            return Ok(new Response<string>{ Data = "Your order has been placed!", Success = true});
         }
     }
 }

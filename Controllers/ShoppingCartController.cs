@@ -6,11 +6,14 @@ using Models.DB;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace webshop_backend.Controllers
 {
     [EnableCors("MyPolicy")]
     [Route("api/[controller]")]
+    [Authorize(Roles="User")]
     [ApiController]
     public class ShoppingCartController : BasicController
     {
@@ -19,15 +22,10 @@ namespace webshop_backend.Controllers
         [HttpGet]
         public ActionResult<ShoppingCard> Get()
         {
-            var token = HttpContext.Request.Headers["Token"].FirstOrDefault();
-            var jwttoken = new JwtSecurityToken(token);
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+            var userToken = token.Split(' ')[1];
+            var jwttoken = new JwtSecurityToken(userToken);
             var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
-
-            // SELECT projectC.ShoppingCardItem.PrintId, name, Quantity, price FROM projectC.ShoppingCard
-            // INNER JOIN projectC.ShoppingCardItem ON projectC.ShoppingCard.Id = projectC.ShoppingCardItem.ShoppingCardId
-            // INNER JOIN projectC.Print ON projectC.Print.Id = projectC.ShoppingCardItem.PrintId
-            // INNER JOIN projectC.CardFaces ON projectC.CardFaces.cardId = projectC.Print.CardId
-            // WHERE ShoppingCard.UserId = 1;
 
             var query = from ShoppingCard in this.__context.ShoppingCard
                         join ShoppingCardItem in this.__context.ShoppingCardItem on ShoppingCard.Id equals ShoppingCardItem.ShoppingCardId
@@ -39,13 +37,14 @@ namespace webshop_backend.Controllers
         }
 
         [HttpPost]
-        public ActionResult<object> Post([FromBody] ShoppingCardItem shoppingCardItem)
+        public ActionResult<Response<string>> Post([FromBody] ShoppingCardItem shoppingCardItem)
         {
 
             if (shoppingCardItem != null)
             {
-                var token = HttpContext.Request.Headers["Token"].FirstOrDefault();
-                var jwttoken = new JwtSecurityToken(token);
+                var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+                var userToken = token.Split(' ')[1];
+                var jwttoken = new JwtSecurityToken(userToken);
                 var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
 
                 var query = (from ShoppingCard in this.__context.ShoppingCard
@@ -61,7 +60,7 @@ namespace webshop_backend.Controllers
                 }
                 this.__context.Add(shoppingCardItem);
                 this.__context.SaveChanges();
-                return Ok();
+                return Ok(new Response<string>(){ Data = "Item is added to your shoppingcart!", Success = true});
             }
             return UnprocessableEntity();
 

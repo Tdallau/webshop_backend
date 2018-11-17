@@ -63,11 +63,15 @@ namespace webshop_backend.Controllers
             var success = this.userServices.InsertUser(loginData.username, loginData.email, loginData.approach, loginData.password, loginData.role);
             if (success)
             {
-                return Ok(new Response<string>() { Data = "succesfull registerd!", Success = true });
+                return Ok(new Response<string>()
+                {
+                    Data = "succesfull registerd!",
+                    Success = true
+                });
             }
             return Ok(new Response<string>()
             {
-                Data = "there is already an account with this email address",
+                Data = "There is already an account with this email address.",
                 Success = false
             });
 
