@@ -53,13 +53,13 @@ namespace Services
             return null;
         }
 
-        public bool InsertUser(string username, string email, string approach, string password, string role)
+        public bool InsertUser(LoginData loginData)
         {
 
             try
             {
                 var salt = GetSalt();
-                var newUser = new User() { name = username, email = email, approach = approach, role = role, password = GetHash(password + salt), salt = salt, active = false };
+                var newUser = new User() { name = loginData.Username, email = loginData.Email, approach = loginData.Approach, role = loginData.Role, password = GetHash(loginData.Password + salt), salt = salt, active = loginData.FromPage != "Register" ? true : false };
 
                 this.__context.Add(newUser);
                 this.__context.SaveChanges();
@@ -68,7 +68,7 @@ namespace Services
                 this.__context.Add(shoppingCart);
                 this.__context.SaveChanges();
 
-                this.SendActivationMail(newUser);
+                if (!newUser.active) { this.SendActivationMail(newUser); };
                 return true;
             }
             catch

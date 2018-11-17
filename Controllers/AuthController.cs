@@ -29,7 +29,7 @@ namespace webshop_backend.Controllers
         [HttpPost]
         public ActionResult<Response<SucccessFullyLoggedIn>> Login([FromBody] LoginData loginData)
         {
-            var user = this.userServices.IsValidUserAndPasswordCombination(loginData.email, loginData.password);
+            var user = this.userServices.IsValidUserAndPasswordCombination(loginData.Email, loginData.Password);
 
             if (user != null)
             {
@@ -74,8 +74,8 @@ namespace webshop_backend.Controllers
         public ActionResult<Response<string>> Register([FromBody] LoginData loginData)
         {
             // return loginData;
-            if (loginData.role == null) loginData.role = "User";
-            var success = this.userServices.InsertUser(loginData.username, loginData.email, loginData.approach, loginData.password, loginData.role);
+            if (loginData.Role == null) loginData.Role = "User";
+            var success = this.userServices.InsertUser(loginData);
             if (success)
             {
                 return Ok(new Response<string>()
