@@ -12,6 +12,7 @@ namespace webshop_backend
             AppSetting = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("appsettings.json")
+                    .AddEnvironmentVariables()
                     .Build();
         }
     }

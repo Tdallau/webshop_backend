@@ -14,6 +14,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Contexts;
 using Microsoft.EntityFrameworkCore;
+using Models;
 
 namespace webshop_backend
 {
@@ -38,7 +39,7 @@ namespace webshop_backend
             }));
 
             services.AddDbContext<MainContext> (
-                 opt => opt.UseMySql(ConfigurationManager.AppSetting["DBConectionString"])
+                 opt => opt.UseMySql(ConfigurationManager.AppSetting.GetConnectionString("DefaultConnection"))
             );
                  //.u(@"Host=localhost;Database=MovieDB;Username=postgres;Password=postgres"));
 
@@ -64,6 +65,7 @@ namespace webshop_backend
                     ClockSkew = TimeSpan.FromMinutes(5) //5 minute tolerance for the expiration date
                 };
             });
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

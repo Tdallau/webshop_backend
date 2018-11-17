@@ -9,6 +9,7 @@ using Contexts;
 using Services;
 using webshop_backend;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.Extensions.Options;
 
 namespace webshop_backend.Controllers
 {
@@ -17,9 +18,11 @@ namespace webshop_backend.Controllers
     public class AuthController : BasicController
     {
         private UserServices userServices;
-        public AuthController(MainContext context) : base(context)
+        private MainServcie mainServcie;
+        public AuthController(MainContext context, IOptions<EmailSettings> settings) : base(context)
         {
-            this.userServices = new UserServices(this.__context);
+            this.userServices = new UserServices(this.__context, settings);
+            this.mainServcie = new MainServcie(this.__context, settings);
         }
 
         [Route("[controller]/login")]
@@ -30,21 +33,33 @@ namespace webshop_backend.Controllers
 
             if (user != null)
             {
-                var userId = user.id;
-
-                var shoppingCartId = (from sc in this.__context.ShoppingCard
-                                      where sc.UserId == userId
-                                      select sc.Id).FirstOrDefault();
-
-                var responseUser = new UserData() { Name = user.name, UserId = user.id, Email = user.email, Role = user.role, ShoppingCartId = shoppingCartId };
-                var token = responseUser.ToToken();
-                var userData = UserData.FromToken(token);
-
-                return Ok(new Response<SucccessFullyLoggedIn>()
+                if (user.active == true)
                 {
-                    Data = new SucccessFullyLoggedIn() { User = userData, Token = token },
-                    Success = true
-                });
+                    var userId = user.id;
+
+                    var shoppingCartId = (from sc in this.__context.ShoppingCard
+                                          where sc.UserId == userId
+                                          select sc.Id).FirstOrDefault();
+
+                    var responseUser = new UserData() { Name = user.name, UserId = user.id, Email = user.email, Role = user.role, ShoppingCartId = shoppingCartId };
+                    var token = responseUser.ToToken();
+                    var userData = UserData.FromToken(token);
+
+                    return Ok(new Response<SucccessFullyLoggedIn>()
+                    {
+                        Data = new SucccessFullyLoggedIn() { User = userData, Token = token },
+                        Success = true
+                    });
+                }
+                else
+                {
+                    return Ok(new Response<string>()
+                    {
+                        Data = "Account is not activated yet view your email to activate your account.",
+                        Success = false
+                    });
+                }
+
             }
 
             return Ok(new Response<string>()
@@ -76,6 +91,30 @@ namespace webshop_backend.Controllers
             });
 
 
+        }
+        [Route("[controller]/{id}")]
+        [HttpGet]
+        public ActionResult<Response<string>> Put(int id)
+        {
+
+            var query = (from user in this.__context.User
+                         where user.id == id
+                         select user).FirstOrDefault();
+
+            if (query != null)
+            {
+                if(!query.active) {
+                    query.active = true;
+                    this.__context.Update(query);
+                    this.__context.SaveChanges();
+                    return Redirect("http://www.google.com");
+                }
+                return Redirect("http://www.google.com");
+            } 
+
+            return Redirect("http://www.google.com");
+
+            
         }
     }
 
