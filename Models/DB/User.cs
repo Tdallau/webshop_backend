@@ -11,7 +11,6 @@ namespace Models.DB
         public string role {get; set;}
         public string password {get; set;}
         public string salt {get; set;}
-        public string token {get; set;}
         public List<Address> addresses {get; set;}
         public List<Order> orders {get; set;}
 

@@ -13,29 +13,52 @@ namespace webshop_backend.Controllers
     [EnableCors("MyPolicy")]
     [Route("api/[controller]")]
     [ApiController]
-    public class OrderController: BasicController {
+    public class OrderController : BasicController
+    {
         public OrderController(MainContext context) : base(context) { }
 
         [HttpPost]
-        public ActionResult<StatusData> Post([FromBody] StatusData status) {
+        public ActionResult<string> Post([FromBody] StatusData status)
+        {
 
             var shoppingCart = (from ShoppingCard in this.__context.ShoppingCard
                                 where ShoppingCard.Id == status.ShoppingCardId
                                 select ShoppingCard).FirstOrDefault();
-            
-            shoppingCart.Status = status.Status;
 
-            var token = HttpContext.Request.Headers["Token"].FirstOrDefault();
-            var jwttoken = new JwtSecurityToken(token);
-            var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
+            var shoppingCartItem = (from ShoppingCardItem in this.__context.ShoppingCardItem
+                                    where ShoppingCardItem.ShoppingCardId == shoppingCart.Id
+                                    select ShoppingCardItem).ToList();
 
-            var newShopingCart = new ShoppingCard(){ UserId = userId, Status = "Waiting"};
 
-            this.__context.Add(newShopingCart);
-            this.__context.Update(shoppingCart);
+            // var token = HttpContext.Request.Headers["Token"].FirstOrDefault();
+            // var jwttoken = new JwtSecurityToken(token);
+            // var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
+            var order = new Order() { userId = shoppingCart.UserId, addressId = 1, status = "Ordered" };
+            this.__context.Add(order);
+            this.__context.SaveChanges();
+            foreach (var item in shoppingCartItem)
+            {
+                var query = (from Print in this.__context.Print
+                             where Print.Id == item.PrintId
+                             select Print).FirstOrDefault();
+                var price = query?.price;
+                if (price != null)
+                {
+                    var orderItem = new OrderProduct() { orderId = order.id, price = (int) price, quantity = item.Quantity, PrintId = item.PrintId };
+                    this.__context.Add(orderItem);
+                }
+            }
+            foreach (var item in shoppingCartItem)
+            {
+                this.__context.Remove(item);
+            }
             this.__context.SaveChanges();
 
-            return Ok(status);
+            // this.__context.Remove(shoppingCartItem);
+
+
+
+            return Ok(new { Succes = true});
         }
     }
 }

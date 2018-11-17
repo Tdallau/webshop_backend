@@ -17,52 +17,62 @@ namespace webshop_backend.Controllers
     public class AuthController : BasicController
     {
         private UserServices userServices;
-        public AuthController (MainContext context) : base(context){
+        public AuthController(MainContext context) : base(context)
+        {
             this.userServices = new UserServices(this.__context);
         }
 
         [Route("[controller]/login")]
         [HttpPost]
-        public Object Login([FromBody] LoginData loginData)
+        public ActionResult<Response<SucccessFullyLoggedIn>> Login([FromBody] LoginData loginData)
         {
             var user = this.userServices.IsValidUserAndPasswordCombination(loginData.email, loginData.password);
-            
-            if (user != null) {
-                var userId = user.id;
-                var token = this.userServices.GenerateToken(user);
 
-                this.userServices.UpdateUserToken(userId,token);
-                return this.CreateResponseUsingUserId<SucccessFullyLoggedIn>(new SucccessFullyLoggedIn(token,userId),userId);
+            if (user != null)
+            {
+                var userId = user.id;
+
+                var shoppingCartId = (from sc in this.__context.ShoppingCard
+                                      where sc.UserId == userId
+                                      select sc.Id).FirstOrDefault();
+
+                var responseUser = new UserData() { Name = user.name, UserId = user.id, Email = user.email, Role = user.role, ShoppingCartId = shoppingCartId };
+                var token = responseUser.ToToken();
+                var userData = UserData.FromToken(token);
+
+                return Ok(new Response<SucccessFullyLoggedIn>()
+                {
+                    Data = new SucccessFullyLoggedIn() { User = userData, Token = token },
+                    Success = true
+                });
             }
-            // return this.createResponse<SucccessFullyLoggedIn>(null,"");
-            return this.createResponse<SucccessFullyLoggedIn>(null);
+
+            return Ok(new Response<string>()
+            {
+                Data = "User not found",
+                Success = false
+            });
         }
 
         [Route("[controller]/register")]
         [HttpPost]
-        public Object Register([FromBody] LoginData loginData)
+        public ActionResult<Response<string>> Register([FromBody] LoginData loginData)
         {
             // return loginData;
-            if (loginData.role == null) loginData.role = "User"; 
-            var success = this.userServices.InsertUser(loginData.username,loginData.email,loginData.approach,loginData.password, loginData.role);
-            if(success) {
-                return this.Login(loginData);
-                // return new object{};
+            if (loginData.role == null) loginData.role = "User";
+            var success = this.userServices.InsertUser(loginData.username, loginData.email, loginData.approach, loginData.password, loginData.role);
+            if (success)
+            {
+                return Ok(new Response<string>() { Data = "succesfull registerd!", Success = true });
             }
-            return Unauthorized();
-            
+            return Ok(new Response<string>()
+            {
+                Data = "there is already an account with this email address",
+                Success = false
+            });
+
 
         }
     }
-    public class SucccessFullyLoggedIn
-    {
-        public string Token {get;}
-        public int Id {get;}
-        public SucccessFullyLoggedIn(){}
-        public SucccessFullyLoggedIn(string token, int id)
-        {
-            this.Token = token;
-            this.Id = id;
-        }
-    }
+
 }

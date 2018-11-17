@@ -33,7 +33,7 @@ namespace webshop_backend.Controllers
                         join ShoppingCardItem in this.__context.ShoppingCardItem on ShoppingCard.Id equals ShoppingCardItem.ShoppingCardId
                         join Print in this.__context.Print on ShoppingCardItem.PrintId equals Print.Id
                         join CardFaces in this.__context.CardFaces on Print.Card.Id equals CardFaces.card.Id
-                        where ShoppingCard.UserId == userId && ShoppingCard.Status == "Waiting"
+                        where ShoppingCard.UserId == userId
                         select new { Id = ShoppingCardItem.PrintId, CardFaces.name, ShoppingCardItem.Quantity, PriceNum = Print.price, PriceTotal = "", Price = "", PriceTotalNum = -1 };
             return Ok(query);
         }
@@ -44,6 +44,21 @@ namespace webshop_backend.Controllers
 
             if (shoppingCardItem != null)
             {
+                var token = HttpContext.Request.Headers["Token"].FirstOrDefault();
+                var jwttoken = new JwtSecurityToken(token);
+                var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
+
+                var query = (from ShoppingCard in this.__context.ShoppingCard
+                            join ShoppingCardItem in this.__context.ShoppingCardItem on ShoppingCard.Id equals shoppingCardItem.ShoppingCardId
+                            where ShoppingCard.UserId == userId && ShoppingCardItem.PrintId == shoppingCardItem.PrintId
+                            select ShoppingCardItem).FirstOrDefault();
+
+                if(query != null) {
+                    query.Quantity += shoppingCardItem.Quantity;
+                    this.__context.Update(query);
+                    this.__context.SaveChanges();
+                    return Ok();
+                }
                 this.__context.Add(shoppingCardItem);
                 this.__context.SaveChanges();
                 return Ok();

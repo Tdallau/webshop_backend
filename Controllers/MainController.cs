@@ -23,11 +23,11 @@ namespace webshop_backend.Controllers
         public MainController(MainContext context) : base(context) { }
         // GET api/values
 
-        [HttpPost]
-        public IActionResult Post([FromBody] string token)
-        {
-            return this.createResponse<Test>(new Test("test")); ;
-        }
+        // [HttpPost]
+        // public IActionResult Post([FromBody] string token)
+        // {
+        //     return this.createResponse<Response<string>>(new Response<string>(){ Data = "test", Success = false}); ;
+        // }
 
         // GET api/values/5
         [HttpGet("{page_size}/{page_index}")]
@@ -102,13 +102,5 @@ namespace webshop_backend.Controllers
 
         }
     }
-    public class Test
-    {
-        public string Data { get; }
-        public Test() { }
-        public Test(string data)
-        {
-            this.Data = data;
-        }
-    }
+
 }

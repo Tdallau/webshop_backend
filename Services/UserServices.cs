@@ -47,7 +47,7 @@ namespace Services
         public bool InsertUser(string username, string email, string approach, string password, string role)
         {
 
-            if (this.CheckEmail(email))
+            try
             {
                 var salt = GetSalt();
                 var newUser = new User() { name = username, email = email, approach = approach, role = role, password = GetHash(password + salt), salt = salt };
@@ -55,57 +55,16 @@ namespace Services
                 this.__context.Add(newUser);
                 this.__context.SaveChanges();
 
-                var shoppingCart = new ShoppingCard(){ UserId = newUser.id, Status = "Waiting"};
+                var shoppingCart = new ShoppingCard(){ UserId = newUser.id};
                 this.__context.Add(shoppingCart);
                 this.__context.SaveChanges();
                 return true;
+            } catch {
+                return false;
             }
-            return false;
+            
         }
-
-        public User getUser(int userId)
-        {
-
-            var query = from user in this.__context.User
-                        where user.id == userId
-                        select user;
-
-            return query.ToArray()[0];
-        }
-
-        public string GenerateToken(User user)
-        {
-            var claims = new Claim[]
-            {
-                new Claim(ClaimTypes.Email, user.email),
-                new Claim(ClaimTypes.Name, user.name),
-                new Claim(ClaimTypes.NameIdentifier, user.id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Nbf, new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds().ToString()),
-                new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(DateTime.Now.AddDays(1)).ToUnixTimeSeconds().ToString()),
-                new Claim(ClaimTypes.Role, user.role)
-            };
-
-            var token = new JwtSecurityToken(
-                new JwtHeader(new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(ConfigurationManager.AppSetting["SuperSecretKey"])),
-                                             SecurityAlgorithms.HmacSha256)),
-                new JwtPayload(claims));
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-
-
-
-        public void UpdateUserToken(int id, string token)
-        {
-            var entity = this.__context.User.FirstOrDefault(u => u.id == id);
-            if (entity != null)
-            {
-                entity.token = token;
-                this.__context.Update(entity);
-                this.__context.SaveChanges();
-            }
-        }
+        
         private string GetHash(string password)
         {
             using (var sha256 = SHA256.Create())
@@ -127,17 +86,7 @@ namespace Services
             }
         }
 
-        private bool CheckEmail(string email)
-        {
-            var query = from user in this.__context.User
-                        where user.email == email
-                        select user.id;
-            if (query.ToArray().Length != 0)
-            {
-                return false;
-            }
-            return true;
-        }
+
     }
 
 
