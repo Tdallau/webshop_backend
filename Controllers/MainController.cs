@@ -12,6 +12,7 @@ using webshop_backend;
 using Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace webshop_backend.Controllers
 {
@@ -20,7 +21,7 @@ namespace webshop_backend.Controllers
     [ApiController]
     public class MainController : BasicController
     {
-        public MainController(MainContext context) : base(context) { }
+        public MainController(MainContext context, IOptions<EmailSettings> settings) : base(context, settings) { }
 
         // GET api/values/5
         [HttpGet("{page_size}/{page_index}")]

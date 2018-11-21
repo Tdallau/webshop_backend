@@ -10,6 +10,7 @@ using Services;
 using webshop_backend;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.Extensions.Options;
+using Models.DB;
 
 namespace webshop_backend.Controllers
 {
@@ -18,11 +19,9 @@ namespace webshop_backend.Controllers
     public class AuthController : BasicController
     {
         private UserServices userServices;
-        private MainServcie mainServcie;
-        public AuthController(MainContext context, IOptions<EmailSettings> settings) : base(context)
+        public AuthController(MainContext context, IOptions<EmailSettings> settings) : base(context, settings)
         {
             this.userServices = new UserServices(this.__context, settings);
-            this.mainServcie = new MainServcie(this.__context, settings);
         }
 
         [Route("[controller]/login")]
@@ -104,10 +103,20 @@ namespace webshop_backend.Controllers
             if (query != null)
             {
                 if(!query.active) {
+
+                    var address = new Address(){ 
+                        UserId = query.id,
+                        ZipCode = "2904CX",
+                        City = "Capelle",
+                        Street = "Reggedal",
+                        Number = 10
+                    };
+
                     query.active = true;
                     this.__context.Update(query);
+                    this.__context.Add(address);
                     this.__context.SaveChanges();
-                    return Redirect("http://www.google.com");
+                    return Redirect("http://145.24.221.126:3000");
                 }
                 return Redirect("http://www.google.com");
             } 

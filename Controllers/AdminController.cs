@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Models;
 using webshop_backend;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.Extensions.Options;
 
 namespace webshop_backend.Controllers
 {
@@ -18,7 +19,7 @@ namespace webshop_backend.Controllers
     [ApiController]
     public class AdminController : BasicController
     {
-        public AdminController (MainContext context) : base(context){}
+        public AdminController (MainContext context, IOptions<EmailSettings> settings) : base(context, settings){}
 
         // GET api/values
         [HttpGet]

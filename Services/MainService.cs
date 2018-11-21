@@ -30,7 +30,7 @@ namespace Services
             {
                 IsBodyHtml = isBodyHtml,
                 Subject = subject,
-                Body = body
+                Body = body,
             })
             {
                 await smtpClient.SendMailAsync(message);

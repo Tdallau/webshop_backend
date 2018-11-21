@@ -8,16 +8,22 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
+using System.Collections.Generic;
+using webshop_backend.html.order;
 
 namespace webshop_backend.Controllers
 {
     [EnableCors("MyPolicy")]
     [Route("api/[controller]")]
-    [Authorize(Roles="User")]
+    [Authorize(Roles = "User")]
     [ApiController]
     public class OrderController : BasicController
     {
-        public OrderController(MainContext context) : base(context) { }
+        public OrderController(MainContext context, IOptions<EmailSettings> settings) : base(context, settings)
+        {
+
+        }
 
         [HttpPost]
         public ActionResult<Response<string>> Post([FromBody] StatusData status)
@@ -31,10 +37,6 @@ namespace webshop_backend.Controllers
                                     where ShoppingCardItem.ShoppingCardId == shoppingCart.Id
                                     select ShoppingCardItem).ToList();
 
-
-            // var token = HttpContext.Request.Headers["Token"].FirstOrDefault();
-            // var jwttoken = new JwtSecurityToken(token);
-            // var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
             var order = new Order() { userId = shoppingCart.UserId, addressId = 1, status = "Ordered" };
             this.__context.Add(order);
             this.__context.SaveChanges();
@@ -46,7 +48,7 @@ namespace webshop_backend.Controllers
                 var price = query?.price;
                 if (price != null)
                 {
-                    var orderItem = new OrderProduct() { orderId = order.id, price = (int) price, quantity = item.Quantity, PrintId = item.PrintId };
+                    var orderItem = new OrderProduct() { orderId = order.id, price = (int)price, quantity = item.Quantity, PrintId = item.PrintId };
                     this.__context.Add(orderItem);
                 }
             }
@@ -57,8 +59,30 @@ namespace webshop_backend.Controllers
             this.__context.SaveChanges();
 
 
+            this.SendConformation(order);
+            return Ok(new Response<string> { Data = "Your order has been placed!", Success = true });
+        }
 
-            return Ok(new Response<string>{ Data = "Your order has been placed!", Success = true});
+        private void SendConformation(Order order)
+        {
+            User user = (from User in this.__context.User
+                         where User.id == order.userId
+                         select User).FirstOrDefault();
+
+            Address address = (from Address in this.__context.Address
+                              where Address.UserId == order.userId
+                              select Address).FirstOrDefault();
+            List<OrderTable> orderitems = (from OrderProduct in this.__context.OrderProduct
+                                           join Print in this.__context.Print on OrderProduct.PrintId equals Print.Id
+                                           join CartFaces in this.__context.CardFaces on Print.Card.Id equals CartFaces.card.Id
+                                           where OrderProduct.orderId == order.id
+                                           select new OrderTable { Name = CartFaces.name, Quantity = OrderProduct.quantity, Price = OrderProduct.price }).ToList();
+
+            var body = OrderToCSharp.Order(user, address, orderitems);
+
+            this.mainServcie.SendEmail("Your order has been placed!", body, true, user.email);
+
+
         }
     }
 }

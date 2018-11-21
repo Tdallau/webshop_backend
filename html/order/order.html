@@ -1,0 +1,28 @@
+<div>
+    <style scoped>
+        .test {
+            width: 50%;
+            margin: auto;
+            margin-top: 5%
+        }
+
+        @media (max-width: 300px) {
+            .test {
+                width: 100%;
+                margin: auto;
+                margin-top: 5%
+            }
+        }
+    </style>
+    <div >
+        <div>
+            <h3>Hello {{name}}, </h3>
+
+            <p>Thank you for choosing Magic the Gathering Webshop. Below you can check whether your order has been passed corectly.
+                If you have any questions about your order please contact us at magicthegatheringwebshop@gmail.com. </p>
+
+        </div>
+        {{orderInformation}}
+        {{orderTable}}
+    </div>
+</div>

@@ -14,6 +14,7 @@ using System.Net.Mail;
 using System.Net;
 using Microsoft.Extensions.Options;
 using Models;
+using webshop_backend.html.activation;
 
 namespace Services
 {
@@ -59,7 +60,7 @@ namespace Services
             try
             {
                 var salt = GetSalt();
-                var newUser = new User() { name = loginData.Username, email = loginData.Email, approach = loginData.Approach, role = loginData.Role, password = GetHash(loginData.Password + salt), salt = salt, active = loginData.FromPage != "Register" ? true : false };
+                var newUser = new User() { name = loginData.Username, email = loginData.Email, approach = loginData.Approach, role = loginData.Role, password = GetHash(loginData.Password + salt), salt = salt, active = false };
 
                 this.__context.Add(newUser);
                 this.__context.SaveChanges();
@@ -103,31 +104,7 @@ namespace Services
         private void SendActivationMail(User user)
         {
             string subject = "Activate your acount.";
-            string body = @"<form action='http://localhost:5000/auth/{id}' method='get'>
-                                    <h1>Hello {title} {name}</h1>
-                                    <p>Click the button below to activate your account.</p>
-                                    <button type='submit' style='display: inline-block;
-                                                                font-weight: 400;
-                                                                text-align: center;
-                                                                white-space: nowrap;
-                                                                vertical-align: middle;
-                                                                -webkit-user-select: none;
-                                                                -moz-user-select: none;
-                                                                -ms-user-select: none;
-                                                                user-select: none;
-                                                                border: 1px solid transparent;
-                                                                padding: .375rem .75rem;
-                                                                font-size: 1rem;
-                                                                line-height: 1.5;
-                                                                border-radius: .25rem;
-                                                                transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color 		.15s ease-in-out,box-shadow .15s ease-in-out;color: #fff;
-                                                                background-color: #007bff;
-                                                                border-color: #007bff;'
-                                    >Activate account</button>
-                                </form>";
-            body = body.Replace("{id}", user.id.ToString());
-            body = body.Replace("{name}", user.name);
-            body = body.Replace("{title}", user.approach != "" ? user.approach : "");
+            string body = ActivationToCSharp.Activation(user);
             this.__mainService.SendEmail(subject, body, true, user.email);
         }
 

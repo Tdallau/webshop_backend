@@ -8,6 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
 
 namespace webshop_backend.Controllers
 {
@@ -17,7 +18,7 @@ namespace webshop_backend.Controllers
     [ApiController]
     public class ShoppingCartController : BasicController
     {
-        public ShoppingCartController(MainContext context) : base(context) { }
+        public ShoppingCartController(MainContext context, IOptions<EmailSettings> settings) : base(context, settings) { }
 
         [HttpGet]
         public ActionResult<ShoppingCard> Get()
@@ -48,15 +49,15 @@ namespace webshop_backend.Controllers
                 var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
 
                 var query = (from ShoppingCard in this.__context.ShoppingCard
-                            join ShoppingCardItem in this.__context.ShoppingCardItem on ShoppingCard.Id equals shoppingCardItem.ShoppingCardId
-                            where ShoppingCard.UserId == userId && ShoppingCardItem.PrintId == shoppingCardItem.PrintId
+                            join ShoppingCardItem in this.__context.ShoppingCardItem on ShoppingCard.Id equals ShoppingCardItem.ShoppingCardId
+                            where ShoppingCard.UserId == userId && ShoppingCardItem.PrintId == shoppingCardItem.PrintId 
                             select ShoppingCardItem).FirstOrDefault();
 
                 if(query != null) {
-                    query.Quantity += shoppingCardItem.Quantity;
+                    query.Quantity = shoppingCardItem.Quantity;
                     this.__context.Update(query);
                     this.__context.SaveChanges();
-                    return Ok();
+                    return Ok(new Response<string>(){ Data = "Item is added to your shoppingcart!", Success = true});
                 }
                 this.__context.Add(shoppingCardItem);
                 this.__context.SaveChanges();
