@@ -22,10 +22,12 @@ namespace Services
     {
         private readonly MainContext __context;
         private readonly MainServcie __mainService;
-        public UserServices(MainContext context, IOptions<EmailSettings> settings)
+        private readonly IOptions<Urls> __urlSettings;
+        public UserServices(MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings)
         {
             this.__context = context;
-            this.__mainService = new MainServcie(context, settings);
+            this.__mainService = new MainServcie(context, settings, urlSettings);
+            this.__urlSettings = urlSettings;
 
         }
         public User IsValidUserAndPasswordCombination(string email, string password)
@@ -104,7 +106,7 @@ namespace Services
         private void SendActivationMail(User user)
         {
             string subject = "Activate your acount.";
-            string body = ActivationToCSharp.Activation(user);
+            string body = ActivationToCSharp.Activation(user, this.__urlSettings);
             this.__mainService.SendEmail(subject, body, true, user.email);
         }
 

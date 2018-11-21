@@ -18,7 +18,7 @@ namespace webshop_backend.Controllers
     [ApiController]
     public class ShoppingCartController : BasicController
     {
-        public ShoppingCartController(MainContext context, IOptions<EmailSettings> settings) : base(context, settings) { }
+        public ShoppingCartController(MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings) : base(context, settings, urlSettings) { }
 
         [HttpGet]
         public ActionResult<ShoppingCard> Get()

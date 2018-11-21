@@ -19,7 +19,7 @@ namespace webshop_backend.Controllers
     [ApiController]
     public class AdminController : BasicController
     {
-        public AdminController (MainContext context, IOptions<EmailSettings> settings) : base(context, settings){}
+        public AdminController (MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings) : base(context, settings, urlSettings){}
 
         // GET api/values
         [HttpGet]

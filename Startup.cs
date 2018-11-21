@@ -65,7 +65,8 @@ namespace webshop_backend
                     ClockSkew = TimeSpan.FromMinutes(5) //5 minute tolerance for the expiration date
                 };
             });
-            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+            services.Configure<EmailSettings>(Configuration.GetSection("emailSettings"));
+            services.Configure<Urls>(Configuration.GetSection("urls"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

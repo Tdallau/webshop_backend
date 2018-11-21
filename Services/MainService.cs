@@ -11,7 +11,7 @@ namespace Services
     {
         private readonly MainContext __context;
         private readonly EmailSettings __EmailSettings;
-        public MainServcie(MainContext context, IOptions<EmailSettings> settings)
+        public MainServcie(MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings)
         {
             this.__context = context;
             this.__EmailSettings = settings.Value;

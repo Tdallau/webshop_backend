@@ -19,9 +19,11 @@ namespace webshop_backend.Controllers
     public class AuthController : BasicController
     {
         private UserServices userServices;
-        public AuthController(MainContext context, IOptions<EmailSettings> settings) : base(context, settings)
+        private Urls urlSettings;
+        public AuthController(MainContext context, IOptions<EmailSettings> emailSettings, IOptions<Urls> urlSettings) : base(context, emailSettings, urlSettings)
         {
-            this.userServices = new UserServices(this.__context, settings);
+            this.userServices = new UserServices(this.__context, emailSettings, urlSettings);
+            this.urlSettings = urlSettings.Value;
         }
 
         [Route("[controller]/login")]
@@ -116,12 +118,12 @@ namespace webshop_backend.Controllers
                     this.__context.Update(query);
                     this.__context.Add(address);
                     this.__context.SaveChanges();
-                    return Redirect("http://145.24.221.126:3000");
+                    return Redirect(this.urlSettings.FrontendUrl);
                 }
-                return Redirect("http://www.google.com");
+                return Redirect(this.urlSettings.FrontendUrl);
             } 
 
-            return Redirect("http://www.google.com");
+            return Redirect(this.urlSettings.FrontendUrl);
 
             
         }

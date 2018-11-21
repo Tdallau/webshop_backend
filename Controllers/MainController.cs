@@ -21,7 +21,7 @@ namespace webshop_backend.Controllers
     [ApiController]
     public class MainController : BasicController
     {
-        public MainController(MainContext context, IOptions<EmailSettings> settings) : base(context, settings) { }
+        public MainController(MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings) : base(context, settings,urlSettings) { }
 
         // GET api/values/5
         [HttpGet("{page_size}/{page_index}")]

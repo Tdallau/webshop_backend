@@ -20,7 +20,7 @@ namespace webshop_backend.Controllers
     [ApiController]
     public class OrderController : BasicController
     {
-        public OrderController(MainContext context, IOptions<EmailSettings> settings) : base(context, settings)
+        public OrderController(MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings) : base(context, settings, urlSettings)
         {
 
         }
