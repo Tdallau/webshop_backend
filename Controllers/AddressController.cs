@@ -12,12 +12,13 @@ using System.Security.Claims;
 
 namespace webshop_backend.Controllers
 {
+    //[Route("api/[controller]")]
     [Route("api/[controller]")]
     [Authorize(Roles = "User")]
     [ApiController]
-    public class AddressControler : BasicController
+    public class AddressController : BasicController
     {
-        public AddressControler(MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings) : base(context, settings, urlSettings)
+        public AddressController(MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings) : base(context, settings, urlSettings)
         {
         }
 
@@ -29,7 +30,7 @@ namespace webshop_backend.Controllers
             var jwttoken = new JwtSecurityToken(userToken);
             var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
 
-            var addresses = (from a in this.__context.Address
+            List<Address> addresses = (from a in this.__context.Address
                              where a.UserId == userId
                              select a).ToList();
 

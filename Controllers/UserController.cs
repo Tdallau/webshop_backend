@@ -27,7 +27,7 @@ namespace webshop_backend.Controllers
 
         // GET api/values
         [HttpGet]
-        public ActionResult<Response<User>> Get()
+        public ActionResult<Response<UserData>> Get()
         {
             var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
             var userToken = token.Split(' ')[1];
@@ -36,9 +36,9 @@ namespace webshop_backend.Controllers
 
             var user = (from u in this.__context.User
                         where u.id == userId
-                        select u).FirstOrDefault();
+                        select new UserData(){ Email = u.email, Name = u.name, Role = u.role}).FirstOrDefault();
 
-            return Ok(new Response<User>()
+            return Ok(new Response<UserData>()
             {
                 Data = user,
                 Success = true

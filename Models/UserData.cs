@@ -10,14 +10,13 @@ namespace Models
 {
     public class UserData
     {
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public string Role { get; set; }
-        public string Nbf { get; set; }
-        public string Exp { get; set; }
-        public string Password { get; set; }
-        public int ShoppingCartId { get; set; }
+        public int? Nbf { get; set; }
+        public int? Exp { get; set; }
+        public int? ShoppingCartId { get; set; }
 
         public string ToToken()
         {
@@ -51,7 +50,7 @@ namespace Models
             string shoppingCartId = jwttoken.Claims.Where(c => c.Type == ClaimTypes.SerialNumber).FirstOrDefault()?.Value;
             string nbf = jwttoken.Claims.Where(c => c.Type == JwtRegisteredClaimNames.Nbf).FirstOrDefault()?.Value;
             string exp = jwttoken.Claims.Where(c => c.Type == JwtRegisteredClaimNames.Exp).FirstOrDefault()?.Value;
-            return new UserData { Name = name, UserId = uid, Email = email, Role = role, Nbf = nbf, Exp = exp, Password = null, ShoppingCartId = int.Parse(shoppingCartId) };
+            return new UserData { Name = name, UserId = uid, Email = email, Role = role, Nbf = int.Parse(nbf), Exp = int.Parse(exp), ShoppingCartId = int.Parse(shoppingCartId) };
         }
 
     }

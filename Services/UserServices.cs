@@ -1,4 +1,5 @@
 using System;
+using BCrypt.Net;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -42,7 +43,7 @@ namespace Services
                 var curUser = query.First();
                 if (curUser != null)
                 {
-                    if (curUser.password == GetHash(password + curUser.salt))
+                    if (BCrypt.Net.BCrypt.Verify(password + curUser.salt, curUser.password))
                     {
                         return curUser;
                     }
@@ -62,7 +63,7 @@ namespace Services
             try
             {
                 var salt = GetSalt();
-                var newUser = new User() { name = loginData.Username, email = loginData.Email, approach = loginData.Approach, role = loginData.Role, password = GetHash(loginData.Password + salt), salt = salt, active = false };
+                var newUser = new User() { name = loginData.Username, email = loginData.Email, approach = loginData.Approach, role = loginData.Role, password = BCrypt.Net.BCrypt.HashPassword(loginData.Password + salt), salt = salt, active = false };
 
                 this.__context.Add(newUser);
                 this.__context.SaveChanges();
@@ -79,18 +80,6 @@ namespace Services
                 return false;
             }
 
-        }
-
-
-        private string GetHash(string password)
-        {
-            using (var sha256 = SHA256.Create())
-            {
-                // Send a sample text to hash.  
-                var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-                // Get the hashed string.  
-                return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
-            }
         }
 
         private string GetSalt()

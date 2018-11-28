@@ -21,7 +21,7 @@ namespace webshop_backend.Controllers
     [ApiController]
     public class MainController : BasicController
     {
-        public MainController(MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings) : base(context, settings,urlSettings) { }
+        public MainController(MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings) : base(context, settings, urlSettings) { }
 
         // GET api/values/5
         [HttpGet("{page_size}/{page_index}")]
@@ -33,7 +33,8 @@ namespace webshop_backend.Controllers
             //             join ImagesUrl in this.__context.ImagesUrl on PrintFace.id equals ImagesUrl.printFace.id
             //             where Print.price != null && Print.isLatest
             //             select new { Print.Id, CardFaces.name, Print.price, Image = ImagesUrl.normal };
-            if(this.__context.ProductList.Count() != 0) {
+            if (this.__context.ProductList.Count() != 0)
+            {
                 return Ok(this.__context.ProductList.Skip(page_size * (page_index - 1)).Take(page_size));
                 // return Ok(query.Skip(page_size * (page_index - 1)).Take(page_size));
             }
@@ -47,6 +48,12 @@ namespace webshop_backend.Controllers
                         join CardFaces in this.__context.CardFaces on Print.Card.Id equals CardFaces.card.Id
                         join PrintFace in this.__context.PrintFace on Print.Id equals PrintFace.PrintId
                         join ImagesUrl in this.__context.ImagesUrl on PrintFace.id equals ImagesUrl.printFace.id
+                        let mana = (from Costs in this.__context.Costs
+                                    from CostSymbols in this.__context.CostSymbols
+                                    join SymbolsInCosts in this.__context.SymbolsInCosts on Costs.id equals SymbolsInCosts.cost.id
+                                    where Costs.id == CardFaces.manaCost.id && SymbolsInCosts.symbol.id == CostSymbols.id
+                                    select CostSymbols
+                                    ).ToList()
                         where Print.Id == id
                         select new
                         {
@@ -59,7 +66,8 @@ namespace webshop_backend.Controllers
                             CardFaces.oracleText,
                             PrintFace.flavorText,
                             Image = ImagesUrl.large,
-                            CardFaceId =  CardFaces.id
+                            CardFaceId = CardFaces.id,
+                            mana = mana
                         }).FirstOrDefault();
 
             if (card != null)
@@ -75,14 +83,17 @@ namespace webshop_backend.Controllers
                 var tl = "";
                 for (int i = 0; i < typeLine.Count; i++)
                 {
-                    if( i != typeLine.Count - 1) {
+                    if (i != typeLine.Count - 1)
+                    {
                         tl += typeLine[i].TypeName + " ";
-                    } else {
+                    }
+                    else
+                    {
                         tl += typeLine[i].TypeName;
                     }
                 }
-                
-                return Ok(new {Id = card.Printid, card.name, card.Image, card.flavorText, card.oracleText, card.loyalty, card.power, card.toughness, card.price, TypeLine = tl});
+
+                return Ok(new { Id = card.Printid, card.name, card.Image, card.flavorText, card.oracleText, card.loyalty, card.power, card.toughness, card.price, TypeLine = tl, card.mana});
             }
 
             return UnprocessableEntity();
