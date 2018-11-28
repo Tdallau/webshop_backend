@@ -10,34 +10,52 @@ using Models;
 using webshop_backend;
 using Microsoft.AspNetCore.Cors;
 using Models.DB;
+using Microsoft.Extensions.Options;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace webshop_backend.Controllers
 {
-    [EnableCors("MyPolicy")]
     [Route("api/[controller]")]
     [Authorize(Roles = "User")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : BasicController
     {
-        private readonly MainContext __context;
-        public UserController(MainContext context)
+        public UserController(MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings) : base(context, settings, urlSettings)
         {
-            this.__context = context;
         }
 
         // GET api/values
         [HttpGet]
-        public ActionResult<string> Get()
+        public ActionResult<Response<User>> Get()
         {
-            return "end";
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+            var userToken = token.Split(' ')[1];
+            var jwttoken = new JwtSecurityToken(userToken);
+            var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
+
+            var user = (from u in this.__context.User
+                        where u.id == userId
+                        select u).FirstOrDefault();
+
+            return Ok(new Response<User>()
+            {
+                Data = user,
+                Success = true
+            });
         }
 
         // GET api/values/5
         [HttpPut]
         public ActionResult<Response<string>> Put([FromBody] User user)
         {
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+            var userToken = token.Split(' ')[1];
+            var jwttoken = new JwtSecurityToken(userToken);
+            var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
+
             var cu = (from u in this.__context.User
-                      where u.id == user.id
+                      where u.id == userId
                       select u).FirstOrDefault();
 
             if (user.email != "" && user.name != "" && user.role == cu.role)

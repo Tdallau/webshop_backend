@@ -7,10 +7,12 @@ using System.IdentityModel.Tokens.Jwt;
 using Services;
 using Microsoft.Extensions.Options;
 using Models;
+using Microsoft.AspNetCore.Cors;
 
 namespace webshop_backend.Controllers
 {
-    public abstract class BasicController : ControllerBase
+    [EnableCors("MyPolicy")]
+    public class BasicController : ControllerBase
     {
         protected readonly MainContext __context;
         protected readonly MainServcie mainServcie;
