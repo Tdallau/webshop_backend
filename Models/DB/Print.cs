@@ -18,6 +18,7 @@ namespace Models.DB
 		public bool fullArt {get; set;}
 		public Language language {get;set;}
 		public bool isLatest {get;set;}
+		public int? stock {get; set;}
 
 	}
 }
