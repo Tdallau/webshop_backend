@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using webshop_backend.html.order;
+using webshop_backend.Models.DB;
 
 namespace webshop_backend.Controllers
 {
@@ -51,6 +52,8 @@ namespace webshop_backend.Controllers
                     print.stock = stock;
                     this.__context.Update(print);
                     this.__context.SaveChanges();
+
+                    this.UpdateSales(item);
 
                     var price = print?.price;
                     if (price != null)
@@ -98,6 +101,32 @@ namespace webshop_backend.Controllers
 
             this.mainServcie.SendEmail("Your order has been placed!", body, true, user.email);
 
+
+        }
+        private void UpdateSales(ShoppingCardItem item)
+        {
+            var sale = (from s in this.__context.Sales
+                        where s.PrintId == item.PrintId
+                        select s).FirstOrDefault();
+
+            if (sale != null)
+            {
+                sale.NumberOfOrders += 1;
+                sale.Quantity += item.Quantity;
+                this.__context.Update(sale);
+            }
+            else
+            {
+                var newSale = new Sales()
+                {
+                    NumberOfOrders = 1,
+                    PrintId = item.PrintId,
+                    Quantity = item.Quantity
+                };
+                this.__context.Add(newSale);
+            }
+
+            this.__context.SaveChanges();
 
         }
     }

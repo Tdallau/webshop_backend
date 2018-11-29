@@ -42,6 +42,8 @@ namespace Contexts
         public DbSet<Decks> Decks {get; set;}
         public DbSet<CardsDeck> CardsDecks {get; set;}
 
+        public DbSet<Sales> Sales {get; set;}
+
         public DbQuery<ProductList> ProductList {get; set;}
         //*/
         protected override void OnModelCreating(ModelBuilder modelBuilder)
