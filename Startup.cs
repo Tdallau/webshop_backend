@@ -15,6 +15,8 @@ using Microsoft.IdentityModel.Tokens;
 using Contexts;
 using Microsoft.EntityFrameworkCore;
 using Models;
+using Hangfire.MySql.Core;
+using Hangfire;
 
 namespace webshop_backend
 {
@@ -30,6 +32,13 @@ namespace webshop_backend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHangfire(configuration =>
+            {
+                configuration.UseStorage(
+                    new MySqlStorage(ConfigurationManager.AppSetting.GetConnectionString("hangfireConnection"))
+                );
+            });
+
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
                 builder.AllowAnyOrigin()
@@ -38,16 +47,16 @@ namespace webshop_backend
                     .AllowCredentials();
             }));
 
-            services.AddDbContext<MainContext> (
+            services.AddDbContext<MainContext>(
                  opt => opt.UseMySql(ConfigurationManager.AppSetting.GetConnectionString("DefaultConnection"))
             );
-                 //.u(@"Host=localhost;Database=MovieDB;Username=postgres;Password=postgres"));
+            //.u(@"Host=localhost;Database=MovieDB;Username=postgres;Password=postgres"));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddAuthentication(options =>
             {
-                options.DefaultAuthenticateScheme = "Jwt";  
-                options.DefaultChallengeScheme = "Jwt";              
+                options.DefaultAuthenticateScheme = "Jwt";
+                options.DefaultChallengeScheme = "Jwt";
             }).AddJwtBearer("Jwt", options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -56,10 +65,10 @@ namespace webshop_backend
                     //ValidAudience = "the audience you want to validate",
                     ValidateIssuer = false,
                     //ValidIssuer = "the isser you want to validate",
-                    
+
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(ConfigurationManager.AppSetting["SuperSecretKey"])), 
-                    
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(ConfigurationManager.AppSetting["SuperSecretKey"])),
+
                     ValidateLifetime = true, //validate the expiration and not before values in the token
 
                     ClockSkew = TimeSpan.FromMinutes(5) //5 minute tolerance for the expiration date
@@ -67,11 +76,14 @@ namespace webshop_backend
             });
             services.Configure<EmailSettings>(Configuration.GetSection("emailSettings"));
             services.Configure<Urls>(Configuration.GetSection("urls"));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseHangfireServer();
+            app.UseHangfireDashboard();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -80,7 +92,7 @@ namespace webshop_backend
             {
                 app.UseHsts();
             }
-            
+
 
             app.UseCors("MyPolicy");
             app.UseAuthentication();

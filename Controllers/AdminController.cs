@@ -11,12 +11,13 @@ using webshop_backend;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.Extensions.Options;
 using webshop_backend.Services;
+using Hangfire;
 
 namespace webshop_backend.Controllers
 {
     [EnableCors("MyPolicy")]
     [Route("api/[controller]/[action]")]
-    [Authorize(Roles="Admin")]
+    // [Authorize(Roles="Admin")]
     [ApiController]
     public class AdminController : BasicController
     {
@@ -27,9 +28,19 @@ namespace webshop_backend.Controllers
         [HttpGet]
         public ActionResult<Response<string>> InsertRandomStock()
         {
-            StockService.SetRandomStock(this.__context);
+            BackgroundJob.Enqueue(() => InsertStock());
             return Ok(new Response<string>(){
                 Data = "Stock Is filled with random values!!",
+                Success = true
+            });
+        }
+
+        [HttpGet]
+        public ActionResult<Response<string>> InsertCartPrice()
+        {
+            BackgroundJob.Enqueue(() => InsertPrice());
+            return Ok(new Response<string>(){
+                Data = "Price is updating",
                 Success = true
             });
         }
@@ -43,6 +54,15 @@ namespace webshop_backend.Controllers
                 Data = "Stock Is Updated!",
                 Success = true
             });
+        }
+
+        public void InsertStock() {
+            StockService.SetRandomStock(this.__context);
+        }
+
+        public void InsertPrice() {
+            var admin = new AdminService();
+            admin.Main(this.__context);
         }
 
     }

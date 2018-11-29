@@ -36,7 +36,7 @@ namespace webshop_backend.Controllers
 
             var user = (from u in this.__context.User
                         where u.id == userId
-                        select new UserData(){ Email = u.email, Name = u.name, Role = u.role}).FirstOrDefault();
+                        select new UserData(){ Email = u.email, Name = u.name, Role = u.role, Approach = u.approach}).FirstOrDefault();
 
             return Ok(new Response<UserData>()
             {

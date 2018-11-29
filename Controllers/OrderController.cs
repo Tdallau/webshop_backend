@@ -42,14 +42,30 @@ namespace webshop_backend.Controllers
             this.__context.SaveChanges();
             foreach (var item in shoppingCartItem)
             {
-                var query = (from Print in this.__context.Print
+                var print = (from Print in this.__context.Print
                              where Print.Id == item.PrintId
                              select Print).FirstOrDefault();
-                var price = query?.price;
-                if (price != null)
+                var stock = print.stock - item.Quantity;
+                if (stock >= 0)
                 {
-                    var orderItem = new OrderProduct() { orderId = order.id, price = (int)price, quantity = item.Quantity, PrintId = item.PrintId };
-                    this.__context.Add(orderItem);
+                    print.stock = stock;
+                    this.__context.Update(print);
+                    this.__context.SaveChanges();
+
+                    var price = print?.price;
+                    if (price != null)
+                    {
+                        var orderItem = new OrderProduct() { orderId = order.id, price = (int)price, quantity = item.Quantity, PrintId = item.PrintId };
+                        this.__context.Add(orderItem);
+                    }
+                }
+                else
+                {
+                    return Ok(new Response<string>()
+                    {
+                        Data = $"not enough {print.Id} more in stock! Just {print.stock} over.",
+                        Success = false
+                    });
                 }
             }
             foreach (var item in shoppingCartItem)
@@ -70,8 +86,8 @@ namespace webshop_backend.Controllers
                          select User).FirstOrDefault();
 
             Address address = (from Address in this.__context.Address
-                              where Address.UserId == order.userId
-                              select Address).FirstOrDefault();
+                               where Address.UserId == order.userId
+                               select Address).FirstOrDefault();
             List<OrderTable> orderitems = (from OrderProduct in this.__context.OrderProduct
                                            join Print in this.__context.Print on OrderProduct.PrintId equals Print.Id
                                            join CartFaces in this.__context.CardFaces on Print.Card.Id equals CartFaces.card.Id

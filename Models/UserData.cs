@@ -14,6 +14,7 @@ namespace Models
         public string Name { get; set; }
         public string Email { get; set; }
         public string Role { get; set; }
+        public string Approach {get; set;}
         public int? Nbf { get; set; }
         public int? Exp { get; set; }
         public int? ShoppingCartId { get; set; }

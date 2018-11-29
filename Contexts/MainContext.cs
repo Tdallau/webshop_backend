@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Models.DB;
 using webshop_backend;
 using Models;
+using webshop_backend.Models.DB;
 
 namespace Contexts
 {
@@ -38,6 +39,8 @@ namespace Contexts
         public DbSet<Language> Languages { get; set; }
         public DbSet<ColorCombinations> ColorCombinations { get; set; }
         public DbSet<ColorsInCombinations> ColorsInCombinations { get; set; }
+        public DbSet<Decks> Decks {get; set;}
+        public DbSet<CardsDeck> CardsDecks {get; set;}
 
         public DbQuery<ProductList> ProductList {get; set;}
         //*/

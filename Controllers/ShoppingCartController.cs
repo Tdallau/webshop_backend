@@ -14,7 +14,7 @@ namespace webshop_backend.Controllers
 {
     [EnableCors("MyPolicy")]
     [Route("api/[controller]")]
-    [Authorize(Roles="User")]
+    [Authorize(Roles = "User")]
     [ApiController]
     public class ShoppingCartController : BasicController
     {
@@ -34,6 +34,8 @@ namespace webshop_backend.Controllers
                         join CardFaces in this.__context.CardFaces on Print.Card.Id equals CardFaces.card.Id
                         where ShoppingCard.UserId == userId
                         select new { Id = ShoppingCardItem.PrintId, CardFaces.name, ShoppingCardItem.Quantity, PriceNum = Print.price, PriceTotal = "", Price = "", PriceTotalNum = -1 };
+
+
             return Ok(query);
         }
 
@@ -49,22 +51,49 @@ namespace webshop_backend.Controllers
                 var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
 
                 var query = (from ShoppingCard in this.__context.ShoppingCard
-                            join ShoppingCardItem in this.__context.ShoppingCardItem on ShoppingCard.Id equals ShoppingCardItem.ShoppingCardId
-                            where ShoppingCard.UserId == userId && ShoppingCardItem.PrintId == shoppingCardItem.PrintId 
-                            select ShoppingCardItem).FirstOrDefault();
+                             join ShoppingCardItem in this.__context.ShoppingCardItem on ShoppingCard.Id equals ShoppingCardItem.ShoppingCardId
+                             where ShoppingCard.UserId == userId && ShoppingCardItem.PrintId == shoppingCardItem.PrintId
+                             select ShoppingCardItem).FirstOrDefault();
 
-                if(query != null) {
-                    query.Quantity = shoppingCardItem.Quantity;
-                    this.__context.Update(query);
+                var print = (from p in this.__context.Print
+                             where p.Id == shoppingCardItem.PrintId
+                             select p).FirstOrDefault();
+
+                if (query != null)
+                {
+                    var stock = print.stock - (shoppingCardItem.Quantity - query.Quantity);
+                    if (shoppingCardItem.Quantity > 0)
+                    {
+                        if (stock > 0)
+                        {
+                            query.Quantity = shoppingCardItem.Quantity;
+                            this.__context.Update(query);
+                            this.__context.SaveChanges();
+                            return Ok(new Response<string>() { Data = "Item is added to your shoppingcart!", Success = true });
+                        }
+                        return Ok(new Response<string>()
+                        {
+                            Data = "not enough products in stock",
+                            Success = false
+                        });
+
+                    }
+                    this.__context.Remove(query);
                     this.__context.SaveChanges();
-                    return Ok(new Response<string>(){ Data = "Item is added to your shoppingcart!", Success = true});
+                    return Ok(new Response<string>() { Data = "Item is Removed to your shoppingcart!", Success = true });
                 }
-                this.__context.Add(shoppingCardItem);
-                this.__context.SaveChanges();
-                return Ok(new Response<string>(){ Data = "Item is added to your shoppingcart!", Success = true});
+                if (print.stock > 0)
+                {
+                    this.__context.Add(shoppingCardItem);
+                    this.__context.SaveChanges();
+                    return Ok(new Response<string>() { Data = "Item is added to your shoppingcart!", Success = true });
+                }
+                return Ok(new Response<string>() { Data = "Item is out of stock!", Success = false });
+
             }
             return UnprocessableEntity();
 
         }
     }
+
 }
