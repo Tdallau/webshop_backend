@@ -19,11 +19,9 @@ namespace webshop_backend.Controllers
     public class AuthController : BasicController
     {
         private UserServices userServices;
-        private Urls urlSettings;
         public AuthController(MainContext context, IOptions<EmailSettings> emailSettings, IOptions<Urls> urlSettings) : base(context, emailSettings, urlSettings)
         {
             this.userServices = new UserServices(this.__context, emailSettings, urlSettings);
-            this.urlSettings = urlSettings.Value;
         }
 
         [Route("[controller]/login")]

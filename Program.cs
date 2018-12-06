@@ -19,7 +19,6 @@ namespace webshop_backend
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseUrls("http://145.137.62.177:5000")
                 .UseStartup<Startup>();
     }
 }
