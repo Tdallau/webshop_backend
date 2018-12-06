@@ -24,7 +24,16 @@ namespace webshop_backend.Controllers
         {
 
             var Decks = (from d in this.__context.Decks
-                         select d).ToList();
+                        join p in this.__context.Print on d.Commander equals p.Id
+                        join pf in this.__context.PrintFace on p.Id equals pf.PrintId
+                        join iu in this.__context.ImagesUrl on pf.id equals iu.printFace.id
+                         select new {
+                             name = d.Name,
+                             image = iu.art_crop,
+                             fullImage = iu.normal,
+                             id = d.Id
+
+                         }).ToList();
 
             return Ok(Decks);
         }

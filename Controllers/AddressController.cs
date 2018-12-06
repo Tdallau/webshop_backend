@@ -28,17 +28,29 @@ namespace webshop_backend.Controllers
             var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
             var userToken = token.Split(' ')[1];
             var jwttoken = new JwtSecurityToken(userToken);
+
             var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
 
             List<Address> addresses = (from a in this.__context.Address
-                             where a.UserId == userId
-                             select a).ToList();
+                                       where a.UserId == userId
+                                       select a).ToList();
 
-            return Ok(new Response<List<Address>>()
+            if (addresses.Count != 0)
             {
-                Data = addresses,
-                Success = true
-            });
+                return Ok(new Response<List<Address>>()
+                {
+                    Data = addresses,
+                    Success = true
+                });
+            }
+
+            return StatusCode(409, new Response<string>()
+                {
+                    Data = "No addresses found!!",
+                    Success = false
+                });
+
+
         }
 
         [HttpPost]
@@ -61,10 +73,10 @@ namespace webshop_backend.Controllers
                 });
             }
 
-            return Ok(new Response<string>()
+            return StatusCode(409, new Response<string>()
             {
-                Data = "addresses is added!",
-                Success = true
+                Data = "addresses is not added!",
+                Success = false
             });
         }
 

@@ -64,7 +64,7 @@ namespace webshop_backend.Controllers
                 }
                 else
                 {
-                    return Ok(new Response<string>()
+                    return StatusCode(409, new Response<string>()
                     {
                         Data = $"not enough {print.Id} more in stock! Just {print.stock} over.",
                         Success = false
