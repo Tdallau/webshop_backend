@@ -40,7 +40,7 @@ namespace Contexts
         public DbSet<ColorCombinations> ColorCombinations { get; set; }
         public DbSet<ColorsInCombinations> ColorsInCombinations { get; set; }
         public DbSet<Decks> Decks {get; set;}
-        public DbSet<CardsDeck> CardsDecks {get; set;}
+        public DbSet<CardsDeck> CardsDeck {get; set;}
 
         public DbSet<Sales> Sales {get; set;}
 

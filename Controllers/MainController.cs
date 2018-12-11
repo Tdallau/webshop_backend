@@ -13,6 +13,7 @@ using Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using webshop_backend.Models;
 
 namespace webshop_backend.Controllers
 {
@@ -78,22 +79,11 @@ namespace webshop_backend.Controllers
                                 join TypeLine in this.__context.TypeLine on TypesInLine.line.id equals TypeLine.id
                                 join CardFaces in this.__context.CardFaces on TypeLine.id equals CardFaces.typeLine.id
                                 where CardFaces.id == printfaceid
-                                select new { TypeName = Types.typeName }).ToList();
+                                select new Typeline{ TypeName = Types.typeName }).ToList();
 
-                var tl = "";
-                for (int i = 0; i < typeLine.Count; i++)
-                {
-                    if (i != typeLine.Count - 1)
-                    {
-                        tl += typeLine[i].TypeName + " ";
-                    }
-                    else
-                    {
-                        tl += typeLine[i].TypeName;
-                    }
-                }
+                var tl = CardResponse.GetTypeLine(typeLine);
 
-                return Ok(new { Id = card.Printid, card.name, card.Image, card.flavorText, card.oracleText, card.loyalty, card.power, card.toughness, card.price, TypeLine = tl, card.mana});
+                return Ok(new CardResponse{ Id = card.Printid, Name = card.name, Image = card.Image, FlavorText = card.flavorText, OracleText = card.oracleText, Loyalty = card.loyalty, Power = card.power, Toughness = card.toughness, Price = card.price, TypeLine = tl, Mana = card.mana});
             }
 
             return UnprocessableEntity();
@@ -101,4 +91,5 @@ namespace webshop_backend.Controllers
         }
     }
 
+    
 }
