@@ -37,6 +37,11 @@ namespace webshop_backend.Controllers
 
             return Ok(Decks);
         }
+        
+        [HttpGet]
+        public ActionResult<DeckResponse> GetDeckById(int deckId) {
+            
+        }
 
         [HttpPost]
         public ActionResult<List<Decks>> Post([FromBody] Decks deck)
