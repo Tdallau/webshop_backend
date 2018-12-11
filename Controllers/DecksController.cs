@@ -22,23 +22,26 @@ namespace webshop_backend.Controllers
         public DecksController(MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings) : base(context, settings, urlSettings) { }
 
         [HttpGet]
-        public ActionResult<List<Decks>> Get()
+        public ActionResult<Response<List<Decks>>> Get()
         {
 
             var Decks = (from d in this.__context.Decks
                          join p in this.__context.Print on d.Commander equals p.Id
                          join pf in this.__context.PrintFace on p.Id equals pf.PrintId
                          join iu in this.__context.ImagesUrl on pf.id equals iu.printFace.id
-                         select new
+                         select new DeckResponse()
                          {
-                             name = d.Name,
-                             image = iu.art_crop,
-                             fullImage = iu.normal,
-                             id = d.Id
+                             Name = d.Name,
+                             Image = iu.art_crop,
+                             FullImage = iu.normal,
+                             Id = d.Id
 
                          }).ToList();
 
-            return Ok(Decks);
+            return Ok(new Response<List<DeckResponse>>(){
+                Data = Decks,
+                Success = true
+            });
         }
 
         [HttpGet("{deckId}")]
@@ -84,7 +87,7 @@ namespace webshop_backend.Controllers
                             }
                         ).ToList()
                         where d.Id == deckId
-                        select new DeckResponse()
+                        select new DeckResponseWithCards()
                         {
                             Name = d.Name,
                             Id = d.Id,
@@ -123,7 +126,10 @@ namespace webshop_backend.Controllers
             var Decks = (from d in this.__context.Decks
                          select d).ToList();
 
-            return Ok(Decks);
+            return Ok(new Response<string>() {
+                Data = "Deck is created!!",
+                Success = true
+            });
         }
     
         [HttpPost("addCard")]

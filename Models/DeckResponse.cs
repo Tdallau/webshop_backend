@@ -11,8 +11,6 @@ namespace Models
     public string Name {get; set; }
     public string Image {get; set;}
     public string FullImage {get; set;}
-
-    public List<CardResponse> Cards { get; set; }
   }
 
 }
