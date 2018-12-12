@@ -52,6 +52,7 @@ namespace webshop_backend.Controllers
                         join Commander in this.__context.Print on d.Commander equals Commander.Id
                         join Commanderpf in this.__context.PrintFace on Commander.Id equals Commanderpf.PrintId
                         join Commanderiu in this.__context.ImagesUrl on Commanderpf.id equals Commanderiu.printFace.id
+                        join Commandercf in this.__context.CardFaces on Commander.Card.Id equals Commandercf.card.Id
                         let cards = (
                             from cd in this.__context.CardsDeck
                             join p in this.__context.Print on cd.print.Id equals p.Id
@@ -90,6 +91,7 @@ namespace webshop_backend.Controllers
                         select new DeckResponseWithCards()
                         {
                             Name = d.Name,
+                            CommanderName = Commandercf.name,
                             Id = d.Id,
                             Image = Commanderiu.art_crop,
                             FullImage = Commanderiu.normal,
@@ -123,11 +125,10 @@ namespace webshop_backend.Controllers
             this.__context.Add(newDeck);
             this.__context.SaveChanges();
 
-            var Decks = (from d in this.__context.Decks
-                         select d).ToList();
-
-            return Ok(new Response<string>() {
-                Data = "Deck is created!!",
+            return Ok(new Response<dynamic>() {
+                Data = new {
+                    DeckId = newDeck.Id 
+                },
                 Success = true
             });
         }
