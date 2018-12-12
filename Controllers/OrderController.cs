@@ -38,48 +38,61 @@ namespace webshop_backend.Controllers
                                     where ShoppingCardItem.ShoppingCardId == shoppingCart.Id
                                     select ShoppingCardItem).ToList();
 
-            var order = new Order() { userId = shoppingCart.UserId, addressId = 1, status = "Ordered" };
-            this.__context.Add(order);
-            this.__context.SaveChanges();
-            foreach (var item in shoppingCartItem)
+            var address = (from a in this.__context.Address
+                           where a.UserId == shoppingCart.UserId
+                           select a).ToList();
+
+
+            if (shoppingCartItem.Count != 0 && address.Count != 0)
             {
-                var print = (from Print in this.__context.Print
-                             where Print.Id == item.PrintId
-                             select Print).FirstOrDefault();
-                var stock = print.stock - item.Quantity;
-                if (stock >= 0)
+
+                var order = new Order() { userId = shoppingCart.UserId, addressId = 1, status = "Ordered" };
+                this.__context.Add(order);
+                this.__context.SaveChanges();
+                foreach (var item in shoppingCartItem)
                 {
-                    print.stock = stock;
-                    this.__context.Update(print);
-                    this.__context.SaveChanges();
-
-                    this.UpdateSales(item);
-
-                    var price = print?.price;
-                    if (price != null)
+                    var print = (from Print in this.__context.Print
+                                 where Print.Id == item.PrintId
+                                 select Print).FirstOrDefault();
+                    var stock = print.stock - item.Quantity;
+                    if (stock >= 0)
                     {
-                        var orderItem = new OrderProduct() { orderId = order.id, price = (int)price, quantity = item.Quantity, PrintId = item.PrintId };
-                        this.__context.Add(orderItem);
+                        print.stock = stock;
+                        this.__context.Update(print);
+                        this.__context.SaveChanges();
+
+                        this.UpdateSales(item);
+
+                        var price = print?.price;
+                        if (price != null)
+                        {
+                            var orderItem = new OrderProduct() { orderId = order.id, price = (int)price, quantity = item.Quantity, PrintId = item.PrintId };
+                            this.__context.Add(orderItem);
+                        }
+                    }
+                    else
+                    {
+                        return StatusCode(409, new Response<string>()
+                        {
+                            Data = $"not enough {print.Id} more in stock! Just {print.stock} left.",
+                            Success = false
+                        });
                     }
                 }
-                else
+                foreach (var item in shoppingCartItem)
                 {
-                    return StatusCode(409, new Response<string>()
-                    {
-                        Data = $"not enough {print.Id} more in stock! Just {print.stock} over.",
-                        Success = false
-                    });
+                    this.__context.Remove(item);
                 }
+                this.__context.SaveChanges();
+
+
+                this.SendConformation(order);
+                return Ok(new Response<string> { Data = "Your order has been placed!", Success = true });
             }
-            foreach (var item in shoppingCartItem)
+            else
             {
-                this.__context.Remove(item);
+                return Ok(new Response<string> { Data = "Your shoppingcard is empty!!", Success = false });
             }
-            this.__context.SaveChanges();
-
-
-            this.SendConformation(order);
-            return Ok(new Response<string> { Data = "Your order has been placed!", Success = true });
         }
 
         private void SendConformation(Order order)
@@ -100,8 +113,6 @@ namespace webshop_backend.Controllers
             var body = OrderToCSharp.Order(user, address, orderitems);
 
             this.mainServcie.SendEmail("Your order has been placed!", body, true, user.email);
-
-
         }
         private void UpdateSales(ShoppingCardItem item)
         {

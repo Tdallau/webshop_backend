@@ -78,9 +78,8 @@ namespace webshop_backend.Controllers
                         });
 
                     }
-                    this.__context.Remove(query);
-                    this.__context.SaveChanges();
-                    return Ok(new Response<string>() { Data = "Item is Removed to your shoppingcart!", Success = true });
+                    
+                    return Ok(new Response<string>() { Data = "You can not go below 1.", Success = true });
                 }
                 if (print.stock > 0)
                 {
@@ -93,6 +92,30 @@ namespace webshop_backend.Controllers
             }
             return UnprocessableEntity();
 
+        }
+        [HttpDelete]
+        public ActionResult<Response<string>> DeleteItem([FromBody] ShoppingCardItem shoppingCardItem) {
+
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+                var userToken = token.Split(' ')[1];
+                var jwttoken = new JwtSecurityToken(userToken);
+                var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
+
+            var product = (
+                from ShoppingCard in this.__context.ShoppingCard
+                join ShoppingCardItem in this.__context.ShoppingCardItem on ShoppingCard.Id equals ShoppingCardItem.ShoppingCardId
+                where ShoppingCard.UserId == userId && 
+                      ShoppingCardItem.PrintId == shoppingCardItem.PrintId
+                select ShoppingCardItem
+            ).FirstOrDefault();
+
+            this.__context.Remove(product);
+            this.__context.SaveChanges();
+
+            return Ok(new Response<string>(){
+                Data = "Item is removed from your Shoppingcart!!",
+                Success = true
+            });
         }
     }
 

@@ -26,17 +26,23 @@ namespace webshop_backend.Controllers
 
         // GET api/values/5
         [HttpGet("{page_size}/{page_index}")]
-        public IActionResult Get(int page_size, int page_index)
+        public ActionResult<Response<dynamic>> Get(int page_size, int page_index)
         {
-            // var query = from Print in this.__context.Print
-            //             join CardFaces in this.__context.CardFaces on Print.Card.Id equals CardFaces.card.Id
-            //             join PrintFace in this.__context.PrintFace on Print.Id equals PrintFace.PrintId
-            //             join ImagesUrl in this.__context.ImagesUrl on PrintFace.id equals ImagesUrl.printFace.id
-            //             where Print.price != null && Print.isLatest
-            //             select new { Print.Id, CardFaces.name, Print.price, Image = ImagesUrl.normal };
             if (this.__context.ProductList.Count() != 0)
             {
-                return Ok(this.__context.ProductList.Skip(page_size * (page_index - 1)).Take(page_size));
+
+                int totalCards = this.__context.ProductList.Count();
+                int totalPages = totalCards % page_size == 0 ? ((int)totalCards / page_size) : (int)(totalCards / page_size + 1);   
+
+                return Ok(new Response<dynamic>(){
+                    Data = new {
+                        Cards = this.__context.ProductList.Skip(page_size * (page_index - 1)).Take(page_size),
+                        PageSize = page_size,
+                        Page = page_index,
+                        TotalPages =  totalPages
+                    },
+                    Success = true
+                });
                 // return Ok(query.Skip(page_size * (page_index - 1)).Take(page_size));
             }
             return UnprocessableEntity();
