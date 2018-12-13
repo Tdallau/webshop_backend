@@ -38,7 +38,8 @@ namespace webshop_backend.Controllers
 
                          }).ToList();
 
-            return Ok(new Response<List<DeckResponse>>(){
+            return Ok(new Response<List<DeckResponse>>()
+            {
                 Data = Decks,
                 Success = true
             });
@@ -60,26 +61,33 @@ namespace webshop_backend.Controllers
                             join cf in this.__context.CardFaces on p.Card.Id equals cf.card.Id
                             join ImagesUrl in this.__context.ImagesUrl on PrintFace.id equals ImagesUrl.printFace.id
                             let tl = (from TypesInLine in this.__context.TypesInLine
-                                join Types in this.__context.Types on TypesInLine.type.id equals Types.id
-                                join TypeLine in this.__context.TypeLine on TypesInLine.line.id equals TypeLine.id
-                                join CardFaces in this.__context.CardFaces on TypeLine.id equals CardFaces.typeLine.id
-                                where CardFaces.id == cf.id
-                                select new Typeline{ TypeName = Types.typeName }
+                                      join Types in this.__context.Types on TypesInLine.type.id equals Types.id
+                                      join TypeLine in this.__context.TypeLine on TypesInLine.line.id equals TypeLine.id
+                                      join CardFaces in this.__context.CardFaces on TypeLine.id equals CardFaces.typeLine.id
+                                      where CardFaces.id == cf.id
+                                      select new Typeline { TypeName = Types.typeName }
                             ).ToList()
                             let mana = (from Costs in this.__context.Costs
-                                    from CostSymbols in this.__context.CostSymbols
-                                    join SymbolsInCosts in this.__context.SymbolsInCosts on Costs.id equals SymbolsInCosts.cost.id
-                                    where Costs.id == cf.manaCost.id && SymbolsInCosts.symbol.id == CostSymbols.id
-                                    select CostSymbols
+                                        from CostSymbols in this.__context.CostSymbols
+                                        join SymbolsInCosts in this.__context.SymbolsInCosts on Costs.id equals SymbolsInCosts.cost.id
+                                        where Costs.id == cf.manaCost.id && SymbolsInCosts.symbol.id == CostSymbols.id
+                                        select CostSymbols
+                            ).ToList()
+                            let color = (from cic in this.__context.ColorsInCombinations
+                                        join c in this.__context.Color on cic.color.Id equals c.Id
+                                        where cic.combination.id == cf.color.id
+                                        select c.symbol
                             ).ToList()
                             where cd.deck.Id == d.Id
-                            select new CardResponse() {
+                            select new CardResponse()
+                            {
                                 Id = p.Id,
                                 FlavorText = PrintFace.flavorText,
                                 TypeLine = CardResponse.GetTypeLine(tl),
                                 Image = ImagesUrl.small,
                                 Loyalty = cf.loyalty,
                                 Mana = mana,
+                                Color = color,
                                 Name = cf.name,
                                 OracleText = cf.oracleText,
                                 Power = cf.power,
@@ -99,7 +107,8 @@ namespace webshop_backend.Controllers
                         }
                         ).FirstOrDefault();
 
-            return Ok(new Response<DeckResponse>() {
+            return Ok(new Response<DeckResponse>()
+            {
                 Data = deck,
                 Success = true
             });
@@ -125,25 +134,119 @@ namespace webshop_backend.Controllers
             this.__context.Add(newDeck);
             this.__context.SaveChanges();
 
-            return Ok(new Response<dynamic>() {
-                Data = new {
-                    DeckId = newDeck.Id 
+            return Ok(new Response<dynamic>()
+            {
+                Data = new
+                {
+                    DeckId = newDeck.Id
                 },
                 Success = true
             });
         }
-    
+
         [HttpPost("addCard")]
-        public ActionResult<Response<string>> AddNewCard([FromBody] NewCardForDeck card) {
-            var CardForDeck = new CardsDeck() {
+        public ActionResult<Response<string>> AddNewCard([FromBody] NewCardForDeck card)
+        {
+            var CardForDeck = new CardsDeck()
+            {
                 DeckId = card.DeckId,
                 PrintId = card.PrintId
             };
             this.__context.Add(CardForDeck);
             this.__context.SaveChanges();
 
-            return Ok(new Response<string>() {
+            return Ok(new Response<string>()
+            {
                 Data = "Card is added to your deck",
+                Success = true
+            });
+        }
+
+        [HttpDelete]
+        public ActionResult<Response<string>> DeleteCardFromDeck([FromBody] NewCardForDeck cardDeckId)
+        {
+            var card = (
+                from c in this.__context.CardsDeck
+                where c.DeckId == cardDeckId.DeckId && c.PrintId == cardDeckId.PrintId
+                select c
+            ).FirstOrDefault();
+            this.__context.Remove(card);
+            this.__context.SaveChanges();
+
+            return Ok(new Response<string>()
+            {
+                Data = "Card deleted from your deck.",
+                Success = true
+            });
+        }
+
+        [HttpPost("{deckId}")]
+        public ActionResult<Response<List<string>>> OrderCardFromDecks(int deckId)
+        {
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+            var userToken = token.Split(' ')[1];
+            var jwttoken = new JwtSecurityToken(userToken);
+            var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
+
+            var cardsInDeck = (
+                from cd in this.__context.CardsDeck
+                where cd.DeckId == deckId
+                select cd
+            ).ToList();
+
+            var notInStock = new List<string>();
+            foreach (var card in cardsInDeck)
+            {
+                var print = (
+                    from p in this.__context.Print
+                    where p.Id == card.PrintId
+                    select p
+                ).FirstOrDefault();
+
+                if ((print.stock - 1) > 0)
+                {
+                    var shoppingCart = (
+                        from sc in this.__context.ShoppingCard
+                        where sc.UserId == userId
+                        select sc.Id
+                    ).FirstOrDefault();
+
+                    var AllShoppingCartItems = (
+                        from sci in this.__context.ShoppingCardItem
+                        where sci.ShoppingCardId == shoppingCart && sci.PrintId == print.Id
+                        select sci
+                    ).FirstOrDefault();
+
+                    ShoppingCardItem shoppingCartItem;
+
+                    if (AllShoppingCartItems == null)
+                    {
+                        shoppingCartItem = new ShoppingCardItem()
+                        {
+                            ShoppingCardId = shoppingCart,
+                            PrintId = card.PrintId,
+                            Quantity = 1
+                        };
+
+                        this.__context.Add(shoppingCartItem);
+                        this.__context.SaveChanges();
+                    }
+
+                }
+                else
+                {
+                    // var cardNotInStock = (
+                    //     from cf in this.__context.CardFaces
+                    //     where cf.card.Id == print.Card.Id
+                    //     select cf.name
+                    // ).FirstOrDefault();
+                    notInStock.Add(print.Id);
+                }
+            }
+
+            return Ok(new Response<List<string>>()
+            {
+                Data = notInStock,
                 Success = true
             });
         }

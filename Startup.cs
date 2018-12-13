@@ -50,7 +50,11 @@ namespace webshop_backend
             services.AddDbContext<MainContext>(
                  opt => opt.UseMySql(ConfigurationManager.AppSetting.GetConnectionString("DefaultConnection"))
             );
-            //.u(@"Host=localhost;Database=MovieDB;Username=postgres;Password=postgres"));
+
+            services.AddAntiforgery(options =>
+            {
+                options.SuppressXFrameOptionsHeader = true;
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddAuthentication(options =>
@@ -73,6 +77,7 @@ namespace webshop_backend
 
                     ClockSkew = TimeSpan.FromMinutes(5) //5 minute tolerance for the expiration date
                 };
+                
             });
             services.Configure<EmailSettings>(Configuration.GetSection("emailSettings"));
             services.Configure<Urls>(Configuration.GetSection("urls"));
@@ -83,7 +88,11 @@ namespace webshop_backend
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseHangfireServer();
-            app.UseHangfireDashboard();
+            app.UseAuthentication();
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                Authorization = new[] { new HangfireAutorization() }
+            });
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -95,7 +104,6 @@ namespace webshop_backend
 
 
             app.UseCors("MyPolicy");
-            app.UseAuthentication();
             app.UseMvc();
         }
     }

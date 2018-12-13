@@ -64,7 +64,7 @@ namespace webshop_backend.Controllers
                     var stock = print.stock - (shoppingCardItem.Quantity - query.Quantity);
                     if (shoppingCardItem.Quantity > 0)
                     {
-                        if (stock > 0)
+                        if (stock >= 0)
                         {
                             query.Quantity = shoppingCardItem.Quantity;
                             this.__context.Update(query);

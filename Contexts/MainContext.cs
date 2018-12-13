@@ -39,6 +39,7 @@ namespace Contexts
         public DbSet<Language> Languages { get; set; }
         public DbSet<ColorCombinations> ColorCombinations { get; set; }
         public DbSet<ColorsInCombinations> ColorsInCombinations { get; set; }
+        public DbSet<Color> Color {get; set;}
         public DbSet<Decks> Decks {get; set;}
         public DbSet<CardsDeck> CardsDeck {get; set;}
 
