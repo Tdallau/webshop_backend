@@ -1,8 +1,7 @@
 namespace webshop_backend.Models
 {
-    public class NewCardForDeck
+    public class DeckIncome
     {
         public string PrintId {get; set;}
-        public int DeckId {get; set;}
     }
 }

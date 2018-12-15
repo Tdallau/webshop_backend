@@ -14,20 +14,23 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using webshop_backend.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace webshop_backend.Controllers
 {
     [EnableCors("MyPolicy")]
     [Route("api/[controller]")]
     [ApiController]
-    public class MainController : BasicController
+    public class CardsController : BasicController
     {
-        public MainController(MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings) : base(context, settings, urlSettings) { }
+        public CardsController(MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings) : base(context, settings, urlSettings) { }
 
         // GET api/values/5
-        [HttpGet("{page_size}/{page_index}")]
-        public ActionResult<Response<dynamic>> Get(int page_size, int page_index)
+        [HttpGet]
+        public ActionResult<Response<dynamic>> Get([FromQuery(Name = "page-size")] int page_size, int page)
         {
+        
+
             if (this.__context.ProductList.Count() != 0)
             {
 
@@ -36,16 +39,23 @@ namespace webshop_backend.Controllers
 
                 return Ok(new Response<dynamic>(){
                     Data = new {
-                        Cards = this.__context.ProductList.Skip(page_size * (page_index - 1)).Take(page_size),
+                        Cards = this.__context.ProductList.Skip(page_size * (page - 1)).Take(page_size),
                         PageSize = page_size,
-                        Page = page_index,
+                        Page = page,
                         TotalPages =  totalPages
                     },
                     Success = true
                 });
-                // return Ok(query.Skip(page_size * (page_index - 1)).Take(page_size));
             }
-            return UnprocessableEntity();
+            return Ok(new Response<dynamic>(){
+                    Data = new {
+                        Cards = new List<dynamic>(),
+                        PageSize = 0,
+                        Page = 0,
+                        TotalPages =  0
+                    },
+                    Success = false
+                });
         }
 
         [HttpGet("{id}")]
@@ -92,7 +102,7 @@ namespace webshop_backend.Controllers
                 return Ok(new CardResponse{ Id = card.Printid, Name = card.name, Image = card.Image, FlavorText = card.flavorText, OracleText = card.oracleText, Loyalty = card.loyalty, Power = card.power, Toughness = card.toughness, Price = card.price, TypeLine = tl, Mana = card.mana});
             }
 
-            return UnprocessableEntity();
+            return StatusCode(404, "Cart not found!!");
 
         }
     }

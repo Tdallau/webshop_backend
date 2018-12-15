@@ -25,10 +25,16 @@ namespace webshop_backend.Controllers
         public ActionResult<Response<List<Decks>>> Get()
         {
 
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+            var userToken = token.Split(' ')[1];
+            var jwttoken = new JwtSecurityToken(userToken);
+            var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
+
             var Decks = (from d in this.__context.Decks
                          join p in this.__context.Print on d.Commander equals p.Id
                          join pf in this.__context.PrintFace on p.Id equals pf.PrintId
                          join iu in this.__context.ImagesUrl on pf.id equals iu.printFace.id
+                         where d.UserId == userId
                          select new DeckResponse()
                          {
                              Name = d.Name,
@@ -144,13 +150,13 @@ namespace webshop_backend.Controllers
             });
         }
 
-        [HttpPost("addCard")]
-        public ActionResult<Response<string>> AddNewCard([FromBody] NewCardForDeck card)
+        [HttpPost("{deckId}/cards")]
+        public ActionResult<Response<string>> AddNewCard(int deckId, [FromBody] DeckIncome print)
         {
             var CardForDeck = new CardsDeck()
             {
-                DeckId = card.DeckId,
-                PrintId = card.PrintId
+                DeckId = deckId,
+                PrintId = print.PrintId
             };
             this.__context.Add(CardForDeck);
             this.__context.SaveChanges();
@@ -162,12 +168,12 @@ namespace webshop_backend.Controllers
             });
         }
 
-        [HttpDelete]
-        public ActionResult<Response<string>> DeleteCardFromDeck([FromBody] NewCardForDeck cardDeckId)
+        [HttpDelete("{deckId}/cards")]
+        public ActionResult<Response<string>> DeleteCardFromDeck(int deckId, [FromBody] DeckIncome print)
         {
             var card = (
                 from c in this.__context.CardsDeck
-                where c.DeckId == cardDeckId.DeckId && c.PrintId == cardDeckId.PrintId
+                where c.DeckId == deckId && c.PrintId == print.PrintId
                 select c
             ).FirstOrDefault();
             this.__context.Remove(card);
@@ -180,7 +186,7 @@ namespace webshop_backend.Controllers
             });
         }
 
-        [HttpPost("{deckId}")]
+        [HttpPost("{deckId}/shopping-cart")]
         public ActionResult<Response<List<string>>> OrderCardFromDecks(int deckId)
         {
             var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault();

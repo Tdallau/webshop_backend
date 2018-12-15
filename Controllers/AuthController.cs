@@ -91,40 +91,40 @@ namespace webshop_backend.Controllers
 
 
         }
-        [Route("[controller]/{id}")]
-        [HttpGet]
-        public ActionResult<Response<string>> Put(int id)
-        {
+        // [Route("[controller]/{id}")]
+        // [HttpGet]
+        // public ActionResult<Response<string>> Put(int id)
+        // {
 
-            var query = (from user in this.__context.User
-                         where user.id == id
-                         select user).FirstOrDefault();
+        //     var query = (from user in this.__context.User
+        //                  where user.id == id
+        //                  select user).FirstOrDefault();
 
-            if (query != null)
-            {
-                if(!query.active) {
+        //     if (query != null)
+        //     {
+        //         if(!query.active) {
 
-                    var address = new Address(){ 
-                        UserId = query.id,
-                        ZipCode = "2904CX",
-                        City = "Capelle",
-                        Street = "Reggedal",
-                        Number = 10
-                    };
+        //             var address = new Address(){ 
+        //                 UserId = query.id,
+        //                 ZipCode = "2904CX",
+        //                 City = "Capelle",
+        //                 Street = "Reggedal",
+        //                 Number = 10
+        //             };
 
-                    query.active = true;
-                    this.__context.Update(query);
-                    this.__context.Add(address);
-                    this.__context.SaveChanges();
-                    return Redirect(this.urlSettings.FrontendUrl);
-                }
-                return Redirect(this.urlSettings.FrontendUrl);
-            } 
+        //             query.active = true;
+        //             this.__context.Update(query);
+        //             this.__context.Add(address);
+        //             this.__context.SaveChanges();
+        //             return Redirect(this.urlSettings.FrontendUrl);
+        //         }
+        //         return Redirect(this.urlSettings.FrontendUrl);
+        //     } 
 
-            return Redirect(this.urlSettings.FrontendUrl);
+        //     return Redirect(this.urlSettings.FrontendUrl);
 
             
-        }
+        // }
     }
 
 }
