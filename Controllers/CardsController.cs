@@ -23,7 +23,8 @@ namespace webshop_backend.Controllers
     [ApiController]
     public class CardsController : BasicController
     {
-        public CardsController(MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings) : base(context, settings, urlSettings) { }
+        public CardsController(MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings) : base(context, settings, urlSettings) {
+         }
 
         // GET api/values/5
         [HttpGet]
@@ -59,47 +60,16 @@ namespace webshop_backend.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetAction(string id)
+        public ActionResult<Response<CardResponse>> GetAction(string id)
         {
-            var card = (from Print in this.__context.Print
-                        join CardFaces in this.__context.CardFaces on Print.Card.Id equals CardFaces.card.Id
-                        join PrintFace in this.__context.PrintFace on Print.Id equals PrintFace.PrintId
-                        join ImagesUrl in this.__context.ImagesUrl on PrintFace.id equals ImagesUrl.printFace.id
-                        let mana = (from Costs in this.__context.Costs
-                                    from CostSymbols in this.__context.CostSymbols
-                                    join SymbolsInCosts in this.__context.SymbolsInCosts on Costs.id equals SymbolsInCosts.cost.id
-                                    where Costs.id == CardFaces.manaCost.id && SymbolsInCosts.symbol.id == CostSymbols.id
-                                    select CostSymbols
-                                    ).ToList()
-                        where Print.Id == id
-                        select new
-                        {
-                            Printid = Print.Id,
-                            CardFaces.name,
-                            CardFaces.loyalty,
-                            CardFaces.toughness,
-                            CardFaces.power,
-                            Print.price,
-                            CardFaces.oracleText,
-                            PrintFace.flavorText,
-                            Image = ImagesUrl.large,
-                            CardFaceId = CardFaces.id,
-                            mana = mana
-                        }).FirstOrDefault();
+            var card = this.mainServcie.GetCard(id);
 
             if (card != null)
             {
-                var printfaceid = (int)card?.CardFaceId;
-                var typeLine = (from TypesInLine in this.__context.TypesInLine
-                                join Types in this.__context.Types on TypesInLine.type.id equals Types.id
-                                join TypeLine in this.__context.TypeLine on TypesInLine.line.id equals TypeLine.id
-                                join CardFaces in this.__context.CardFaces on TypeLine.id equals CardFaces.typeLine.id
-                                where CardFaces.id == printfaceid
-                                select new Typeline{ TypeName = Types.typeName }).ToList();
-
-                var tl = CardResponse.GetTypeLine(typeLine);
-
-                return Ok(new CardResponse{ Id = card.Printid, Name = card.name, Image = card.Image, FlavorText = card.flavorText, OracleText = card.oracleText, Loyalty = card.loyalty, Power = card.power, Toughness = card.toughness, Price = card.price, TypeLine = tl, Mana = card.mana});
+                return Ok(new Response<CardResponse>(){
+                    Data = card,
+                    Success = true
+                });
             }
 
             return StatusCode(404, "Cart not found!!");

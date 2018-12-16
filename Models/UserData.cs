@@ -2,6 +2,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using webshop_backend;
@@ -14,7 +15,7 @@ namespace Models
         public string Name { get; set; }
         public string Email { get; set; }
         public string Role { get; set; }
-        public string Approach {get; set;}
+        public string Approach { get; set; }
         public int? Nbf { get; set; }
         public int? Exp { get; set; }
         public int? ShoppingCartId { get; set; }
@@ -52,6 +53,16 @@ namespace Models
             string nbf = jwttoken.Claims.Where(c => c.Type == JwtRegisteredClaimNames.Nbf).FirstOrDefault()?.Value;
             string exp = jwttoken.Claims.Where(c => c.Type == JwtRegisteredClaimNames.Exp).FirstOrDefault()?.Value;
             return new UserData { Name = name, UserId = uid, Email = email, Role = role, Nbf = int.Parse(nbf), Exp = int.Parse(exp), ShoppingCartId = int.Parse(shoppingCartId) };
+        }
+
+        public static string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+                return Convert.ToBase64String(randomNumber);
+            }
         }
 
     }

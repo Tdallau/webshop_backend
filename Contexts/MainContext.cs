@@ -14,6 +14,7 @@ namespace Contexts
         {
         }
         public DbSet<User> User { get; set; }
+        public DbSet<Tokens> Tokens {get; set;}
         public DbSet<Address> Address { get; set; }
         public DbSet<Order> Order { get; set; }
         public DbSet<OrderProduct> OrderProduct { get; set; }

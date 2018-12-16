@@ -11,6 +11,10 @@ using webshop_backend;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.Extensions.Options;
 using Models.DB;
+using webshop_backend.Models.DB;
+using webshop_backend.Models;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace webshop_backend.Controllers
 {
@@ -42,11 +46,23 @@ namespace webshop_backend.Controllers
 
                     var responseUser = new UserData() { Name = user.name, UserId = user.id, Email = user.email, Role = user.role, ShoppingCartId = shoppingCartId };
                     var token = responseUser.ToToken();
+                    var refreshToken = UserData.GenerateRefreshToken();
                     var userData = UserData.FromToken(token);
+
+                    this.__context.Add(
+                        new Tokens()
+                        {
+                            UserId = userId,
+                            Token = refreshToken,
+                            Time = DateTime.Now,
+                            ExpireDate = DateTime.Now.AddDays(7)
+                        }
+                    );
+                    this.__context.SaveChanges();
 
                     return Ok(new Response<SucccessFullyLoggedIn>()
                     {
-                        Data = new SucccessFullyLoggedIn() { User = userData, Token = token },
+                        Data = new SucccessFullyLoggedIn() { User = userData, Token = token, RefreshToken = refreshToken },
                         Success = true
                     });
                 }
@@ -91,6 +107,30 @@ namespace webshop_backend.Controllers
 
 
         }
+
+        [Route("[controller]/refresh")]
+        [HttpPost]
+        public ActionResult<Response<RefreshTokens>> Refresh([FromBody] RefreshTokens tokens)
+        {
+
+            var jwttoken = new JwtSecurityToken(tokens.JwtToken);
+            var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
+
+            var newTokens = this.userServices.CheckRefreshToken(userId, tokens.RefreshToken, tokens.JwtToken);
+
+            if (newTokens != null)
+            {
+                return Ok(
+                new Response<RefreshTokens>()
+                {
+                    Data = newTokens,
+                    Success = true
+                }
+            );
+            }
+            return Unauthorized();
+
+        }
         // [Route("[controller]/{id}")]
         // [HttpGet]
         // public ActionResult<Response<string>> Put(int id)
@@ -123,7 +163,7 @@ namespace webshop_backend.Controllers
 
         //     return Redirect(this.urlSettings.FrontendUrl);
 
-            
+
         // }
     }
 

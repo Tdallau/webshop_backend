@@ -16,6 +16,7 @@ using System.Net;
 using Microsoft.Extensions.Options;
 using Models;
 using webshop_backend.html.activation;
+using webshop_backend.Models;
 
 namespace Services
 {
@@ -27,7 +28,7 @@ namespace Services
         public UserServices(MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings)
         {
             this.__context = context;
-            this.__mainService = new MainServcie(context, settings, urlSettings);
+            this.__mainService = new MainServcie(settings, urlSettings);
             this.__urlSettings = urlSettings;
 
         }
@@ -52,6 +53,51 @@ namespace Services
             catch (System.InvalidOperationException)
             {
                 return null;
+            }
+
+            return null;
+        }
+
+        public RefreshTokens CheckRefreshToken(int userId, string refreshToken, string jwtToken) {
+
+            var tokens = (
+                from t in this.__context.Tokens
+                where t.UserId == userId
+                select t
+            ).ToList();
+
+            if(tokens.Count != 0) {
+
+                for (int i = 0; i < tokens.Count; i++)
+                {
+                    if(tokens[i].ExpireDate != new DateTime() && tokens[i].Token == refreshToken) {
+
+                        var userData = UserData.FromToken(jwtToken);
+                        var user = new UserData() {
+                            UserId = userData.UserId,
+                            Name = userData.Name,
+                            Email = userData.Email,
+                            Role = userData.Role,
+                            ShoppingCartId = userData.ShoppingCartId
+                        };
+
+                        var newJwtToken = user.ToToken();
+                        var newRefreshToken = UserData.GenerateRefreshToken();
+
+                        tokens[i].ExpireDate = DateTime.Now.AddDays(7);
+                        tokens[i].Time = DateTime.Now;
+                        tokens[i].Token = newRefreshToken;
+
+                        this.__context.Update(tokens[i]);
+                        this.__context.SaveChanges();
+
+                        return new RefreshTokens() {
+                            JwtToken = newJwtToken,
+                            RefreshToken = newRefreshToken
+                        };
+                    }
+                }
+
             }
 
             return null;

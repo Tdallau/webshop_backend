@@ -31,12 +31,7 @@ namespace webshop_backend.Controllers
         {
             var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
             var userToken = token.Split(' ')[1];
-            var jwttoken = new JwtSecurityToken(userToken);
-            var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
-
-            var user = (from u in this.__context.User
-                        where u.id == userId
-                        select new UserData(){ Email = u.email, Name = u.name, Role = u.role, Approach = u.approach}).FirstOrDefault();
+            var user = UserData.FromToken(userToken);
 
             return Ok(new Response<UserData>()
             {

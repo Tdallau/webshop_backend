@@ -21,7 +21,7 @@ namespace webshop_backend.Controllers
         public BasicController(MainContext context, IOptions<EmailSettings> emailSettings, IOptions<Urls> urlSettings)
         {
             this.__context = context;
-            this.mainServcie = new MainServcie(context, emailSettings, urlSettings);
+            this.mainServcie = new MainServcie(emailSettings, urlSettings);
             this.urlSettings = urlSettings.Value;
         }
     }

@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Models;
 using Hangfire.MySql.Core;
 using Hangfire;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace webshop_backend
 {
@@ -77,7 +78,18 @@ namespace webshop_backend
 
                     ClockSkew = TimeSpan.FromMinutes(5) //5 minute tolerance for the expiration date
                 };
-                
+                options.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                        {
+                            context.Response.Headers.Add("Token-Expired", "true");
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+
             });
             services.Configure<EmailSettings>(Configuration.GetSection("emailSettings"));
             services.Configure<Urls>(Configuration.GetSection("urls"));
