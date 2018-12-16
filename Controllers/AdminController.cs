@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using webshop_backend.Services;
 using Hangfire;
 using Models.DB;
+using webshop_backend.Models;
 
 namespace webshop_backend.Controllers
 {
@@ -63,7 +64,30 @@ namespace webshop_backend.Controllers
             });
         }
 
-        [HttpPost("user")]
+        [HttpGet("users")]
+        public ActionResult<Response<List<AdminUsersList>>> GetUsers()
+        {
+            var users = (
+                from u in this.__context.User
+                select new AdminUsersList{
+                    Id = u.id,
+                    Name = u.name,
+                    Approach = u.approach,
+                    Email = u.email,
+                    Role = u.role,
+                    Active = u.active
+                }
+            ).ToList();
+
+            return Ok(
+                new Response<List<AdminUsersList>>() {
+                    Data = users,
+                    Success = true
+                }
+            );
+        }
+
+        [HttpPost("users")]
         public ActionResult<Response<string>> AddUser([FromBody] User user)
         {
             if (AdminService.CheckIncome(user))
@@ -89,7 +113,7 @@ namespace webshop_backend.Controllers
             );
         }
 
-        [HttpPut("user/{userId}")]
+        [HttpPut("users/{userId}")]
         public ActionResult<Response<string>> UpdateUser(int userId, [FromBody] User user)
         {
 
@@ -126,7 +150,7 @@ namespace webshop_backend.Controllers
             );
         }
 
-        [HttpDelete("user/{userId}")]
+        [HttpDelete("users/{userId}")]
         public ActionResult<Response<string>> DeleteUser(int userId)
         {
 
