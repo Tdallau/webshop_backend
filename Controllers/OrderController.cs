@@ -29,6 +29,10 @@ namespace webshop_backend.Controllers
         [HttpPost]
         public ActionResult<Response<string>> Post([FromBody] StatusData status)
         {
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+            var userToken = token.Split(' ')[1];
+            var jwttoken = new JwtSecurityToken(userToken);
+            var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
 
             var shoppingCart = (from ShoppingCard in this.__context.ShoppingCard
                                 where ShoppingCard.Id == status.ShoppingCardId
@@ -39,7 +43,7 @@ namespace webshop_backend.Controllers
                                     select ShoppingCardItem).ToList();
 
             var address = (from a in this.__context.Address
-                           where a.UserId == shoppingCart.UserId
+                           where a.UserId == userId
                            select a).ToList();
 
 
@@ -86,7 +90,7 @@ namespace webshop_backend.Controllers
                 this.__context.SaveChanges();
 
 
-                this.SendConformation(order);
+                this.SendConformation(order, userId);
                 return Ok(new Response<string> { Data = "Your order has been placed!", Success = true });
             }
             else
@@ -95,14 +99,15 @@ namespace webshop_backend.Controllers
             }
         }
 
-        private void SendConformation(Order order)
+        private void SendConformation(Order order, int userId)
         {
+
             User user = (from User in this.__context.User
-                         where User.id == order.userId
+                         where User.id == userId
                          select User).FirstOrDefault();
 
             Address address = (from Address in this.__context.Address
-                               where Address.UserId == order.userId
+                               where Address.UserId == userId
                                select Address).FirstOrDefault();
             List<OrderTable> orderitems = (from OrderProduct in this.__context.OrderProduct
                                            join Print in this.__context.Print on OrderProduct.PrintId equals Print.Id

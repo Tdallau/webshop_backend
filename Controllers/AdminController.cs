@@ -16,7 +16,7 @@ using Hangfire;
 namespace webshop_backend.Controllers
 {
     [EnableCors("MyPolicy")]
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     // [Authorize(Roles="Admin")]
     [ApiController]
     public class AdminController : BasicController
@@ -25,7 +25,7 @@ namespace webshop_backend.Controllers
         }
 
         // GET api/admin/updateStock
-        [HttpGet]
+        [HttpPost("stock")]
         public ActionResult<Response<string>> InsertRandomStock()
         {
             BackgroundJob.Enqueue(() => InsertStock());
@@ -35,7 +35,7 @@ namespace webshop_backend.Controllers
             });
         }
 
-        [HttpGet]
+        [HttpGet("cards")]
         public ActionResult<Response<string>> InsertCartPrice()
         {
             BackgroundJob.Enqueue(() => InsertPrice());
@@ -46,7 +46,7 @@ namespace webshop_backend.Controllers
         }
 
         // GET api/values/5
-        [HttpGet("{id}/{stock}")]
+        [HttpGet("stock/cards/{id}/{stock}")]
         public ActionResult<Response<string>> UpdateStock(string id, int stock)
         {
             StockService.UpdateStockById(this.__context, id, stock);

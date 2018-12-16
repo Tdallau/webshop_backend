@@ -46,15 +46,10 @@ namespace webshop_backend.Controllers
         {
             var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
             var userToken = token.Split(' ')[1];
-            var jwttoken = new JwtSecurityToken(userToken);
-            var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
+            var cu = UserData.FromToken(userToken);
 
-            var cu = (from u in this.__context.User
-                      where u.id == userId
-                      select u).FirstOrDefault();
-
-            if (user.email != "" && user.name != "" && user.role == cu.role)
-            {
+            if (user.email != "" && user.name != "" &&  user.password != "" && user.role == cu.Role)
+            { 
                 this.__context.Update(user);
                 this.__context.SaveChanges();
                 return Ok(new Response<string>()

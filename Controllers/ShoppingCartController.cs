@@ -9,6 +9,7 @@ using System.Security.Claims;
 using Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
+using webshop_backend.Services;
 
 namespace webshop_backend.Controllers
 {
@@ -18,7 +19,11 @@ namespace webshop_backend.Controllers
     [ApiController]
     public class ShoppingCartController : BasicController
     {
-        public ShoppingCartController(MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings) : base(context, settings, urlSettings) { }
+        private readonly ShoppingCartService shoppingCartService;
+        public ShoppingCartController(MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings) : base(context, settings, urlSettings)
+        {
+            this.shoppingCartService = new ShoppingCartService();
+        }
 
         [HttpGet]
         public ActionResult<ShoppingCard> Get()
@@ -42,69 +47,45 @@ namespace webshop_backend.Controllers
         [HttpPost]
         public ActionResult<Response<string>> Post([FromBody] ShoppingCardItem shoppingCardItem)
         {
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+            var userToken = token.Split(' ')[1];
+            var jwttoken = new JwtSecurityToken(userToken);
+            var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
 
-            if (shoppingCardItem != null)
+            if (this.shoppingCartService.UpdateShoppingCart(userId, shoppingCardItem))
             {
-                var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
-                var userToken = token.Split(' ')[1];
-                var jwttoken = new JwtSecurityToken(userToken);
-                var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
-
-                var query = (from ShoppingCard in this.__context.ShoppingCard
-                             join ShoppingCardItem in this.__context.ShoppingCardItem on ShoppingCard.Id equals ShoppingCardItem.ShoppingCardId
-                             where ShoppingCard.UserId == userId && ShoppingCardItem.PrintId == shoppingCardItem.PrintId
-                             select ShoppingCardItem).FirstOrDefault();
-
-                var print = (from p in this.__context.Print
-                             where p.Id == shoppingCardItem.PrintId
-                             select p).FirstOrDefault();
-
-                if (query != null)
-                {
-                    var stock = print.stock - (shoppingCardItem.Quantity - query.Quantity);
-                    if (shoppingCardItem.Quantity > 0)
+                return Ok(
+                    new Response<string>()
                     {
-                        if (stock >= 0)
-                        {
-                            query.Quantity = shoppingCardItem.Quantity;
-                            this.__context.Update(query);
-                            this.__context.SaveChanges();
-                            return Ok(new Response<string>() { Data = "Item is added to your shoppingcart!", Success = true });
-                        }
-                        return Ok(new Response<string>()
-                        {
-                            Data = "not enough products in stock",
-                            Success = false
-                        });
-
+                        Data = "Card is added to your shoppingcart!!",
+                        Success = true
                     }
-                    
-                    return Ok(new Response<string>() { Data = "You can not go below 1.", Success = true });
-                }
-                if (print.stock > 0)
-                {
-                    this.__context.Add(shoppingCardItem);
-                    this.__context.SaveChanges();
-                    return Ok(new Response<string>() { Data = "Item is added to your shoppingcart!", Success = true });
-                }
-                return Ok(new Response<string>() { Data = "Item is out of stock!", Success = false });
-
+                );
             }
-            return UnprocessableEntity();
+            return StatusCode(
+                409,
+                new Response<string>()
+                {
+                    Data = "Somthing went wrong. Most likly this item is not longer in stock.",
+                    Success = false
+                }
+            );
+
 
         }
         [HttpDelete]
-        public ActionResult<Response<string>> DeleteItem([FromBody] ShoppingCardItem shoppingCardItem) {
+        public ActionResult<Response<string>> DeleteItem([FromBody] ShoppingCardItem shoppingCardItem)
+        {
 
             var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
-                var userToken = token.Split(' ')[1];
-                var jwttoken = new JwtSecurityToken(userToken);
-                var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
+            var userToken = token.Split(' ')[1];
+            var jwttoken = new JwtSecurityToken(userToken);
+            var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
 
             var product = (
                 from ShoppingCard in this.__context.ShoppingCard
                 join ShoppingCardItem in this.__context.ShoppingCardItem on ShoppingCard.Id equals ShoppingCardItem.ShoppingCardId
-                where ShoppingCard.UserId == userId && 
+                where ShoppingCard.UserId == userId &&
                       ShoppingCardItem.PrintId == shoppingCardItem.PrintId
                 select ShoppingCardItem
             ).FirstOrDefault();
@@ -112,7 +93,8 @@ namespace webshop_backend.Controllers
             this.__context.Remove(product);
             this.__context.SaveChanges();
 
-            return Ok(new Response<string>(){
+            return Ok(new Response<string>()
+            {
                 Data = "Item is removed from your Shoppingcart!!",
                 Success = true
             });
