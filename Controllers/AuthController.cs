@@ -108,6 +108,24 @@ namespace webshop_backend.Controllers
 
         }
 
+        [Route("[controller]/logout")]
+        [HttpPost]
+        public ActionResult<Response<string>> Logout([FromBody] RefreshTokens tokens) {
+            var token = (
+                from refresh in this.__context.Tokens
+                where refresh.Token == tokens.RefreshToken
+                select refresh
+            );
+            this.__context.Remove(token);
+            this.__context.SaveChanges();
+            return Ok(
+                new Response<string>() {
+                    Data = "You are logged out",
+                    Success = true
+                }
+            );
+        }
+
         [Route("[controller]/refresh")]
         [HttpPost]
         public ActionResult<Response<RefreshTokens>> Refresh([FromBody] RefreshTokens tokens)
@@ -131,40 +149,41 @@ namespace webshop_backend.Controllers
             return Unauthorized();
 
         }
-        // [Route("[controller]/{id}")]
-        // [HttpGet]
-        // public ActionResult<Response<string>> Put(int id)
-        // {
 
-        //     var query = (from user in this.__context.User
-        //                  where user.id == id
-        //                  select user).FirstOrDefault();
+        [Route("[controller]/activate/{id}")]
+        [HttpGet]
+        public ActionResult<Response<string>> Put(int id)
+        {
 
-        //     if (query != null)
-        //     {
-        //         if(!query.active) {
+            var query = (from user in this.__context.User
+                         where user.id == id
+                         select user).FirstOrDefault();
 
-        //             var address = new Address(){ 
-        //                 UserId = query.id,
-        //                 ZipCode = "2904CX",
-        //                 City = "Capelle",
-        //                 Street = "Reggedal",
-        //                 Number = 10
-        //             };
+            if (query != null)
+            {
+                if(!query.active) {
 
-        //             query.active = true;
-        //             this.__context.Update(query);
-        //             this.__context.Add(address);
-        //             this.__context.SaveChanges();
-        //             return Redirect(this.urlSettings.FrontendUrl);
-        //         }
-        //         return Redirect(this.urlSettings.FrontendUrl);
-        //     } 
+                    var address = new Address(){ 
+                        UserId = query.id,
+                        ZipCode = "2904CX",
+                        City = "Capelle",
+                        Street = "Reggedal",
+                        Number = 10
+                    };
 
-        //     return Redirect(this.urlSettings.FrontendUrl);
+                    query.active = true;
+                    this.__context.Update(query);
+                    this.__context.Add(address);
+                    this.__context.SaveChanges();
+                    return Redirect(this.urlSettings.FrontendUrl);
+                }
+                return Redirect(this.urlSettings.FrontendUrl);
+            } 
+
+            return Redirect(this.urlSettings.FrontendUrl);
 
 
-        // }
+        }
     }
 
 }
