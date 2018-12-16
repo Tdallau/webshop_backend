@@ -19,7 +19,7 @@ namespace webshop_backend.Controllers
 {
     [EnableCors("MyPolicy")]
     [Route("api/[controller]")]
-    // [Authorize(Roles="Admin")]
+    [Authorize(Roles="Admin")]
     [ApiController]
     public class AdminController : BasicController
     {
