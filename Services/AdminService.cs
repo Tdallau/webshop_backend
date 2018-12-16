@@ -1,78 +1,94 @@
-using System;
-using System.IO;
-using System.Linq;
-using System.Net;
 using Contexts;
-using Models;
-using Newtonsoft.Json;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Models.DB;
+using Services;
+using System.Linq;
 
 namespace webshop_backend.Services
 {
     public class AdminService
     {
-        public void Main(MainContext db)
+        public static bool CheckIncome(User user)
         {
-    
-                var query = (from sets in db.Set
-                             select sets).ToList();
+            if (user != null && user.email != "" && user.name != "" && user.role != "")
+            {
+                return true;
+            }
+            return false;
+        }
+        public void CreateUser(User user)
+        {
 
-                foreach (var set in query)
+            var salt = UserServices.GetSalt();
+
+            var newUser = new User()
+            {
+                email = user.email,
+                approach = user.approach,
+                active = true,
+                name = user.name,
+                password = BCrypt.Net.BCrypt.HashPassword(user.password + salt),
+                salt = salt
+            };
+
+            using (MainContext context = new MainContext(new DbContextOptionsBuilder<MainContext>().UseMySql(
+                ConfigurationManager.AppSetting.GetConnectionString("DefaultConnection")
+            ).Options))
+            {
+                context.Add(newUser);
+                context.SaveChanges();
+            }
+        }
+        public bool UpdateUser(int userId, User user)
+        {
+            using (MainContext context = new MainContext(new DbContextOptionsBuilder<MainContext>().UseMySql(
+                ConfigurationManager.AppSetting.GetConnectionString("DefaultConnection")
+            ).Options))
+            {
+                var eUser = (
+                        from u in context.User
+                        where u.id == userId
+                        select u
+                    ).FirstOrDefault();
+
+                if (eUser != null)
                 {
-                    //https://api.scryfall.com/cards/search?order=set&q=e%3A
-                    Console.WriteLine($"set name: {set.name}");
-                    System.Threading.Thread.Sleep(100);
-                    var request = (HttpWebRequest)WebRequest.Create($"https://api.scryfall.com/cards/search?order=set&q=e%3A{set.Id}");
+                    eUser.approach = user.approach != null ? user.approach : "";
+                    eUser.email = user.email;
+                    eUser.name = user.name;
+                    eUser.role = user.role;
 
-                    var response = (HttpWebResponse)request.GetResponse();
+                    context.Update(eUser);
+                    context.SaveChanges();
 
-                    var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
-
-                    var result = JsonConvert.DeserializeObject<CartPriceResponse>(responseString);
-                    foreach (var card in result.Data)
-                    {
-                        this.insertPrice(card.Id, card.Oracle_id, card.Eur, db);
-
-                    }
-                    if (result.Has_more)
-                    {
-                        this.hasMore(result, db);
-                    }
-
+                    return true;
                 }
 
-        }
-
-        private void hasMore(CartPriceResponse result, MainContext db)
-        {
-            System.Threading.Thread.Sleep(100);
-            var requestHM = (HttpWebRequest)WebRequest.Create(result.next_page);
-            var responseHM = (HttpWebResponse)requestHM.GetResponse();
-
-            var responseStringHM = new StreamReader(responseHM.GetResponseStream()).ReadToEnd();
-
-            var resultHM = JsonConvert.DeserializeObject<CartPriceResponse>(responseStringHM);
-            foreach (var card in resultHM.Data)
-            {
-                this.insertPrice(card.Id, card.Oracle_id, card.Eur, db);
-
-            }
-            if(resultHM.Has_more) {
-                this.hasMore(resultHM, db);
+                return false;
             }
         }
 
-        private void insertPrice(string cardId, string oracleId, string price, MainContext db)
+        public bool DeleteUser(int userId)
         {
-            var card = (from c in db.Print
-                        where c.Id == cardId && c.Card.Id == oracleId
-                        select c).FirstOrDefault();
-            if (card != null)
+            using (MainContext context = new MainContext(new DbContextOptionsBuilder<MainContext>().UseMySql(
+                ConfigurationManager.AppSetting.GetConnectionString("DefaultConnection")
+            ).Options))
             {
-                Console.WriteLine($"card id: {card.Id}");
-                Console.WriteLine($"price: {price}");
-                card.price = (int) decimal.Parse(price);
-                db.Update(card);
-                db.SaveChanges();
+                var user = (
+                    from u in context.User
+                    where u.id == userId
+                    select u
+                ).FirstOrDefault();
+
+                if(user != null) {
+
+                    context.Remove(user);
+                    context.SaveChanges();
+                    
+                    return true;
+                }
+                return false;
             }
         }
     }

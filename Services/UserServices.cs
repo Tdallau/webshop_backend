@@ -17,6 +17,8 @@ using Microsoft.Extensions.Options;
 using Models;
 using webshop_backend.html.activation;
 using webshop_backend.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Services
 {
@@ -58,7 +60,8 @@ namespace Services
             return null;
         }
 
-        public RefreshTokens CheckRefreshToken(int userId, string refreshToken, string jwtToken) {
+        public RefreshTokens CheckRefreshToken(int userId, string refreshToken, string jwtToken)
+        {
 
             var tokens = (
                 from t in this.__context.Tokens
@@ -66,14 +69,17 @@ namespace Services
                 select t
             ).ToList();
 
-            if(tokens.Count != 0) {
+            if (tokens.Count != 0)
+            {
 
                 for (int i = 0; i < tokens.Count; i++)
                 {
-                    if(tokens[i].ExpireDate != new DateTime() && tokens[i].Token == refreshToken) {
+                    if (tokens[i].ExpireDate != new DateTime() && tokens[i].Token == refreshToken)
+                    {
 
                         var userData = UserData.FromToken(jwtToken);
-                        var user = new UserData() {
+                        var user = new UserData()
+                        {
                             UserId = userData.UserId,
                             Name = userData.Name,
                             Email = userData.Email,
@@ -91,7 +97,8 @@ namespace Services
                         this.__context.Update(tokens[i]);
                         this.__context.SaveChanges();
 
-                        return new RefreshTokens() {
+                        return new RefreshTokens()
+                        {
                             JwtToken = newJwtToken,
                             RefreshToken = newRefreshToken
                         };
@@ -105,30 +112,42 @@ namespace Services
 
         public bool InsertUser(LoginData loginData)
         {
-
             try
             {
-                var salt = GetSalt();
-                var newUser = new User() { name = loginData.Username, email = loginData.Email, approach = loginData.Approach, role = loginData.Role, password = BCrypt.Net.BCrypt.HashPassword(loginData.Password + salt), salt = salt, active = false };
+                var salt = UserServices.GetSalt();
 
-                this.__context.Add(newUser);
-                this.__context.SaveChanges();
+                var newUser = new User()
+                {
+                    email = loginData.Email,
+                    approach = loginData.Approach,
+                    active = false,
+                    name = loginData.Username,
+                    password = BCrypt.Net.BCrypt.HashPassword(loginData.Password + salt),
+                    salt = salt
+                };
 
-                var shoppingCart = new ShoppingCard() { UserId = newUser.id };
-                this.__context.Add(shoppingCart);
-                this.__context.SaveChanges();
-
+                using (MainContext context = new MainContext(new DbContextOptionsBuilder<MainContext>().UseMySql(
+                    ConfigurationManager.AppSetting.GetConnectionString("DefaultConnection")
+                ).Options))
+                {
+                    context.Add(newUser);
+                    context.SaveChanges();
+                    
+                    var shoppingCart = new ShoppingCard() { UserId = newUser.id };
+                    this.__context.Add(shoppingCart);
+                    this.__context.SaveChanges();
+                }
                 if (!newUser.active) { this.SendActivationMail(newUser); };
                 return true;
             }
-            catch
+            catch (System.Exception)
             {
+
                 return false;
             }
-
         }
 
-        private string GetSalt()
+        public static string GetSalt()
         {
             byte[] bytes = new byte[128 / 8];
             using (var keyGenerator = RandomNumberGenerator.Create())

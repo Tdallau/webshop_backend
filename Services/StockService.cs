@@ -1,35 +1,50 @@
 using System;
 using System.Linq;
 using Contexts;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace webshop_backend.Services
 {
     public class StockService
     {
-        public static void SetRandomStock(MainContext context)
+        public static void SetRandomStock()
         {
-            var prints = (from p in context.Print
-                          select p).ToList();
-
-            for (int i = 0; i < prints.Count; i++)
+            using (MainContext context = new MainContext(new DbContextOptionsBuilder<MainContext>().UseMySql(
+                ConfigurationManager.AppSetting.GetConnectionString("DefaultConnection")
+            ).Options))
             {
-                Random rnd = new Random();
-                prints[i].stock = rnd.Next(0,20);
-                context.Update(prints[i]);
+                var prints = (from p in context.Print
+                              select p).ToList();
+
+                for (int i = 0; i < prints.Count; i++)
+                {
+                    Random rnd = new Random();
+                    prints[i].stock = rnd.Next(0, 20);
+                    context.Update(prints[i]);
+                }
+                context.SaveChanges();
             }
-            context.SaveChanges();
+
 
 
         }
 
-        public static void UpdateStockById(MainContext context, string printId, int stock) {
-            var print = (from p in context.Print
-                        where p.Id == printId
-                        select p).FirstOrDefault();
-            if(print != null) {
-                print.stock = stock;
-                context.Update(print);
-                context.SaveChanges();
+        public static void UpdateStockById(string printId, int stock)
+        {
+            using (MainContext context = new MainContext(new DbContextOptionsBuilder<MainContext>().UseMySql(
+                ConfigurationManager.AppSetting.GetConnectionString("DefaultConnection")
+            ).Options))
+            {
+                var print = (from p in context.Print
+                             where p.Id == printId
+                             select p).FirstOrDefault();
+                if (print != null)
+                {
+                    print.stock = stock;
+                    context.Update(print);
+                    context.SaveChanges();
+                }
             }
         }
 
