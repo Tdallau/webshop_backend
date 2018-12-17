@@ -30,24 +30,24 @@ namespace webshop_backend.Controllers
 
         // GET api/values/5
         [HttpGet]
-        public ActionResult<Response<dynamic>> Get([FromQuery(Name = "page-size")] int page_size, int page)
+        public ActionResult<Response<dynamic>> Get([FromQuery(Name = "page-size")] int page_size, int page, string search = "")
         {
             var totalCards = (
                 from p in this.__context.Print
                 where p.price != null && p.price != 0
                 select p.Id
             ).AsGatedNoTracking().Count();
-            
+
             int totalPages = totalCards % page_size == 0 ? ((int)totalCards / page_size) : (int)(totalCards / page_size + 1);
 
             return Ok(new Response<dynamic>()
             {
                 Data = new
                 {
-                    Cards = this.__context.ProductList.Filter().AsGatedNoTracking().Skip(page_size * (page - 1)).Take(page_size),
+                    Cards = this.__context.ProductList.Filter(search).AsGatedNoTracking().Skip(page_size * (page - 1)).Take(page_size),
                     PageSize = page_size,
                     Page = page,
-                    TotalPages = totalPages
+                    TotalPages = 0
                 },
                 Success = true
             });
@@ -81,11 +81,38 @@ namespace webshop_backend.Controllers
                 return source.AsNoTracking<T>();
             return source;
         }
-        public static IQueryable<ProductList> Filter(this IQueryable<ProductList> productList)
+        public static IQueryable<ProductList> Filter(this IQueryable<ProductList> productList, string search = "")
         {
+            var list = productList.AsGatedNoTracking();
 
-            var list = productList.AsGatedNoTracking()
-            .Where(p => p.Name.Contains("Abbey"));
+            if (search != "")
+            {
+                foreach (var sortItem in search.Split("|"))
+                {
+                    var typeAndValue = sortItem.Split(":");
+                    if (typeAndValue.Length == 1)
+                    {
+                        list = list.Where(p => p.Name.ToLower().Contains(typeAndValue[0].Trim().ToLower()));
+                        Console.WriteLine(typeAndValue[0].ToLower());
+                    }
+                    else
+                    {
+                        switch (typeAndValue[0].Trim())
+                        {
+                            case "oracle":
+                                list = list.Where(p => p.Oracle.Contains(typeAndValue[1].Trim()));
+                                break;
+                            case "set":
+                                list = list.Where(p => p.Set == typeAndValue[1].Trim());
+                                break;
+                            case "flavor":
+                                list = list.Where(p => p.Flavor.Contains(typeAndValue[1].Trim()));
+                                break;
+
+                        }
+                    }
+                }
+            }
 
             return list;
         }
