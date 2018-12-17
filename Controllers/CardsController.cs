@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using webshop_backend.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace webshop_backend.Controllers
 {
@@ -23,40 +24,34 @@ namespace webshop_backend.Controllers
     [ApiController]
     public class CardsController : BasicController
     {
-        public CardsController(MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings) : base(context, settings, urlSettings) {
-         }
+        public CardsController(MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings) : base(context, settings, urlSettings)
+        {
+        }
 
         // GET api/values/5
         [HttpGet]
         public ActionResult<Response<dynamic>> Get([FromQuery(Name = "page-size")] int page_size, int page)
         {
-        
+            var totalCards = (
+                from p in this.__context.Print
+                where p.price != null && p.price != 0
+                select p.Id
+            ).AsGatedNoTracking().Count();
+            
+            int totalPages = totalCards % page_size == 0 ? ((int)totalCards / page_size) : (int)(totalCards / page_size + 1);
 
-            if (this.__context.ProductList.Count() != 0)
+            return Ok(new Response<dynamic>()
             {
+                Data = new
+                {
+                    Cards = this.__context.ProductList.Filter().AsGatedNoTracking().Skip(page_size * (page - 1)).Take(page_size),
+                    PageSize = page_size,
+                    Page = page,
+                    TotalPages = totalPages
+                },
+                Success = true
+            });
 
-                int totalCards = this.__context.ProductList.Count();
-                int totalPages = totalCards % page_size == 0 ? ((int)totalCards / page_size) : (int)(totalCards / page_size + 1);   
-
-                return Ok(new Response<dynamic>(){
-                    Data = new {
-                        Cards = this.__context.ProductList.Skip(page_size * (page - 1)).Take(page_size),
-                        PageSize = page_size,
-                        Page = page,
-                        TotalPages =  totalPages
-                    },
-                    Success = true
-                });
-            }
-            return Ok(new Response<dynamic>(){
-                    Data = new {
-                        Cards = new List<dynamic>(),
-                        PageSize = 0,
-                        Page = 0,
-                        TotalPages =  0
-                    },
-                    Success = false
-                });
         }
 
         [HttpGet("{id}")]
@@ -66,7 +61,8 @@ namespace webshop_backend.Controllers
 
             if (card != null)
             {
-                return Ok(new Response<CardResponse>(){
+                return Ok(new Response<CardResponse>()
+                {
                     Data = card,
                     Success = true
                 });
@@ -77,5 +73,21 @@ namespace webshop_backend.Controllers
         }
     }
 
-    
+    public static class QueryableExtensions
+    {
+        public static IQueryable<T> AsGatedNoTracking<T>(this IQueryable<T> source) where T : class
+        {
+            if (source.Provider is EntityQueryProvider)
+                return source.AsNoTracking<T>();
+            return source;
+        }
+        public static IQueryable<ProductList> Filter(this IQueryable<ProductList> productList)
+        {
+
+            var list = productList.AsGatedNoTracking()
+            .Where(p => p.Name.Contains("Abbey"));
+
+            return list;
+        }
+    }
 }
