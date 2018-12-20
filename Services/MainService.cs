@@ -64,11 +64,6 @@ namespace Services
                                     join CardFaces in this.__context.CardFaces on TypeLine.id equals CardFaces.typeLine.id
                                     where CardFaces.id == cf.id
                                     select new Typeline { TypeName = Types.typeName }).ToList()
-                    let color = (from cic in this.__context.ColorsInCombinations
-                                 join c in this.__context.Color on cic.color.Id equals c.Id
-                                 where cic.combination.id == cf.color.id
-                                 select c.symbol
-                    ).ToList()
                     where Print.Id == id
                     select new CardResponse
                     {
@@ -83,7 +78,7 @@ namespace Services
                         Image = iu.large,
                         Mana = mana,
                         TypeLine = CardResponse.GetTypeLine(typeLine),
-                        Color = color
+                        Color = null
                     }).FirstOrDefault();
         }
 

@@ -169,12 +169,12 @@ namespace webshop_backend.Controllers
             });
         }
 
-        [HttpDelete("{deckId}/cards")]
-        public ActionResult<Response<string>> DeleteCardFromDeck(int deckId, [FromBody] DeckIncome print)
+        [HttpDelete("{deckId}/cards/{printId}")]
+        public ActionResult<Response<string>> DeleteCardFromDeck(int deckId, string printId)
         {
             var card = (
                 from c in this.__context.CardsDeck
-                where c.DeckId == deckId && c.PrintId == print.PrintId
+                where c.DeckId == deckId && c.PrintId == printId
                 select c
             ).FirstOrDefault();
             this.__context.Remove(card);
