@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Models.DB;
 using Services;
 using System.Linq;
+using webshop_backend.Enum;
 
 namespace webshop_backend.Services
 {
@@ -11,7 +12,7 @@ namespace webshop_backend.Services
     {
         public static bool CheckIncome(User user)
         {
-            if (user != null && user.email != "" && user.name != "" && user.role != "")
+            if (user != null && user.email != "" && user.name != "" && user.role != Roles.User)
             {
                 return true;
             }

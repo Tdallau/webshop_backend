@@ -13,6 +13,7 @@ using Models.DB;
 using Microsoft.Extensions.Options;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using webshop_backend.Enum;
 
 namespace webshop_backend.Controllers
 {
@@ -48,7 +49,7 @@ namespace webshop_backend.Controllers
             var userToken = token.Split(' ')[1];
             var cu = UserData.FromToken(userToken);
 
-            if (user.email != "" && user.name != "" &&  user.password != "" && user.role == cu.Role)
+            if (user.email != "" && user.name != "" &&  user.password != "" && user.role.ToString() == cu.Role)
             { 
                 this.__context.Update(user);
                 this.__context.SaveChanges();

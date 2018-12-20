@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using System.Linq;
 using Contexts;
 using Models.DB;
+using System.Collections.Generic;
 
 namespace webshop_backend.Services
 {
@@ -24,9 +25,7 @@ namespace webshop_backend.Services
                              where ShoppingCard.UserId == userId && ShoppingCardItem.PrintId == shoppingCardItem.PrintId
                              select ShoppingCardItem).FirstOrDefault();
 
-                var print = (from p in this.__context.Print
-                             where p.Id == shoppingCardItem.PrintId
-                             select p).FirstOrDefault();
+                var print = this.GetPrint(shoppingCardItem.PrintId);
 
                 if (shoppingCart != null)
                 {
@@ -57,5 +56,22 @@ namespace webshop_backend.Services
             }
             return false;
         }
+
+        public List<string> UpdateShoppingCartRange(int userId, ShoppingCardItem[] shoppingCardItems) {
+            List<string> notInStock = new List<string>();
+            foreach (var shoppingCardItem in shoppingCardItems)
+            {
+                if(!this.UpdateShoppingCart(userId, shoppingCardItem)) {
+                    notInStock.Add(shoppingCardItem.PrintId);
+                }
+            }
+            return notInStock;
+        }
+
+        private Print GetPrint(string printId) {
+            return (from p in this.__context.Print
+                             where p.Id == printId
+                             select p).FirstOrDefault();
+        } 
     }
 }

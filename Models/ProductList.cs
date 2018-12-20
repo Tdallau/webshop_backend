@@ -7,5 +7,6 @@ namespace Models {
         public string Set {get; set;}
         public string Oracle {get; set;}
         public string Flavor {get; set;}
+        public string Mana {get; set;}
     }
 }

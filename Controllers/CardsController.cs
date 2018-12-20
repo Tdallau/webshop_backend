@@ -24,6 +24,8 @@ namespace webshop_backend.Controllers
     [ApiController]
     public class CardsController : BasicController
     {
+        private static List<ProductList> _cache = new List<ProductList>();
+        private static DateTime _cacheDate;
         public CardsController(MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings) : base(context, settings, urlSettings)
         {
         }
@@ -32,11 +34,16 @@ namespace webshop_backend.Controllers
         [HttpGet]
         public ActionResult<Response<dynamic>> Get([FromQuery(Name = "page-size")] int page_size, int page, string search = "")
         {
-            var totalCards = (
-                from p in this.__context.Print
-                where p.price != null && p.price != 0
-                select p.Id
-            ).AsGatedNoTracking().Count();
+            if (_cache.Count == 0 || (DateTime.Now - _cacheDate).TotalHours > 24)
+            {
+                lock (_cache)
+                {
+                    _cache = this.__context.ProductList.ToList();
+                    _cacheDate = DateTime.Now;
+                }
+            }
+
+            var totalCards = _cache.Filter(search).Count();
 
             int totalPages = totalCards % page_size == 0 ? ((int)totalCards / page_size) : (int)(totalCards / page_size + 1);
 
@@ -44,10 +51,10 @@ namespace webshop_backend.Controllers
             {
                 Data = new
                 {
-                    Cards = this.__context.ProductList.Filter(search).AsGatedNoTracking().Skip(page_size * (page - 1)).Take(page_size),
+                    Cards = _cache.Filter(search).Skip(page_size * (page - 1)).Take(page_size),
                     PageSize = page_size,
                     Page = page,
-                    TotalPages = 0
+                    TotalPages = totalPages
                 },
                 Success = true
             });
@@ -75,17 +82,11 @@ namespace webshop_backend.Controllers
 
     public static class QueryableExtensions
     {
-        public static IQueryable<T> AsGatedNoTracking<T>(this IQueryable<T> source) where T : class
+        public static IEnumerable<ProductList> Filter(this IEnumerable<ProductList> productList, string search = "")
         {
-            if (source.Provider is EntityQueryProvider)
-                return source.AsNoTracking<T>();
-            return source;
-        }
-        public static IQueryable<ProductList> Filter(this IQueryable<ProductList> productList, string search = "")
-        {
-            var list = productList.AsGatedNoTracking();
+            var list = productList;
 
-            if (search != "")
+            if (!string.IsNullOrEmpty(search))
             {
                 foreach (var sortItem in search.Split("|"))
                 {
@@ -114,7 +115,7 @@ namespace webshop_backend.Controllers
                 }
             }
 
-            return list;
+            return list.OrderBy(p => p.Id);
         }
     }
 }

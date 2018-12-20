@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using webshop_backend.Enum;
 
 namespace Models.DB
 {
@@ -8,7 +9,7 @@ namespace Models.DB
         public string email {get; set;}
         public string name {get; set;}
         public string approach {get; set;}
-        public string role {get; set;}
+        public Roles role {get; set;}
         public string password {get; set;}
         public string salt {get; set;}
         public bool active {get; set;}

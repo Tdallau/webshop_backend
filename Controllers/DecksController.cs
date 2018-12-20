@@ -31,10 +31,11 @@ namespace webshop_backend.Controllers
             var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
 
             var Decks = (from d in this.__context.Decks
-                         join p in this.__context.Print on d.Commander equals p.Id
-                         join pf in this.__context.PrintFace on p.Id equals pf.PrintId
+                         let com = this.__context.Print.Where(p => p.Id == d.Commander).FirstOrDefault()
+                         let pf = this.__context.PrintFace.Where(p => p.PrintId == com.Id).FirstOrDefault()
                          join iu in this.__context.ImagesUrl on pf.id equals iu.printFace.id
                          where d.UserId == userId
+                         orderby d.Name
                          select new DeckResponse()
                          {
                              Name = d.Name,

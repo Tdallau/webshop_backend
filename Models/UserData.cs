@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using webshop_backend;
+using webshop_backend.Enum;
 
 namespace Models
 {
@@ -27,7 +28,7 @@ namespace Models
                 new Claim(ClaimTypes.NameIdentifier, UserId.ToString()),
                 new Claim(ClaimTypes.Name, Name),
                 new Claim(ClaimTypes.Email, Email),
-                new Claim(ClaimTypes.Role, Role),
+                new Claim(ClaimTypes.Role, Role.ToString()),
                 new Claim(ClaimTypes.SerialNumber, ShoppingCartId.ToString()),
                 new Claim(JwtRegisteredClaimNames.Nbf, new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds().ToString()),
                 new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(DateTime.Now.AddDays(1)).ToUnixTimeSeconds().ToString()),
@@ -52,6 +53,7 @@ namespace Models
             string shoppingCartId = jwttoken.Claims.Where(c => c.Type == ClaimTypes.SerialNumber).FirstOrDefault()?.Value;
             string nbf = jwttoken.Claims.Where(c => c.Type == JwtRegisteredClaimNames.Nbf).FirstOrDefault()?.Value;
             string exp = jwttoken.Claims.Where(c => c.Type == JwtRegisteredClaimNames.Exp).FirstOrDefault()?.Value;
+
             return new UserData { Name = name, UserId = uid, Email = email, Role = role, Nbf = int.Parse(nbf), Exp = int.Parse(exp), ShoppingCartId = int.Parse(shoppingCartId) };
         }
 
