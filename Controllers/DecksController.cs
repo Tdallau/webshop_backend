@@ -247,7 +247,7 @@ namespace webshop_backend.Controllers
                     //     where cf.card.Id == print.Card.Id
                     //     select cf.name
                     // ).FirstOrDefault();
-                    notInStock.Add(print.Id);
+                    notInStock.Add(print.Id + " is out of stock.");
                 }
             }
 
