@@ -43,6 +43,7 @@ namespace webshop_backend
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
                 builder.AllowAnyOrigin()
+                    .WithExposedHeaders("Token-Expired")
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials();

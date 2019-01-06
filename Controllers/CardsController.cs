@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using webshop_backend.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace webshop_backend.Controllers
 {
@@ -23,40 +24,41 @@ namespace webshop_backend.Controllers
     [ApiController]
     public class CardsController : BasicController
     {
-        public CardsController(MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings) : base(context, settings, urlSettings) {
-         }
+        private static List<ProductList> _cache = new List<ProductList>();
+        private static DateTime _cacheDate;
+        public CardsController(MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings) : base(context, settings, urlSettings)
+        {
+        }
 
         // GET api/values/5
         [HttpGet]
-        public ActionResult<Response<dynamic>> Get([FromQuery(Name = "page-size")] int page_size, int page)
+        public ActionResult<Response<dynamic>> Get([FromQuery(Name = "page-size")] int page_size, int page, string search = "")
         {
-        
-
-            if (this.__context.ProductList.Count() != 0)
+            if (_cache.Count == 0 || (DateTime.Now - _cacheDate).TotalHours > 24)
             {
-
-                int totalCards = this.__context.ProductList.Count();
-                int totalPages = totalCards % page_size == 0 ? ((int)totalCards / page_size) : (int)(totalCards / page_size + 1);   
-
-                return Ok(new Response<dynamic>(){
-                    Data = new {
-                        Cards = this.__context.ProductList.Skip(page_size * (page - 1)).Take(page_size),
-                        PageSize = page_size,
-                        Page = page,
-                        TotalPages =  totalPages
-                    },
-                    Success = true
-                });
+                lock (_cache)
+                {
+                    _cache = this.__context.ProductList.ToList();
+                    _cacheDate = DateTime.Now;
+                }
             }
-            return Ok(new Response<dynamic>(){
-                    Data = new {
-                        Cards = new List<dynamic>(),
-                        PageSize = 0,
-                        Page = 0,
-                        TotalPages =  0
-                    },
-                    Success = false
-                });
+
+            var totalCards = _cache.Filter(search).Count();
+
+            int totalPages = totalCards % page_size == 0 ? ((int)totalCards / page_size) : (int)(totalCards / page_size + 1);
+
+            return Ok(new Response<dynamic>()
+            {
+                Data = new
+                {
+                    Cards = _cache.Filter(search).Skip(page_size * (page - 1)).Take(page_size),
+                    PageSize = page_size,
+                    Page = page,
+                    TotalPages = totalPages
+                },
+                Success = true
+            });
+
         }
 
         [HttpGet("{id}")]
@@ -66,7 +68,8 @@ namespace webshop_backend.Controllers
 
             if (card != null)
             {
-                return Ok(new Response<CardResponse>(){
+                return Ok(new Response<CardResponse>()
+                {
                     Data = card,
                     Success = true
                 });
@@ -77,5 +80,42 @@ namespace webshop_backend.Controllers
         }
     }
 
-    
+    public static class QueryableExtensions
+    {
+        public static IEnumerable<ProductList> Filter(this IEnumerable<ProductList> productList, string search = "")
+        {
+            var list = productList;
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                foreach (var sortItem in search.Split("|"))
+                {
+                    var typeAndValue = sortItem.Split(":");
+                    if (typeAndValue.Length == 1)
+                    {
+                        list = list.Where(p => p.Name.ToLower().Contains(typeAndValue[0].Trim().ToLower()));
+                        Console.WriteLine(typeAndValue[0].ToLower());
+                    }
+                    else
+                    {
+                        switch (typeAndValue[0].Trim())
+                        {
+                            case "oracle":
+                                list = list.Where(p => p.Oracle.Contains(typeAndValue[1].Trim()));
+                                break;
+                            case "set":
+                                list = list.Where(p => p.Set == typeAndValue[1].Trim());
+                                break;
+                            case "flavor":
+                                list = list.Where(p => p.Flavor.Contains(typeAndValue[1].Trim()));
+                                break;
+
+                        }
+                    }
+                }
+            }
+
+            return list.OrderBy(p => p.Id);
+        }
+    }
 }

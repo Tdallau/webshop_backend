@@ -19,6 +19,7 @@ using webshop_backend.html.activation;
 using webshop_backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using webshop_backend.Enum;
 
 namespace Services
 {
@@ -37,13 +38,12 @@ namespace Services
         public User IsValidUserAndPasswordCombination(string email, string password)
         {
 
-            var query = from user in this.__context.User
+            var query = (from user in this.__context.User
                         where user.email == email
-                        select user;
+                        select user).FirstOrDefault();
             try
             {
-                Console.WriteLine(email);
-                var curUser = query.First();
+                var curUser = query;
                 if (curUser != null)
                 {
                     if (BCrypt.Net.BCrypt.Verify(password + curUser.salt, curUser.password))
@@ -116,6 +116,7 @@ namespace Services
             {
                 var salt = UserServices.GetSalt();
 
+
                 var newUser = new User()
                 {
                     email = loginData.Email,
@@ -123,7 +124,8 @@ namespace Services
                     active = false,
                     name = loginData.Username,
                     password = BCrypt.Net.BCrypt.HashPassword(loginData.Password + salt),
-                    salt = salt
+                    salt = salt,
+                    role = Roles.User
                 };
 
                 using (MainContext context = new MainContext(new DbContextOptionsBuilder<MainContext>().UseMySql(
@@ -132,7 +134,7 @@ namespace Services
                 {
                     context.Add(newUser);
                     context.SaveChanges();
-                    
+
                     var shoppingCart = new ShoppingCard() { UserId = newUser.id };
                     this.__context.Add(shoppingCart);
                     this.__context.SaveChanges();
@@ -165,7 +167,7 @@ namespace Services
         }
 
 
-    }
 
+    }
 
 }

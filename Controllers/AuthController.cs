@@ -15,6 +15,7 @@ using webshop_backend.Models.DB;
 using webshop_backend.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using webshop_backend.Enum;
 
 namespace webshop_backend.Controllers
 {
@@ -44,7 +45,7 @@ namespace webshop_backend.Controllers
                                           where sc.UserId == userId
                                           select sc.Id).FirstOrDefault();
 
-                    var responseUser = new UserData() { Name = user.name, UserId = user.id, Email = user.email, Role = user.role, ShoppingCartId = shoppingCartId };
+                    var responseUser = new UserData() { Name = user.name, UserId = user.id, Email = user.email, Role = user.role.ToString(), ShoppingCartId = shoppingCartId };
                     var token = responseUser.ToToken();
                     var refreshToken = UserData.GenerateRefreshToken();
                     var userData = UserData.FromToken(token);
@@ -89,7 +90,6 @@ namespace webshop_backend.Controllers
         public ActionResult<Response<string>> Register([FromBody] LoginData loginData)
         {
             // return loginData;
-            if (loginData.Role == null) loginData.Role = "User";
             var success = this.userServices.InsertUser(loginData);
             if (success)
             {
@@ -113,9 +113,9 @@ namespace webshop_backend.Controllers
         public ActionResult<Response<string>> Logout([FromBody] RefreshTokens tokens) {
             var token = (
                 from refresh in this.__context.Tokens
-                where refresh.Token == tokens.RefreshToken
+                // where refresh.Token == tokens.RefreshToken
                 select refresh
-            );
+            ).FirstOrDefault();
             this.__context.Remove(token);
             this.__context.SaveChanges();
             return Ok(

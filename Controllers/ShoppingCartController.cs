@@ -10,6 +10,7 @@ using Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using webshop_backend.Services;
+using System.Collections.Generic;
 
 namespace webshop_backend.Controllers
 {
@@ -71,6 +72,24 @@ namespace webshop_backend.Controllers
                 }
             );
 
+
+        }
+        [HttpPost("range")]
+        public ActionResult<Response<List<string>>> PostRange([FromBody] ShoppingCardItem[] shoppingCardItems)
+        {
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+            var userToken = token.Split(' ')[1];
+            var jwttoken = new JwtSecurityToken(userToken);
+            var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
+
+            
+                return Ok(
+                    new Response<List<string>>()
+                    {
+                        Data = this.shoppingCartService.UpdateShoppingCartRange(userId, shoppingCardItems),
+                        Success = true
+                    }
+                );
 
         }
         [HttpDelete]

@@ -26,7 +26,7 @@ namespace webshop_backend.Controllers
 
         }
 
-        [HttpPost]
+        [HttpPost("stock")]
         public ActionResult<Response<string>> Post([FromBody] StatusData status)
         {
             var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
@@ -47,57 +47,80 @@ namespace webshop_backend.Controllers
                            select a).ToList();
 
 
-            if (shoppingCartItem.Count != 0 && address.Count != 0)
+            if (shoppingCartItem.Count != 0)
             {
 
                 var order = new Order() { userId = shoppingCart.UserId, addressId = 1, status = "Ordered" };
                 this.__context.Add(order);
                 this.__context.SaveChanges();
+
+                List<string> outOfStock = new List<string>();
+
                 foreach (var item in shoppingCartItem)
                 {
                     var print = (from Print in this.__context.Print
+                                 join c in this.__context.CardFaces on Print.Card.Id equals c.card.Id
                                  where Print.Id == item.PrintId
-                                 select Print).FirstOrDefault();
+                                 select new
+                                 {
+                                     Print.stock,
+                                     c.name
+                                 }).FirstOrDefault();
                     var stock = print.stock - item.Quantity;
-                    if (stock >= 0)
+                    if (stock <= 0)
                     {
-                        print.stock = stock;
-                        this.__context.Update(print);
-                        this.__context.SaveChanges();
-
-                        this.UpdateSales(item);
-
-                        var price = print?.price;
-                        if (price != null)
-                        {
-                            var orderItem = new OrderProduct() { orderId = order.id, price = (int)price, quantity = item.Quantity, PrintId = item.PrintId };
-                            this.__context.Add(orderItem);
-                        }
-                    }
-                    else
-                    {
-                        return StatusCode(409, new Response<string>()
-                        {
-                            Data = $"not enough {print.Id} more in stock! Just {print.stock} left.",
-                            Success = false
-                        });
+                        outOfStock.Add(print.name + " is out of stock.");
                     }
                 }
-                foreach (var item in shoppingCartItem)
+
+                if (outOfStock.Count > 0)
                 {
-                    this.__context.Remove(item);
+                    return StatusCode(409, new Response<List<string>>()
+                    {
+                        Data = outOfStock,
+                        Success = false
+                    });
+                } else {
+                    return Ok(new Response<string>(){
+                        Data = "order can be placed",
+                        Success = true
+                    });
                 }
-                this.__context.SaveChanges();
-
-
-                this.SendConformation(order, userId);
-                return Ok(new Response<string> { Data = "Your order has been placed!", Success = true });
             }
             else
             {
                 return Ok(new Response<string> { Data = "Your shoppingcard is empty!!", Success = false });
             }
         }
+
+        // foreach (var item in shoppingCartItem)
+        //             {
+        //                 var print = (from Print in this.__context.Print
+        //                              where Print.Id == item.PrintId
+        //                              select Print).FirstOrDefault();
+
+        //                 var stock = print.stock - item.Quantity;
+        //                 print.stock = stock;
+
+        //                 this.__context.Update(print);
+        //                 this.__context.SaveChanges();
+
+        //                 this.UpdateSales(item);
+
+        //                 var price = print?.price;
+        //                 if (price != null)
+        //                 {
+        //                     var orderItem = new OrderProduct() { orderId = order.id, price = (int)price, quantity = item.Quantity, PrintId = item.PrintId };
+        //                     this.__context.Add(orderItem);
+        //                 }
+        //             }
+        //             foreach (var item in shoppingCartItem)
+        //             {
+        //                 this.__context.Remove(item);
+        //             }
+        //             this.__context.SaveChanges();
+        //             this.SendConformation(order, userId);
+        //             return Ok(new Response<string> { Data = "Your order has been placed!", Success = true });
 
         private void SendConformation(Order order, int userId)
         {
