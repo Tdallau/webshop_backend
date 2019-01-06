@@ -102,5 +102,30 @@ namespace webshop_backend.Controllers
             });
         }
 
+        [HttpPut("default")]
+        public ActionResult<Response<string>> SetMainAddress([FromBody] Address address) {
+
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+            var userToken = token.Split(' ')[1];
+            var jwttoken = new JwtSecurityToken(userToken);
+            var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
+
+            var add = (
+                from a in this.__context.Address
+                where a.Id == address.Id && a.UserId == userId
+                select a
+            ).FirstOrDefault();
+
+            add.Main = address.Main;
+
+            this.__context.Update(add);
+            this.__context.SaveChanges();
+
+            return Ok(new Response<string>(){
+                Success = true,
+                Data = "default address is set to" + add.Main
+            });
+        }
+
     }
 }
