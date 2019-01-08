@@ -1,13 +1,15 @@
 
 using System.Collections.Generic;
+using webshop_backend.Enum;
 
 namespace Models.DB
 {
     public class Order {
-        public int id {get; set;}
-        public int userId {get; set;}
-        public int addressId {get; set;}
-        public string status {get; set;}
-        public List<OrderProduct> orderProducts {get; set;}
+        public int Id {get; set;}
+        public int UserId {get; set;}
+        public int AddressId {get; set;}
+        public string PayMethod {get; set;}
+        public OrderStatus Status {get; set;}
+        public List<OrderProduct> OrderProducts {get; set;}
     }
 }

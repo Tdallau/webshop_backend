@@ -8,5 +8,6 @@ namespace Models {
         public string Oracle {get; set;}
         public string Flavor {get; set;}
         public string Mana {get; set;}
+        public int Stock {get; set;}
     }
 }

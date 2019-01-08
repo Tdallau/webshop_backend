@@ -12,6 +12,8 @@ using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using webshop_backend.html.order;
 using webshop_backend.Models.DB;
+using webshop_backend.Enum;
+using webshop_backend.Models;
 
 namespace webshop_backend.Controllers
 {
@@ -50,10 +52,6 @@ namespace webshop_backend.Controllers
             if (shoppingCartItem.Count != 0)
             {
 
-                var order = new Order() { userId = shoppingCart.UserId, addressId = 1, status = "Ordered" };
-                this.__context.Add(order);
-                this.__context.SaveChanges();
-
                 List<string> outOfStock = new List<string>();
 
                 foreach (var item in shoppingCartItem)
@@ -80,8 +78,11 @@ namespace webshop_backend.Controllers
                         Data = outOfStock,
                         Success = false
                     });
-                } else {
-                    return Ok(new Response<string>(){
+                }
+                else
+                {
+                    return Ok(new Response<string>()
+                    {
                         Data = "order can be placed",
                         Success = true
                     });
@@ -93,34 +94,76 @@ namespace webshop_backend.Controllers
             }
         }
 
-        // foreach (var item in shoppingCartItem)
-        //             {
-        //                 var print = (from Print in this.__context.Print
-        //                              where Print.Id == item.PrintId
-        //                              select Print).FirstOrDefault();
+        [HttpPost]
+        public ActionResult<Response<string>> Order([FromBody] NewOrder order)
+        {
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+            var userToken = token.Split(' ')[1];
+            var jwttoken = new JwtSecurityToken(userToken);
+            var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
 
-        //                 var stock = print.stock - item.Quantity;
-        //                 print.stock = stock;
+            var shoppingCart = (from ShoppingCard in this.__context.ShoppingCard
+                                where ShoppingCard.Id == order.ShoppingCardId
+                                select ShoppingCard).FirstOrDefault();
 
-        //                 this.__context.Update(print);
-        //                 this.__context.SaveChanges();
+            var shoppingCartItem = (from ShoppingCardItem in this.__context.ShoppingCardItem
+                                    where ShoppingCardItem.ShoppingCardId == shoppingCart.Id
+                                    select ShoppingCardItem).ToList();
 
-        //                 this.UpdateSales(item);
 
-        //                 var price = print?.price;
-        //                 if (price != null)
-        //                 {
-        //                     var orderItem = new OrderProduct() { orderId = order.id, price = (int)price, quantity = item.Quantity, PrintId = item.PrintId };
-        //                     this.__context.Add(orderItem);
-        //                 }
-        //             }
-        //             foreach (var item in shoppingCartItem)
-        //             {
-        //                 this.__context.Remove(item);
-        //             }
-        //             this.__context.SaveChanges();
-        //             this.SendConformation(order, userId);
-        //             return Ok(new Response<string> { Data = "Your order has been placed!", Success = true });
+            var newOrder = new Order(){Status = OrderStatus.Ordered,  UserId= userId, AddressId = order.Address.Id, PayMethod = order.PayMethod };
+            this.__context.Add(newOrder);
+            this.__context.SaveChanges();
+
+            foreach (var item in shoppingCartItem)
+                        {
+                            var print = (from Print in this.__context.Print
+                                         where Print.Id == item.PrintId
+                                         select Print).FirstOrDefault();
+
+                            var stock = print.stock - item.Quantity;
+                            print.stock = stock;
+
+                            this.__context.Update(print);
+                            this.__context.SaveChanges();
+
+                            this.UpdateSales(item);
+
+                            var price = print?.price;
+                            if (price != null)
+                            {
+                                var orderItem = new OrderProduct() { orderId = newOrder.Id, price = (int)price, quantity = item.Quantity, PrintId = item.PrintId };
+                                this.__context.Add(orderItem);
+                            }
+                        }
+                        foreach (var item in shoppingCartItem)
+                        {
+                            this.__context.Remove(item);
+                        }
+                        this.__context.SaveChanges();
+                        this.SendConformation(newOrder, userId);
+                        return Ok(new Response<string> { Data = "Your order has been placed!", Success = true });
+        }
+
+        [HttpGet]
+        public ActionResult<Response<List<Order>>> GetStatus()
+        {
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+            var userToken = token.Split(' ')[1];
+            var jwttoken = new JwtSecurityToken(userToken);
+            var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
+
+            var orders = (
+                from o in this.__context.Order
+                where o.UserId == userId
+                select o
+            ).ToList();
+
+            return Ok(new Response<List<Order>>(){
+               Data = orders,
+               Success = true 
+            });
+        }
 
         private void SendConformation(Order order, int userId)
         {
@@ -135,10 +178,10 @@ namespace webshop_backend.Controllers
             List<OrderTable> orderitems = (from OrderProduct in this.__context.OrderProduct
                                            join Print in this.__context.Print on OrderProduct.PrintId equals Print.Id
                                            join CartFaces in this.__context.CardFaces on Print.Card.Id equals CartFaces.card.Id
-                                           where OrderProduct.orderId == order.id
+                                           where OrderProduct.orderId == order.Id
                                            select new OrderTable { Name = CartFaces.name, Quantity = OrderProduct.quantity, Price = OrderProduct.price }).ToList();
 
-            var body = OrderToCSharp.Order(user, address, orderitems);
+            var body = OrderToCSharp.Order(user, address, orderitems, order);
 
             this.mainServcie.SendEmail("Your order has been placed!", body, true, user.email);
         }

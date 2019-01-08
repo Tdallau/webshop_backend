@@ -18,5 +18,19 @@ namespace webshop_backend.Controllers
         public string Alive() {
             return "The server is running!!";
         }
+
+        [HttpGet("mail")]
+        public ActionResult<string> TestMail(){
+            try
+            {
+                this.mainServcie.SendEmail("Test", "Dit is een test", false, "tim@dallau.com");
+                return Ok("succesfully send!!");
+            }
+            catch (System.Exception e)
+            {
+                
+                return Ok(e);
+            }
+        }
     }
 }

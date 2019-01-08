@@ -12,7 +12,7 @@ namespace webshop_backend.Services
     {
         public static bool CheckIncome(User user)
         {
-            if (user != null && user.email != "" && user.name != "" && user.role != Roles.User)
+            if (user != null && user.email != "" && user.name != "")
             {
                 return true;
             }
@@ -30,7 +30,8 @@ namespace webshop_backend.Services
                 active = true,
                 name = user.name,
                 password = BCrypt.Net.BCrypt.HashPassword(user.password + salt),
-                salt = salt
+                salt = salt,
+                role = user.role
             };
 
             using (MainContext context = new MainContext(new DbContextOptionsBuilder<MainContext>().UseMySql(

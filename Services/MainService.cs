@@ -28,6 +28,7 @@ namespace Services
         public async void SendEmail(string subject, string body, bool isBodyHtml, string email)
         {
             var test = this.__EmailSettings.Host;
+            
             var smtpClient = new SmtpClient
             {
                 Host = this.__EmailSettings.Host, // set your SMTP server name here
