@@ -15,15 +15,15 @@ $insertSet = $db->pdo->prepare("
 		`foilOnly`,
 		`iconSVG`
 	) VALUES (
-		`Id`            = :id,
-		`name`          = :name,
-		`setType`       = :setType,
-		`releasedAt`    = :releasedAt,
-		`blockId`       = :blockId,
-		`paretnSetCode` = :paretnSetCode,
-		`cardCount`     = :cardCount,
-		`foilOnly`      = :foilOnly,
-		`iconSVG`       = :iconSVG
+		:id,
+		:name,
+		:setType,
+		:releasedAt,
+		:blockId,
+		:paretnSetCode,
+		:cardCount,
+		:foilOnly,
+		:iconSVG
 	)
 	ON DUPLICATE KEY UPDATE
 		`name`          = :name,
