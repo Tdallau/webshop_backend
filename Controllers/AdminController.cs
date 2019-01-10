@@ -14,6 +14,7 @@ using webshop_backend.Services;
 using Hangfire;
 using Models.DB;
 using webshop_backend.Models;
+using System.Diagnostics;
 
 namespace webshop_backend.Controllers
 {
@@ -24,8 +25,10 @@ namespace webshop_backend.Controllers
     public class AdminController : BasicController
     {
         public readonly AdminService adminService;
-        public AdminController(MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings) : base(context, settings, urlSettings)
+        public readonly IOptions<PhpLocation> phpLoc;
+        public AdminController(MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings, IOptions<PhpLocation> phpLoc) : base(context, settings, urlSettings)
         {
+            this.phpLoc = phpLoc;
             this.adminService = new AdminService();
         }
 
@@ -37,6 +40,16 @@ namespace webshop_backend.Controllers
             return Ok(new Response<string>()
             {
                 Data = "Stock Is filled with random values!!",
+                Success = true
+            });
+        }
+        [HttpPost("cards/update")]
+        public ActionResult<Response<string>> updateAllCards()
+        {
+            BackgroundJob.Enqueue(() => updateCards());
+            return Ok(new Response<string>()
+            {
+                Data = "The cards will be updated",
                 Success = true
             });
         }
@@ -186,6 +199,21 @@ namespace webshop_backend.Controllers
             var admin = new PriceService();
             admin.PriceInsert();
         }
+        public void updateCards(){
+            var proc = new Process
+			{
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "/bin/bash",
+                    Arguments = "php -f " + this.phpLoc.Value.loc + "new_import.php",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true
+                }
+            };
 
+            proc.Start();
+            proc.WaitForExit();
+        }
     }
 }

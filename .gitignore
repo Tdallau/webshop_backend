@@ -2,7 +2,7 @@
 /bin/*
 /.vs/*
 /.vscode/*
-
+*/splitted/*.json
 *.csv
 MNRetailDatasetCSV_MNRetailDatasetCSV.csv
 appsettings.json

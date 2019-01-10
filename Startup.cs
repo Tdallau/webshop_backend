@@ -94,6 +94,7 @@ namespace webshop_backend
             });
             services.Configure<EmailSettings>(Configuration.GetSection("emailSettings"));
             services.Configure<Urls>(Configuration.GetSection("urls"));
+            services.Configure<PhpLocation>(Configuration.GetSection("php_files"));
 
         }
 

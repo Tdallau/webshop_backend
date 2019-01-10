@@ -1,0 +1,1249 @@
+Read content:
+Done reading content
+Rampaging Brontodon
+doing faces : 
+Rampaging Brontodon
+0Vengeant Vampire
+doing faces : 
+Vengeant Vampire
+10Angler Turtle
+doing faces : 
+Angler Turtle
+20Angelic Guardian
+doing faces : 
+Angelic Guardian
+30Ghalta, Primal Hunger
+doing faces : 
+Ghalta, Primal Hunger
+0Siege-Gang Commander
+doing faces : 
+Siege-Gang Commander
+50Liliana's Mastery
+doing faces : 
+Liliana's Mastery
+0Zahid, Djinn of the Lamp
+doing faces : 
+Zahid, Djinn of the Lamp
+110Benalish Marshal
+doing faces : 
+Benalish Marshal
+70Always Watching
+doing faces : 
+Always Watching
+1Avatar of Growth
+doing faces : 
+Avatar of Growth
+80Goblin Goliath
+doing faces : 
+Goblin Goliath
+910Rot Hulk
+doing faces : 
+Rot Hulk
+100Inspired Sphinx
+doing faces : 
+Inspired Sphinx
+110Militant Angel
+doing faces : 
+Militant Angel
+121Vraska, Golgari Queen Emblem
+doing faces : 
+Vraska, Golgari Queen Emblem
+0Ral, Izzet Viceroy Emblem
+doing faces : 
+Ral, Izzet Viceroy Emblem
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+10Elf Knight
+doing faces : 
+Elf Knight
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+0Insect
+doing faces : 
+Insect
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+110Goblin
+doing faces : 
+Goblin
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+220Bird Illusion
+doing faces : 
+Bird Illusion
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+330Soldier
+doing faces : 
+Soldier
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+440Angel
+doing faces : 
+Angel
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+550Thought Erasure
+doing faces : 
+Thought Erasure
+0Firemind's Research
+doing faces : 
+Firemind's Research
+1Emmara, Soul of the Accord
+doing faces : 
+Emmara, Soul of the Accord
+220Boros Challenger
+doing faces : 
+Boros Challenger
+1910Necrotic Wound
+doing faces : 
+Necrotic Wound
+array(2) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(1) "9"
+  }
+  [1]=>
+  array(1) {
+    ["id"]=>
+    string(1) "6"
+  }
+}
+array(1) {
+  [0]=>
+  string(1) "4"
+}
+array(2) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(1) "9"
+  }
+  [1]=>
+  array(1) {
+    ["id"]=>
+    string(1) "6"
+  }
+}
+array(1) {
+  [0]=>
+  string(1) "4"
+}
+array(2) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(1) "9"
+  }
+  [1]=>
+  array(1) {
+    ["id"]=>
+    string(1) "6"
+  }
+}
+array(1) {
+  [0]=>
+  string(1) "4"
+}
+array(2) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(1) "9"
+  }
+  [1]=>
+  array(1) {
+    ["id"]=>
+    string(1) "6"
+  }
+}
+array(1) {
+  [0]=>
+  string(1) "4"
+}
+array(2) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(1) "9"
+  }
+  [1]=>
+  array(1) {
+    ["id"]=>
+    string(1) "6"
+  }
+}
+array(1) {
+  [0]=>
+  string(1) "4"
+}
+array(2) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(1) "9"
+  }
+  [1]=>
+  array(1) {
+    ["id"]=>
+    string(1) "6"
+  }
+}
+array(1) {
+  [0]=>
+  string(1) "4"
+}
+array(2) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(1) "9"
+  }
+  [1]=>
+  array(1) {
+    ["id"]=>
+    string(1) "6"
+  }
+}
+array(1) {
+  [0]=>
+  string(1) "4"
+}
+0Sinister Sabotage
+doing faces : 
+Sinister Sabotage
+1Conclave Tribunal
+doing faces : 
+Conclave Tribunal
+1Voja
+doing faces : 
+Voja
+array(2) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(1) "8"
+  }
+  [1]=>
+  array(1) {
+    ["id"]=>
+    string(1) "6"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+60Weird
+doing faces : 
+Weird
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+770Plains
+doing faces : 
+Plains
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+0Forest
+doing faces : 
+Forest
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+110Plains
+doing faces : 
+Plains
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+221Mountain
+doing faces : 
+Mountain
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+220Forest
+doing faces : 
+Forest
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+331Swamp
+doing faces : 
+Swamp
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+330Mountain
+doing faces : 
+Mountain
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+441Island
+doing faces : 
+Island
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+440Swamp
+doing faces : 
+Swamp
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+551Island
+doing faces : 
+Island
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+551Impervious Greatwurm
+doing faces : 
+Impervious Greatwurm
+220Vraska's Stoneglare
+doing faces : 
+Vraska's Stoneglare
+1Attendant of Vraska
+doing faces : 
+Attendant of Vraska
+2310Kraul Raider
+doing faces : 
+Kraul Raider
+2410Vraska, Regal Gorgon
+doing faces : 
+Vraska, Regal Gorgon
+40Ral's Staticaster
+doing faces : 
+Ral's Staticaster
+250Precision Bolt
+doing faces : 
+Precision Bolt
+1Ral's Dispersal
+doing faces : 
+Ral's Dispersal
+1Ral, Caller of Storms
+doing faces : 
+Ral, Caller of Storms
+510Forest
+doing faces : 
+Forest
+array(3) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(1) "3"
+  }
+  [1]=>
+  array(1) {
+    ["id"]=>
+    string(1) "5"
+  }
+  [2]=>
+  array(1) {
+    ["id"]=>
+    string(1) "9"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+array(3) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(1) "3"
+  }
+  [1]=>
+  array(1) {
+    ["id"]=>
+    string(1) "5"
+  }
+  [2]=>
+  array(1) {
+    ["id"]=>
+    string(1) "9"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+551Mountain
+doing faces : 
+Mountain
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+551Swamp
+doing faces : 
+Swamp
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+551Island
+doing faces : 
+Island
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+551Plains
+doing faces : 
+Plains
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+551Watery Grave
+doing faces : 
+Watery Grave
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+510Temple Garden
+doing faces : 
+Temple Garden
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+610Steam Vents
+doing faces : 
+Steam Vents
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+720Selesnya Guildgate
+doing faces : 
+Selesnya Guildgate
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+80Selesnya Guildgate
+doing faces : 
+Selesnya Guildgate
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+91Sacred Foundry
+doing faces : 
+Sacred Foundry
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+920Overgrown Tomb
+doing faces : 
+Overgrown Tomb
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+1020Izzet Guildgate
+doing faces : 
+Izzet Guildgate
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+111Izzet Guildgate
+doing faces : 
+Izzet Guildgate
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+111Guildmages' Forum
+doing faces : 
+Guildmages' Forum
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+11Golgari Guildgate
+doing faces : 
+Golgari Guildgate
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+121Golgari Guildgate
+doing faces : 
+Golgari Guildgate
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+121Gateway Plaza
+doing faces : 
+Gateway Plaza
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+121Dimir Guildgate
+doing faces : 
+Dimir Guildgate
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+121Dimir Guildgate
+doing faces : 
+Dimir Guildgate
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+121Boros Guildgate
+doing faces : 
+Boros Guildgate
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+121Boros Guildgate
+doing faces : 
+Boros Guildgate
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "11"
+}
+121Wand of Vertebrae
+doing faces : 
+Wand of Vertebrae
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "10"
+}
+0Silent Dart
+doing faces : 
+Silent Dart
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "10"
+}
+1Selesnya Locket
+doing faces : 
+Selesnya Locket
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(1) "8"
+}
+1Rampaging Monument
+doing faces : 
+Rampaging Monument
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(1) "3"
+}
+10Izzet Locket
+doing faces : 
+Izzet Locket
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(1) "8"
+}
+2Golgari Locket
+doing faces : 
+Golgari Locket
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(1) "8"
+}
+2Glaive of the Guildpact
+doing faces : 
+Glaive of the Guildpact
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "11"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "13"
+}
+20Gatekeeper Gargoyle
+doing faces : 
+Gatekeeper Gargoyle
+310Dimir Locket
+doing faces : 
+Dimir Locket
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "14"
+  }
+}
+array(1) {
+  [0]=>
+  string(1) "8"
+}
+4Chromatic Lantern
+doing faces : 
+Chromatic Lantern
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "14"
+  }
+}
+array(1) {
+  [0]=>
+  string(1) "8"
+}
+4Chamber Sentry
+doing faces : 
+Chamber Sentry
+420Boros Locket
+doing faces : 
+Boros Locket
+array(1) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(2) "15"
+  }
+}
+array(1) {
+  [0]=>
+  string(1) "8"
+}
+5Status // Statue
+doing faces : 
+Status
+1Statue
+1Response // Resurgence
+doing faces : 
+Response
+1Resurgence
+1Invert // Invent
+doing faces : 
+Invert
+1Invent
+1Integrity // Intervention
+doing faces : 
+Integrity
+array(3) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(1) "3"
+  }
+  [1]=>
+  array(1) {
+    ["id"]=>
+    string(1) "5"
+  }
+  [2]=>
+  array(1) {
+    ["id"]=>
+    string(1) "9"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "17"
+}
+array(3) {
+  [0]=>
+  array(1) {
+    ["id"]=>
+    string(1) "3"
+  }
+  [1]=>
+  array(1) {
+    ["id"]=>
+    string(1) "5"
+  }
+  [2]=>
+  array(1) {
+    ["id"]=>
+    string(1) "9"
+  }
+}
+array(1) {
+  [0]=>
+  string(2) "17"
+}
+1Intervention
+1Flower // Flourish
+doing faces : 
+Flower
+1Flourish
+1Find // Finality
+doing faces : 
+Find
+1Finality
+1Expansion // Explosion
+doing faces : 
+Expansion
+1Explosion
+1Discovery // Dispersal
+doing faces : 
+Discovery
+1Dispersal
+1Connive // Concoct
+doing faces : 
+Connive
+1Concoct
+1Assure // Assemble
+doing faces : 
+Assure
+1Assemble
+1Whisper Agent
+doing faces : 
+Whisper Agent
+2920Vernadi Shieldmate
+doing faces : 
+Vernadi Shieldmate
+3031Pitiless Gorgon
+doing faces : 
+Pitiless Gorgon
+300Piston-Fist Cyclops
+doing faces : 
+Piston-Fist Cyclops
+310Fresh-Faced Recruit
+doing faces : 
+Fresh-Faced Recruit
+3231Worldsoul Colossus
+doing faces : 
+Worldsoul Colossus
+321Wee Dragonauts
+doing faces : 
+Wee Dragonauts
+330Vraska, Golgari Queen
+doing faces : 
+Vraska, Golgari Queen
+621Unmoored Ego
+doing faces : 
+Unmoored Ego
+1Underrealm Lich
+doing faces : 
+Underrealm Lich
+3420Undercity Uprising
+doing faces : 
+Undercity Uprising
+1Truefire Captain
+doing faces : 
+Truefire Captain
+3531Trostani Discordant
+doing faces : 
+Trostani Discordant
+640Thousand-Year Storm
+doing faces : 
+Thousand-Year Storm
+1Thought Erasure
+doing faces : 
+Thought Erasure
+1Thief of Sanity
+doing faces : 
+Thief of Sanity
+360Tajic, Legion's Edge
+doing faces : 
+Tajic, Legion's Edge
+750Swiftblade Vindicator
+doing faces : 
+Swiftblade Vindicator
+3842Swathcutter Giant
+doing faces : 
+Swathcutter Giant
+380Swarm Guildmage
+doing faces : 
+Swarm Guildmage
+3931Sumala Woodshaper
+doing faces : 
+Sumala Woodshaper
+4040Sonic Assault
+doing faces : 
+Sonic Assault
+1Skyknight Legionnaire
+doing faces : 
+Skyknight Legionnaire
+4141Rosemane Centaur
+doing faces : 
+Rosemane Centaur
+410Rhizome Lurcher
+doing faces : 
+Rhizome Lurcher
+420Ral, Izzet Viceroy
+doing faces : 
+Ral, Izzet Viceroy
+821Ochran Assassin
+doing faces : 
+Ochran Assassin
+4350Notion Rain
+doing faces : 
+Notion Rain
+1Niv-Mizzet, Parun
+doing faces : 
+Niv-Mizzet, Parun
+860Nightveil Predator
+doing faces : 
+Nightveil Predator
+451Molderhulk
+doing faces : 
+Molderhulk
+4511Mnemonic Betrayal
+doing faces : 
+Mnemonic Betrayal
+1March of the Multitudes
+doing faces : 
+March of the Multitudes
+1Legion Guildmage
+doing faces : 
+Legion Guildmage
+4540Ledev Champion
+doing faces : 
+Ledev Champion
+4661League Guildmage
+doing faces : 
+League Guildmage
+4751Lazav, the Multifarious
+doing faces : 
+Lazav, the Multifarious
+970Knight of Autumn
+doing faces : 
+Knight of Autumn
+4810Justice Strike
+doing faces : 
+Justice Strike
+1Join Shields
+doing faces : 
+Join Shields
+1Izoni, Thousand-Eyed
+doing faces : 
+Izoni, Thousand-Eyed
+10810Ionize
+doing faces : 
+Ionize
+1Hypothesizzle
+doing faces : 
+Hypothesizzle
+1House Guildmage
+doing faces : 
+House Guildmage
+5051Hammer Dropper
+doing faces : 
+Hammer Dropper
+5011Golgari Findbroker
+doing faces : 
+Golgari Findbroker
+5083Goblin Electromancer
+doing faces : 
+Goblin Electromancer
+5030Glowspore Shaman
+doing faces : 
+Glowspore Shaman
+5183Garrison Sergeant
+doing faces : 
+Garrison Sergeant
+5110Firemind's Research
+doing faces : 
+Firemind's Research
+1Etrata, the Silencer
+doing faces : 
+Etrata, the Silencer
+1190Erstwhile Trooper
+doing faces : 
+Erstwhile Trooper
+5341Emmara, Soul of the Accord
+doing faces : 
+Emmara, Soul of the Accord
+121021Disinformation Campaign
+doing faces : 
+Disinformation Campaign
+1Dimir Spybug
+doing faces : 
+Dimir Spybug
+532Deafening Clarion
+doing faces : 
+Deafening Clarion
+1Darkblade Agent
+doing faces : 
+Darkblade Agent
+5450Crackling Drake
+doing faces : 
+Crackling Drake
+550Conclave Guildmage
+doing faces : 
+Conclave Guildmage
+5681Conclave Cavalier
+doing faces : 
+Conclave Cavalier
+5710Charnel Troll
+doing faces : 
+Charnel Troll
+580Chance for Glory
+doing faces : 
+Chance for Glory
+1Centaur Peacemaker
+doing faces : 
+Centaur Peacemaker
+5920Camaraderie
+doing faces : 
+Camaraderie
+1Boros Challenger
+doing faces : 
+Boros Challenger
+6062Beamsplitter Mage
+doing faces : 
+Beamsplitter Mage
+600Beacon Bolt
+doing faces : 
+Beacon Bolt
