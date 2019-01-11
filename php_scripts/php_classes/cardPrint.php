@@ -31,7 +31,6 @@ class cardPrint{
 			)
 			ON DUPLICATE KEY UPDATE
 				CardId=           :CardId,
-				price=            :price,
 				foil=             :foil,
 				nonfoil=          :nonfoil,
 				oversized=        :oversized,
