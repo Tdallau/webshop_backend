@@ -89,7 +89,7 @@ namespace webshop_backend.Controllers
             var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
 
             var adr = (from a in this.__context.Address
-                       where a.UserId == userId && a.Id == address.Id
+                       where a.UserId == userId && a.Id == addressId
                        select a).FirstOrDefault();
 
             adr.ZipCode = address.ZipCode;
