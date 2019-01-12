@@ -28,15 +28,21 @@ namespace webshop_backend.Controllers
 
         // GET api/values
         [HttpGet]
-        public ActionResult<Response<UserData>> Get()
+        public ActionResult<Response<User>> Get()
         {
             var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
             var userToken = token.Split(' ')[1];
             var user = UserData.FromToken(userToken);
 
-            return Ok(new Response<UserData>()
+            var userReturn = (
+                from u in this.__context.User
+                where u.id == user.UserId
+                select u
+            ).FirstOrDefault();
+
+            return Ok(new Response<User>()
             {
-                Data = user,
+                Data = userReturn,
                 Success = true
             });
         }
@@ -49,9 +55,20 @@ namespace webshop_backend.Controllers
             var userToken = token.Split(' ')[1];
             var cu = UserData.FromToken(userToken);
 
-            if (user.email != "" && user.name != "" &&  user.password != "" && user.role.ToString() == cu.Role)
+            if (user.email != "" && user.name != "" &&  user.approach != "" && user.role.ToString() == cu.Role)
             { 
-                this.__context.Update(user);
+
+                var u = (
+                    from us in this.__context.User
+                    where us.id == cu.UserId
+                    select us
+                ).FirstOrDefault();
+
+                u.email = user.email;
+                u.name = user.name;
+                u.approach = user.approach;
+
+                this.__context.Update(u);
                 this.__context.SaveChanges();
                 return Ok(new Response<string>()
                 {

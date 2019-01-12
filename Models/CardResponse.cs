@@ -17,6 +17,7 @@ namespace webshop_backend.Models
         public string TypeLine { get; set; }
         public List<CostSymbols> Mana { get; set; }
         public List<string> Color {get; set;}
+        public int Quantity {get; set;}
 
         public static string GetTypeLine(List<Typeline> typeLine) {
             var tl = "";

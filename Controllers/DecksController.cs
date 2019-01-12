@@ -81,9 +81,9 @@ namespace webshop_backend.Controllers
                                         select CostSymbols
                             ).ToList()
                             let color = (from cic in this.__context.ColorsInCombinations
-                                        join c in this.__context.Color on cic.color.Id equals c.Id
-                                        where cic.combination.id == cf.color.id
-                                        select c.symbol
+                                         join c in this.__context.Color on cic.color.Id equals c.Id
+                                         where cic.combination.id == cf.color.id
+                                         select c.symbol
                             ).ToList()
                             where cd.deck.Id == d.Id
                             select new CardResponse()
@@ -99,7 +99,8 @@ namespace webshop_backend.Controllers
                                 OracleText = cf.oracleText,
                                 Power = cf.power,
                                 Toughness = cf.toughness,
-                                Price = p.price
+                                Price = p.price,
+                                Quantity = cd.quantity
                             }
                         ).ToList()
                         where d.Id == deckId
@@ -113,6 +114,44 @@ namespace webshop_backend.Controllers
                             Cards = cards
                         }
                         ).FirstOrDefault();
+
+            var test = deck.Cards.GroupBy(v => v.Name)
+                      .Select(v => new
+                      {
+                          v.Key,
+                          FlavorText = v.Select(w => w.FlavorText),
+                          TypeLine = v.Select(w => w.TypeLine),
+                          Image = v.Select(w => w.Image),
+                          Loyalty = v.Select(w => w.Loyalty),
+                          Mana = v.Select(w => w.Mana),
+                          Color = v.Select(w => w.Color),
+                          Name = v.Select(w => w.Name),
+                          OracleText = v.Select(w => w.OracleText),
+                          Power = v.Select(w => w.Power),
+                          Toughness = v.Select(w => w.Toughness),
+                          Price = v.Select(w => w.Price),
+                          Quantity = v.Select(w => w.Quantity)
+                      })
+                      .ToList()
+                      .Select(v => new CardResponse
+                      {
+                          Id = v.Key,
+                          FlavorText = string.Join(" // ", v.FlavorText),
+                          TypeLine = string.Join(" // ", v.TypeLine),
+                          Image = v.Image.FirstOrDefault(),
+                          Loyalty = string.Join(" // ", v.Loyalty),
+                          Mana = v.Mana.FirstOrDefault(),
+                          Color = v.Color.FirstOrDefault(),
+                          Name = string.Join(" // ", v.Name),
+                          OracleText = string.Join(" // ", v.OracleText),
+                          Power = string.Join(" // ", v.Power),
+                          Toughness = string.Join(" // ", v.Toughness),
+                          Price = v.Price.FirstOrDefault(),
+                          Quantity = v.Quantity.FirstOrDefault()
+
+                      });
+
+            deck.Cards = test.ToList();
 
             return Ok(new Response<DeckResponse>()
             {
@@ -154,13 +193,32 @@ namespace webshop_backend.Controllers
         [HttpPost("{deckId}/cards")]
         public ActionResult<Response<string>> AddNewCard(int deckId, [FromBody] DeckIncome print)
         {
-            var CardForDeck = new CardsDeck()
+
+            var cart = (
+                from p in this.__context.CardsDeck
+                where p.DeckId == deckId && p.PrintId == print.PrintId
+                select p
+            ).FirstOrDefault();
+
+
+
+            if (cart == null)
             {
-                DeckId = deckId,
-                PrintId = print.PrintId
-            };
-            this.__context.Add(CardForDeck);
-            this.__context.SaveChanges();
+                var CardForDeck = new CardsDeck()
+                {
+                    DeckId = deckId,
+                    PrintId = print.PrintId,
+                    quantity = 1
+                };
+                this.__context.Add(CardForDeck);
+                this.__context.SaveChanges();
+            }
+            else
+            {
+                cart.quantity = cart.quantity + 1;
+                this.__context.Update(cart);
+                this.__context.SaveChanges();
+            }
 
             return Ok(new Response<string>()
             {
@@ -197,7 +255,6 @@ namespace webshop_backend.Controllers
 
             var cardsInDeck = (
                 from cd in this.__context.CardsDeck
-                where cd.DeckId == deckId
                 select cd
             ).ToList();
 
@@ -206,11 +263,12 @@ namespace webshop_backend.Controllers
             {
                 var print = (
                     from p in this.__context.Print
-                    where p.Id == card.PrintId
-                    select p
+                    from cf in this.__context.CardFaces
+                    where p.Id == card.PrintId && cf.card.Id == p.Card.Id
+                    select new { print = p, cf }
                 ).FirstOrDefault();
 
-                if ((print.stock - 1) > 0)
+                if ((print.print.stock - 1) > 0)
                 {
                     var shoppingCart = (
                         from sc in this.__context.ShoppingCard
@@ -220,7 +278,7 @@ namespace webshop_backend.Controllers
 
                     var AllShoppingCartItems = (
                         from sci in this.__context.ShoppingCardItem
-                        where sci.ShoppingCardId == shoppingCart && sci.PrintId == print.Id
+                        where sci.ShoppingCardId == shoppingCart && sci.PrintId == print.print.Id
                         select sci
                     ).FirstOrDefault();
 
@@ -247,7 +305,7 @@ namespace webshop_backend.Controllers
                     //     where cf.card.Id == print.Card.Id
                     //     select cf.name
                     // ).FirstOrDefault();
-                    notInStock.Add(print.Id + " is out of stock.");
+                    notInStock.Add(print.cf.name + " is out of stock.");
                 }
             }
 

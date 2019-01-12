@@ -80,9 +80,14 @@ namespace webshop_backend.Controllers
             });
         }
 
-        [HttpPut("{userId}")]
-        public ActionResult<Response<string>> UpdateAddresse(int userId, [FromBody] Address address)
+        [HttpPut("{addressId}")]
+        public ActionResult<Response<string>> UpdateAddresse(int addressId, [FromBody] Address address)
         {
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+            var userToken = token.Split(' ')[1];
+            var jwttoken = new JwtSecurityToken(userToken);
+            var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
+
             var adr = (from a in this.__context.Address
                        where a.UserId == userId && a.Id == address.Id
                        select a).FirstOrDefault();
@@ -93,6 +98,28 @@ namespace webshop_backend.Controllers
             adr.Number = address.Number;
 
             this.__context.Update(adr);
+            this.__context.SaveChanges();
+
+            return Ok(new Response<string>()
+            {
+                Data = "Addresses is updated!",
+                Success = true
+            });
+        }
+
+        [HttpDelete("{addressId}")]
+        public ActionResult<Response<string>> DeleteAddresse(int addressId)
+        {
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+            var userToken = token.Split(' ')[1];
+            var jwttoken = new JwtSecurityToken(userToken);
+            var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
+
+            var adr = (from a in this.__context.Address
+                       where a.UserId == userId && a.Id == addressId
+                       select a).FirstOrDefault();
+
+            this.__context.Remove(adr);
             this.__context.SaveChanges();
 
             return Ok(new Response<string>()

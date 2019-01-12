@@ -39,10 +39,25 @@ namespace webshop_backend.Controllers
                         join Print in this.__context.Print on ShoppingCardItem.PrintId equals Print.Id
                         join CardFaces in this.__context.CardFaces on Print.Card.Id equals CardFaces.card.Id
                         where ShoppingCard.UserId == userId
-                        select new { Id = ShoppingCardItem.PrintId, CardFaces.name, ShoppingCardItem.Quantity, PriceNum = Print.price, PriceTotal = "", Price = "", PriceTotalNum = -1 };
+                        select new { Id = ShoppingCardItem.PrintId, CardFaces.name, ShoppingCardItem.Quantity, PriceNum = Print.price};
 
 
-            return Ok(query);
+            var test = query.GroupBy(v => v.Id)
+                            .Select(v => new { v.Key, Name = v.Select(w => w.name), PriceNum = v.Select(w => w.PriceNum), Quantity = v.Select(w => w.Quantity) })
+                            .ToList()
+                            .Select(v => new
+                            {
+                                Id = v.Key,
+                                Name = string.Join(" // ", v.Name),
+                                PriceNum = v.PriceNum.FirstOrDefault(),
+                                Quantity = v.Quantity.FirstOrDefault(),
+                                PriceTotal = "", 
+                                Price = "", 
+                                PriceTotalNum = -1
+                            }
+            );
+
+            return Ok(test);
         }
 
         [HttpPost]
@@ -82,14 +97,14 @@ namespace webshop_backend.Controllers
             var jwttoken = new JwtSecurityToken(userToken);
             var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
 
-            
-                return Ok(
-                    new Response<List<string>>()
-                    {
-                        Data = this.shoppingCartService.UpdateShoppingCartRange(userId, shoppingCardItems),
-                        Success = true
-                    }
-                );
+
+            return Ok(
+                new Response<List<string>>()
+                {
+                    Data = this.shoppingCartService.UpdateShoppingCartRange(userId, shoppingCardItems),
+                    Success = true
+                }
+            );
 
         }
         [HttpDelete]

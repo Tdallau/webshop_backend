@@ -111,7 +111,9 @@ namespace webshop_backend.Controllers
                                     select ShoppingCardItem).ToList();
 
 
-            var newOrder = new Order(){Status = OrderStatus.Ordered,  UserId= userId, AddressId = order.Address.Id, PayMethod = order.PayMethod };
+            var address = $"{order.Address.Street} {order.Address.Number}, {order.Address.ZipCode} {order.Address.City}";
+
+            var newOrder = new Order(){Status = OrderStatus.Ordered,  UserId= userId, Address = address, PayMethod = order.PayMethod, Date = DateTime.Today };
             this.__context.Add(newOrder);
             this.__context.SaveChanges();
 
@@ -156,13 +158,53 @@ namespace webshop_backend.Controllers
             var orders = (
                 from o in this.__context.Order
                 where o.UserId == userId
-                select o
+                orderby o.Date descending
+                select o 
             ).ToList();
+            
+            OrderStatus status;
+            List<OrderReturn> orderResponse = new List<OrderReturn>();
 
-            return Ok(new Response<List<Order>>(){
-               Data = orders,
+            foreach (var item in orders)
+            {
+                status = (OrderStatus)item.Status;
+                orderResponse.Add(
+                    new OrderReturn() {
+                        Address = item.Address,
+                        Date = item.Date,
+                        Id = item.Id,
+                        PayMethod = item.PayMethod,
+                        UserId = item.UserId,
+                        StatusString = status.ToString(),
+                        Status = item.Status
+                    }
+                );
+            }
+
+
+            return Ok(new Response<List<OrderReturn>>(){
+               Data = orderResponse,
                Success = true 
             });
+        }
+
+        [HttpGet("{orderId}")]
+        public ActionResult<Response<List<ResponseOrderItem>>> GetProducts(int orderId)
+        {
+            var items = (
+                from oi in this.__context.OrderProduct
+                from p in this.__context.Print
+                from cf in this.__context.CardFaces
+                where oi.orderId == orderId && p.Id == oi.PrintId && p.Card.Id == cf.card.Id
+                select new ResponseOrderItem{ Name = cf.name, Quantity = oi.quantity, Price = oi.price, Id = oi.id }
+            ).ToList();
+
+            return Ok(
+                new Response<List<ResponseOrderItem>>(){
+                    Data = items,
+                    Success = true
+                }
+            );
         }
 
         private void SendConformation(Order order, int userId)

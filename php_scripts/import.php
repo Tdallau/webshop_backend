@@ -24,7 +24,7 @@ function getCorrectCostId(PDO $pdo, array $preps , array $costs){
         if($res->rowCount > 1) {
             echo "SOMETHING WEND HORRIBLY WRONG!";
             var_dump($sth->fetchAll(PDO::FETCH_ASSOC));
-            die()
+            die();
         }
         return $res->fetch(PDO::FETCH_ASSOC);
     } else {
@@ -34,7 +34,7 @@ function getCorrectCostId(PDO $pdo, array $preps , array $costs){
                 if(!$preps["createInCosts"]->execute([":symbolId"=>$value,":costId"=>$id])){
                      $pdo->rollBack();
                     var_dump($sth->errorInfo());
-                    die()
+                    die();
                 }
             }
             return $id;
@@ -52,7 +52,7 @@ $checkInCosts = $pdo->prepare('
         FROM SymbolsInCosts
         WHERE SymbolsInCosts IN {ARRAY}
     )
-')
+');
 $Product = $pdo->prepare('
     INSERT INTO `Product`(
         `id`,

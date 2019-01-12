@@ -1,10 +1,10 @@
 <?php
 class db {
 	public function __construct(){
-		$host = '127.0.0.1';
+		$host = '192.168.32.15:3307';
 		$db   = 'projectC';
-		$user = 'C#';
-		$pass = 'C#';
+		$user = 'root';
+		$pass = 'd1epwd1epw';
 
 		$dsn = "mysql:host=$host;dbname=$db;charset=utf8";
 		$this->pdo = new PDO($dsn, $user, $pass);
