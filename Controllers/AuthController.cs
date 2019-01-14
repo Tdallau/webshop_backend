@@ -164,12 +164,15 @@ namespace webshop_backend.Controllers
                 if(!query.active) {
                     query.active = true;
                     this.__context.Update(query);
+                    this.__context.SaveChanges();
                     return Redirect(this.urlSettings.FrontendUrl);
                 }
-                return Redirect(this.urlSettings.FrontendUrl);
+                return Ok("already active");
             } 
 
-            return Redirect(this.urlSettings.FrontendUrl);
+            return Ok(
+                "Somthing went wrong"
+            );
 
 
         }
