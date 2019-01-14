@@ -3,6 +3,7 @@ using System.Linq;
 using Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using webshop_backend.Controllers;
 
 namespace webshop_backend.Services
 {
@@ -24,6 +25,7 @@ namespace webshop_backend.Services
                     context.Update(prints[i]);
                 }
                 context.SaveChanges();
+                CardsController.NeedUpdate = true;
             }
 
 
@@ -44,6 +46,7 @@ namespace webshop_backend.Services
                     print.stock = stock;
                     context.Update(print);
                     context.SaveChanges();
+                    CardsController.NeedUpdate = true;
                 }
             }
         }

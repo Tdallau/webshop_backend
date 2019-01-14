@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Models;
 using Models.DB;
 using Newtonsoft.Json;
+using webshop_backend.Controllers;
 
 namespace webshop_backend.Services
 {
@@ -31,6 +32,7 @@ namespace webshop_backend.Services
                     this.hasMore($"https://api.scryfall.com/cards/search?order=set&q=e%3A{set.Id}");
                     i++;
                 });
+                CardsController.NeedUpdate = true;
             }
         }
 

@@ -115,44 +115,6 @@ namespace webshop_backend.Controllers
                         }
                         ).FirstOrDefault();
 
-            var test = deck.Cards.GroupBy(v => v.Name)
-                      .Select(v => new
-                      {
-                          v.Key,
-                          FlavorText = v.Select(w => w.FlavorText),
-                          TypeLine = v.Select(w => w.TypeLine),
-                          Image = v.Select(w => w.Image),
-                          Loyalty = v.Select(w => w.Loyalty),
-                          Mana = v.Select(w => w.Mana),
-                          Color = v.Select(w => w.Color),
-                          Name = v.Select(w => w.Name),
-                          OracleText = v.Select(w => w.OracleText),
-                          Power = v.Select(w => w.Power),
-                          Toughness = v.Select(w => w.Toughness),
-                          Price = v.Select(w => w.Price),
-                          Quantity = v.Select(w => w.Quantity)
-                      })
-                      .ToList()
-                      .Select(v => new CardResponse
-                      {
-                          Id = v.Key,
-                          FlavorText = string.Join(" // ", v.FlavorText),
-                          TypeLine = string.Join(" // ", v.TypeLine),
-                          Image = v.Image.FirstOrDefault(),
-                          Loyalty = string.Join(" // ", v.Loyalty),
-                          Mana = v.Mana.FirstOrDefault(),
-                          Color = v.Color.FirstOrDefault(),
-                          Name = string.Join(" // ", v.Name),
-                          OracleText = string.Join(" // ", v.OracleText),
-                          Power = string.Join(" // ", v.Power),
-                          Toughness = string.Join(" // ", v.Toughness),
-                          Price = v.Price.FirstOrDefault(),
-                          Quantity = v.Quantity.FirstOrDefault()
-
-                      });
-
-            deck.Cards = test.ToList();
-
             return Ok(new Response<DeckResponse>()
             {
                 Data = deck,
@@ -199,11 +161,7 @@ namespace webshop_backend.Controllers
                 where p.DeckId == deckId && p.PrintId == print.PrintId
                 select p
             ).FirstOrDefault();
-
-
-
-            if (cart == null)
-            {
+            
                 var CardForDeck = new CardsDeck()
                 {
                     DeckId = deckId,
@@ -212,17 +170,12 @@ namespace webshop_backend.Controllers
                 };
                 this.__context.Add(CardForDeck);
                 this.__context.SaveChanges();
-            }
-            else
-            {
-                cart.quantity = cart.quantity + 1;
-                this.__context.Update(cart);
-                this.__context.SaveChanges();
-            }
+            
+           
 
             return Ok(new Response<string>()
             {
-                Data = "Card is added to your deck",
+                Data = "Card is added to your deck.",
                 Success = true
             });
         }
@@ -255,8 +208,15 @@ namespace webshop_backend.Controllers
 
             var cardsInDeck = (
                 from cd in this.__context.CardsDeck
+                where cd.DeckId == deckId
                 select cd
             ).ToList();
+
+            var shoppingCart = (
+                        from sc in this.__context.ShoppingCard
+                        where sc.UserId == userId
+                        select sc.Id
+                    ).FirstOrDefault();
 
             var notInStock = new List<string>();
             foreach (var card in cardsInDeck)
@@ -270,11 +230,6 @@ namespace webshop_backend.Controllers
 
                 if ((print.print.stock - 1) > 0)
                 {
-                    var shoppingCart = (
-                        from sc in this.__context.ShoppingCard
-                        where sc.UserId == userId
-                        select sc.Id
-                    ).FirstOrDefault();
 
                     var AllShoppingCartItems = (
                         from sci in this.__context.ShoppingCardItem
@@ -308,6 +263,36 @@ namespace webshop_backend.Controllers
                     notInStock.Add(print.cf.name + " is out of stock.");
                 }
             }
+
+            var c = (
+                from d in this.__context.Decks
+                where d.Id == deckId
+                select d
+            ).FirstOrDefault();
+
+            var sciC = (
+                from s in this.__context.ShoppingCardItem
+                where s.ShoppingCardId == shoppingCart && s.PrintId == c.Commander
+                select s
+            ).FirstOrDefault();
+
+            if(sciC != null) {
+                sciC.Quantity++;
+                this.__context.Update(sciC);
+                this.__context.SaveChanges();
+            } else {
+                var com = new ShoppingCardItem()
+                    {
+                        ShoppingCardId = shoppingCart,
+                        PrintId = c.Commander,
+                        Quantity = 1
+                    };
+
+                this.__context.Add(com);
+                this.__context.SaveChanges();
+            }
+
+            
 
             return Ok(new Response<List<string>>()
             {

@@ -133,6 +133,28 @@ namespace webshop_backend.Controllers
                 Success = true
             });
         }
+        [HttpDelete("{shoppingcartId}/range")]
+        public ActionResult<Response<string>> DeleteAllItems(int shoppingcartId) {
+
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+            var userToken = token.Split(' ')[1];
+            var jwttoken = new JwtSecurityToken(userToken);
+            var userId = Int32.Parse(jwttoken.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value);
+
+            var shopp = (
+                from s in this.__context.ShoppingCardItem
+                where s.ShoppingCardId == shoppingcartId
+                select s
+            ).ToList();
+
+            this.__context.RemoveRange(shopp);
+            this.__context.SaveChanges();
+
+            return Ok(new Response<string>(){
+                Data = "shoppingcart is cleard!",
+                Success = true
+            });
+        }
     }
 
 }

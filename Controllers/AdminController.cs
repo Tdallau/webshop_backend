@@ -214,6 +214,7 @@ namespace webshop_backend.Controllers
 
             proc.Start();
             proc.WaitForExit();
+            CardsController.NeedUpdate = true;
         }
     }
 }

@@ -26,6 +26,7 @@ namespace webshop_backend.Controllers
     {
         private static List<ProductList> _cache = new List<ProductList>();
         private static DateTime _cacheDate;
+        public static bool NeedUpdate = false;
         public CardsController(MainContext context, IOptions<EmailSettings> settings, IOptions<Urls> urlSettings) : base(context, settings, urlSettings)
         {
         }
@@ -34,12 +35,13 @@ namespace webshop_backend.Controllers
         [HttpGet]
         public ActionResult<Response<dynamic>> Get([FromQuery(Name = "page-size")] int page_size, int page, string search = "")
         {
-            if (_cache.Count == 0 || (DateTime.Now - _cacheDate).TotalHours > 24)
+            if (_cache.Count == 0 || (DateTime.Now - _cacheDate).TotalHours > 24 || NeedUpdate)
             {
                 lock (_cache)
                 {
                     _cache = this.__context.ProductList.ToList();
                     _cacheDate = DateTime.Now;
+                    NeedUpdate = false;
                 }
             }
 

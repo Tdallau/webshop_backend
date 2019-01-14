@@ -162,19 +162,8 @@ namespace webshop_backend.Controllers
             if (query != null)
             {
                 if(!query.active) {
-
-                    var address = new Address(){ 
-                        UserId = query.id,
-                        ZipCode = "2904CX",
-                        City = "Capelle",
-                        Street = "Reggedal",
-                        Number = 10
-                    };
-
                     query.active = true;
                     this.__context.Update(query);
-                    this.__context.Add(address);
-                    this.__context.SaveChanges();
                     return Redirect(this.urlSettings.FrontendUrl);
                 }
                 return Redirect(this.urlSettings.FrontendUrl);
