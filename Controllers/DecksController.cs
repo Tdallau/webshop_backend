@@ -130,12 +130,13 @@ namespace webshop_backend.Controllers
                           Power = v.Select(w => w.Power),
                           Toughness = v.Select(w => w.Toughness),
                           Price = v.Select(w => w.Price),
-                          Quantity = v.Select(w => w.Quantity)
+                          Quantity = v.Select(w => w.Quantity),
+                          Id = v.Select(w => w.Id)
                       })
                       .ToList()
                       .Select(v => new CardResponse
                       {
-                          Id = v.Key,
+                          Id = v.Id,
                           FlavorText = string.Join(" // ", v.FlavorText),
                           TypeLine = string.Join(" // ", v.TypeLine),
                           Image = v.Image.FirstOrDefault(),
